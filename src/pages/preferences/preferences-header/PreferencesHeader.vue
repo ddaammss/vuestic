@@ -8,7 +8,7 @@
     </div>
   </div>
 </template>
-<script lang="ts" setup>
+<script setup>
 import { useUserStore } from '../../../stores/user-store'
 
 const store = useUserStore()

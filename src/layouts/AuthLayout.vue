@@ -33,7 +33,7 @@
   </VaLayout>
 </template>
 
-<script lang="ts" setup>
+<script setup>
 import { useBreakpoint } from 'vuestic-ui'
 import VuesticLogo from '../components/VuesticLogo.vue'
 

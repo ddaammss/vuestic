@@ -36,7 +36,7 @@
   </VaCard>
 </template>
 
-<script lang="ts" setup>
+<script setup>
 import { useToast } from 'vuestic-ui'
 import { reactive } from 'vue'
 

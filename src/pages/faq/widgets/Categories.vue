@@ -20,7 +20,7 @@
   </VaAlert>
 </template>
 
-<script lang="ts" setup>
+<script setup>
 import categories from '../data/popularCategories.json'
 import { ref, computed } from 'vue'
 

@@ -2,7 +2,7 @@
   <Pie :data="props.data" :options="options" />
 </template>
 
-<script lang="ts" setup>
+<script setup>
 import { Pie } from 'vue-chartjs'
 import type { ChartOptions } from 'chart.js'
 import { Chart as ChartJS, Title, Tooltip, Legend, ArcElement, CategoryScale } from 'chart.js'

@@ -57,7 +57,7 @@
   />
 </template>
 
-<script lang="ts" setup>
+<script setup>
 import { computed, ref } from 'vue'
 import { usePaymentCardsStore } from '../../stores/payment-cards'
 

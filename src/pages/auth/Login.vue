@@ -44,7 +44,7 @@
   </VaForm>
 </template>
 
-<script lang="ts" setup>
+<script setup>
 import { reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { useForm, useToast } from 'vuestic-ui'

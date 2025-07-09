@@ -27,7 +27,7 @@
   </VaCard>
 </template>
 
-<script lang="ts" setup>
+<script setup>
 import { computed, ref } from 'vue'
 import { useToast } from 'vuestic-ui'
 import { useI18n } from 'vue-i18n'

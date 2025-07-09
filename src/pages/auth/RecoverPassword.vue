@@ -17,7 +17,7 @@
   </VaForm>
 </template>
 
-<script lang="ts" setup>
+<script setup>
 import { ref } from 'vue'
 import { useForm } from 'vuestic-ui'
 import { useRouter } from 'vue-router'

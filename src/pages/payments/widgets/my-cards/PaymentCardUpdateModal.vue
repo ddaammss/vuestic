@@ -5,7 +5,7 @@
   </VaModal>
 </template>
 
-<script lang="ts" setup>
+<script setup>
 import { ref } from 'vue'
 import PaymentCardEdit from './PaymentCardEdit.vue'
 import { PaymentCard } from '../../types'

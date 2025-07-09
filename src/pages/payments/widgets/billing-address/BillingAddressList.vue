@@ -42,7 +42,7 @@
   <AddressUpdateModal v-if="addressToEdit" :billing-address="addressToEdit" @close="addressToEdit = undefined" />
 </template>
 
-<script lang="ts" setup>
+<script setup>
 import CardListItem from './BillingAddressListItem.vue'
 import { computed, ref } from 'vue'
 import { useModal, useToast } from 'vuestic-ui'

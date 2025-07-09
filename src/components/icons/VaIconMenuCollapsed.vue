@@ -12,7 +12,7 @@
   </svg>
 </template>
 
-<script lang="ts" setup>
+<script setup>
 withDefaults(
   defineProps<{
     color?: string

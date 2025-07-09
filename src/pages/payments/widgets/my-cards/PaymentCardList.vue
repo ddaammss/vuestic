@@ -41,7 +41,7 @@
   <PaymentCardUpdateModal v-if="cardToEdit" :payment-card="cardToEdit" @close="cardToEdit = undefined" />
 </template>
 
-<script lang="ts" setup>
+<script setup>
 import CardListItem from './PaymentCardListItem.vue'
 import { usePaymentCardsStore } from '../../../../stores/payment-cards'
 import { computed, ref } from 'vue'

@@ -10,7 +10,7 @@
   </VaModal>
 </template>
 
-<script lang="ts" setup>
+<script setup>
 import { ref, reactive } from 'vue'
 import BillingAddressEdit from './BillingAddressEdit.vue'
 import { BillingAddress } from '../../types'

@@ -30,7 +30,7 @@
   </VaCard>
 </template>
 
-<script lang="ts" setup>
+<script setup>
 import { computed } from 'vue'
 import { VaCard } from 'vuestic-ui'
 

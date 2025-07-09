@@ -21,7 +21,7 @@
     </div>
   </VaModal>
 </template>
-<script lang="ts" setup>
+<script setup>
 import { useToast } from 'vuestic-ui'
 
 const { init } = useToast()

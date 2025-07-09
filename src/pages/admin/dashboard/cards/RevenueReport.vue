@@ -39,7 +39,7 @@
   </VaCard>
 </template>
 
-<script lang="ts" setup>
+<script setup>
 import { ref, computed } from 'vue'
 import { VaCard } from 'vuestic-ui'
 import RevenueReportChart from './RevenueReportChart.vue'

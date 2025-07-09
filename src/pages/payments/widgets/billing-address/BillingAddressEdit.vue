@@ -44,7 +44,7 @@
   </VaForm>
 </template>
 
-<script lang="ts" setup>
+<script setup>
 import { useForm } from 'vuestic-ui'
 import { BillingAddress } from '../../types'
 import { watch, ref } from 'vue'

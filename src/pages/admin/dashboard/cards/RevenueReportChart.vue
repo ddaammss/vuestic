@@ -4,7 +4,7 @@
   </div>
 </template>
 
-<script lang="ts" setup>
+<script setup>
 import { ref, onMounted, nextTick } from 'vue'
 import { Chart, registerables } from 'chart.js'
 

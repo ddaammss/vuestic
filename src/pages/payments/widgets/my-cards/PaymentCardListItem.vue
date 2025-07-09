@@ -22,7 +22,7 @@
   </div>
 </template>
 
-<script lang="ts" setup>
+<script setup>
 import { computed } from 'vue'
 import PaymentSystem from '../../payment-system/PaymentSystem.vue'
 import { PaymentCard } from '../../types'

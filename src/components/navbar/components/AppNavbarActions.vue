@@ -38,7 +38,7 @@
   </div>
 </template>
 
-<script lang="ts" setup>
+<script setup>
 import ProfileDropdown from './dropdowns/ProfileDropdown.vue'
 import NotificationDropdown from './dropdowns/NotificationDropdown.vue'
 import GithubButton from './GitHubButton.vue'

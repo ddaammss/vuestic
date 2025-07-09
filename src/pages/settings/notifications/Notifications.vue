@@ -12,7 +12,7 @@
     </div>
   </div>
 </template>
-<script lang="ts" setup>
+<script setup>
 import { useNotificationsStore } from '../../../stores/notifications'
 
 const { notifications } = useNotificationsStore()

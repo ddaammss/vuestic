@@ -21,7 +21,7 @@
     <Notifications />
   </div>
 </template>
-<script lang="ts" setup>
+<script setup>
 import LanguageSwitcher from './language-switcher/LanguageSwitcher.vue'
 import ThemeSwitcher from './theme-switcher/ThemeSwitcher.vue'
 import Notifications from './notifications/Notifications.vue'

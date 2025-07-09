@@ -30,7 +30,7 @@
   </svg>
 </template>
 
-<script lang="ts" setup>
+<script setup>
 import { computed } from 'vue'
 import { useColors } from 'vuestic-ui'
 

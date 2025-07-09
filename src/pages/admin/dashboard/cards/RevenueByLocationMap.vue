@@ -12,7 +12,7 @@
   </VaCard>
 </template>
 
-<script lang="ts" setup>
+<script setup>
 import { ref, computed, onMounted } from 'vue'
 import { VaCard } from 'vuestic-ui'
 import type countriesGeoJSON from '../../../../data/geo.json'

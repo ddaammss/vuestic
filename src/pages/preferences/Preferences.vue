@@ -11,7 +11,7 @@
   <EditNameModal v-if="isEditNameModalOpen" @cancel="isEditNameModalOpen = false" />
   <ResetPasswordModal v-if="isResetPasswordModalOpen" @cancel="isResetPasswordModalOpen = false" />
 </template>
-<script lang="ts" setup>
+<script setup>
 import { ref } from 'vue'
 
 import PreferencesHeader from './preferences-header/PreferencesHeader.vue'

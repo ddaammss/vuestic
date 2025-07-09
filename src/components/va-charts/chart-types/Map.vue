@@ -2,7 +2,7 @@
   <canvas ref="canvas" style="max-width: 100%" />
 </template>
 
-<script lang="ts" setup>
+<script setup>
 import { ref } from 'vue'
 import { Chart as ChartJS, Title, Tooltip, Legend, ArcElement, CategoryScale, ChartOptions } from 'chart.js'
 import { ChoroplethController, ProjectionScale, ColorScale, GeoFeature } from 'chartjs-chart-geo'

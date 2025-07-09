@@ -14,7 +14,7 @@
   </template>
 </template>
 
-<script lang="ts" setup>
+<script setup>
 import MembeshipTier from './MembeshipTier.vue'
 import PaymentInfo from './PaymentInfo.vue'
 import { usePaymentCardsStore } from '../../stores/payment-cards'

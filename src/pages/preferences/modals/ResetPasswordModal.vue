@@ -57,7 +57,7 @@
     </VaForm>
   </VaModal>
 </template>
-<script lang="ts" setup>
+<script setup>
 import { ref } from 'vue'
 import { useForm, useToast } from 'vuestic-ui'
 

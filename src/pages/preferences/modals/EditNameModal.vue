@@ -18,7 +18,7 @@
     </VaForm>
   </VaModal>
 </template>
-<script lang="ts" setup>
+<script setup>
 import { ref } from 'vue'
 import { useUserStore } from '../../../stores/user-store'
 
@@ -31,7 +31,7 @@ const { init } = useToast()
 
 const emits = defineEmits(['cancel'])
 
-const Name = ref<string>(store.userName)
+const Name = ref < string > store.userName
 
 const submit = () => {
   if (!Name.value || Name.value === store.userName) {

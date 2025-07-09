@@ -2,7 +2,7 @@
   <Bar :data="props.data" :options="{ ...options, ...horizontalBarOptions }" />
 </template>
 
-<script lang="ts" setup>
+<script setup>
 import { Bar } from 'vue-chartjs'
 import type { ChartOptions } from 'chart.js'
 import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, LinearScale, CategoryScale } from 'chart.js'

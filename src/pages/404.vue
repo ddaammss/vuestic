@@ -1,4 +1,4 @@
-<script lang="ts" setup>
+<script setup>
 import VuesticLogo from '../components/VuesticLogo.vue'
 import NotFoundImage from '../components/NotFoundImage.vue'
 </script>

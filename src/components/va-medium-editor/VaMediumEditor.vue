@@ -4,7 +4,7 @@
   </div>
 </template>
 
-<script lang="ts" setup>
+<script setup>
 import { ref, Ref, onMounted, onBeforeUnmount } from 'vue'
 import MediumEditor from 'medium-editor'
 
