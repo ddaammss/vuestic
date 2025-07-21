@@ -15,9 +15,22 @@ export default defineConfig({
     sourcemap: false,
     rollupOptions: {
       output: {
+        assetFileNames: 'assets/[name].[hash][extname]',
         manualChunks: {
+          // 벤더 라이브러리들을 별도 청크로 분리
           vendor: ['vue', 'vue-router', 'pinia'],
-          vuestic: ['vuestic-ui']
+          vuestic: ['vuestic-ui'],
+
+          // 페이지별로 청크 분리
+          dashboard: ['./src/views/Dashboard.vue'],
+          'store-management': [
+            './src/views/StoreManagement/StoreList.vue',
+            './src/views/StoreManagement/StoreRegister.vue'
+          ],
+          'member-management': [
+            './src/views/MemberManagement/MemberInfo.vue',
+            './src/views/MemberManagement/PointManagement.vue'
+          ]
         }
       }
     }
