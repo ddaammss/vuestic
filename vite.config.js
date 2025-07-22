@@ -23,14 +23,8 @@ export default defineConfig({
 
           // 페이지별로 청크 분리
           dashboard: ['./src/views/Dashboard.vue'],
-          'store-management': [
-            './src/views/StoreManagement/StoreList.vue',
-            './src/views/StoreManagement/StoreRegister.vue'
-          ],
-          'member-management': [
-            './src/views/MemberManagement/MemberInfo.vue',
-            './src/views/MemberManagement/PointManagement.vue'
-          ]
+          'store-management': ['./src/views/stores/List.vue', './src/views/stores/Register.vue'],
+          'member-management': ['./src/views/members/Info.vue', './src/views/members/Points.vue']
         }
       }
     }
