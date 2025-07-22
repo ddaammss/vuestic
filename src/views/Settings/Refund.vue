@@ -4,15 +4,15 @@
 
     <div class="form-container">
       <div style="margin-bottom: 20px;">
-        <p>수정 후 반드시 '확인' 버튼을 눌러 주셔야 정상적으로 저장이 됩니다.</p>
+        <p>수정 후 반드시 '저장' 버튼을 눌러 주셔야 정상적으로 저장이 됩니다.</p>
       </div>
 
       <form @submit.prevent="saveRefund">
         <va-textarea v-model="refundPolicy" label="환불규정" :min-rows="20" class="form-full" />
 
-        <div class="btn-group">
-          <va-button type="submit">확인</va-button>
-          <va-button preset="secondary" @click="$router.push('/')">홈으로</va-button>
+        <div class="btn-group" style="margin-top: 20px; display: flex; justify-content: flex-end;">
+          <va-button type="submit">저장</va-button>
+          <va-button preset="secondary" @click="$router.push('/')" style="margin-left: 10px;">홈으로</va-button>
         </div>
       </form>
     </div>

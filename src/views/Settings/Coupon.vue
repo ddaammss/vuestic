@@ -32,9 +32,9 @@
 
         <va-textarea v-model="coupon.description" label="쿠폰 설명" class="form-full" />
 
-        <div class="btn-group">
+        <div class="btn-group" style="margin-top: 20px; display: flex; justify-content: flex-end;">
           <va-button type="submit">저장</va-button>
-          <va-button preset="secondary" @click="resetCoupon">초기화</va-button>
+          <!-- <va-button preset="secondary" @click="resetCoupon">초기화</va-button> -->
         </div>
       </form>
     </div>

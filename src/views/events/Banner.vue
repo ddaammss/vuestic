@@ -26,8 +26,8 @@
           </div>
         </div>
 
-        <div class="btn-group">
-          <va-button type="submit">등록하기</va-button>
+        <div class="btn-group" style="margin-top: 20px; display: flex; justify-content: flex-end;">
+          <va-button type="submit">저장</va-button>
           <va-button preset="secondary" @click="$router.push('/')">홈으로</va-button>
         </div>
       </form>
@@ -42,17 +42,17 @@ export default {
   name: 'Banner',
   setup() {
     const mainBanners = ref([
-      { name: '', file: null, description: '' },
-      { name: '', file: null, description: '' },
-      { name: '', file: null, description: '' },
-      { name: '', file: null, description: '' }
+      { name: '', file: [], description: '' },
+      { name: '', file: [], description: '' },
+      { name: '', file: [], description: '' },
+      { name: '', file: [], description: '' }
     ])
 
     const subBanners = ref([
-      { name: '', file: null, description: '' },
-      { name: '', file: null, description: '' },
-      { name: '', file: null, description: '' },
-      { name: '', file: null, description: '' }
+      { name: '', file: [], description: '' },
+      { name: '', file: [], description: '' },
+      { name: '', file: [], description: '' },
+      { name: '', file: [], description: '' }
     ])
 
     const saveBanners = () => {

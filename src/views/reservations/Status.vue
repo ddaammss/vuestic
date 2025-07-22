@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1 class="page-title">예약 현황</h1>
+    <h1 class="page-title">예약 관리</h1>
 
     <div class="table-container">
       <div class="table-header">예약 관리</div>
@@ -30,9 +30,9 @@
             <va-radio v-model="reservationSearch.status" option="예약취소" label="예약취소" />
           </div>
         </div>
-        <div class="btn-group">
+        <div class="btn-group" style="margin-top: 20px; display: flex; justify-content: flex-end;">
           <va-button @click="searchReservations">검색</va-button>
-          <va-button preset="secondary" @click="resetReservationSearch">초기화</va-button>
+          <!-- <va-button preset="secondary" @click="resetReservationSearch">초기화</va-button> -->
         </div>
       </div>
 

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1 class="page-title">포인트관리</h1>
+    <h1 class="page-title">포인트 관리</h1>
 
     <div class="form-container">
       <h3 style="margin-bottom: 20px;">포인트 설정</h3>
@@ -37,8 +37,8 @@
           </div>
         </div>
 
-        <div class="btn-group">
-          <va-button type="submit">등록하기</va-button>
+        <div class="btn-group" style="margin-top: 20px; display: flex; justify-content: flex-end;">
+          <va-button type="submit">저장</va-button>
           <va-button preset="secondary" @click="$router.push('/')">홈으로</va-button>
         </div>
       </form>

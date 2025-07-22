@@ -22,9 +22,9 @@
             <va-checkbox v-model="storeSearch.categories" array-value="사찰" label="사찰" />
           </div>
         </div>
-        <div class="btn-group">
+        <div class="btn-group" style="margin-top: 20px; display: flex; justify-content: flex-end;">
           <va-button @click="searchStores">검색</va-button>
-          <va-button preset="secondary" @click="resetStoreSearch">초기화</va-button>
+          <!-- <va-button preset="secondary" @click="resetStoreSearch">초기화</va-button> -->
         </div>
       </div>
 

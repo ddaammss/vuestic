@@ -43,9 +43,9 @@
 
         <va-textarea v-model="newStore.description" label="입점사 설명" class="form-full" />
 
-        <div class="btn-group">
-          <va-button type="submit">등록하기</va-button>
-          <va-button preset="secondary" @click="resetNewStore">초기화</va-button>
+        <div class="btn-group" style="margin-top: 20px; display: flex; justify-content: flex-end;">
+          <va-button type="submit">저장</va-button>
+          <!-- <va-button preset="secondary" @click="resetNewStore">초기화</va-button> -->
         </div>
       </form>
     </div>

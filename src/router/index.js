@@ -1,164 +1,241 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
+// 레이아웃 컴포넌트
+const AdminLayout = () => import('@/layouts/AdminLayout.vue')
+const BlankLayout = () => import('@/layouts/BlankLayout.vue')
+
+// 페이지 컴포넌트들
+const Dashboard = () => import('@/views/Dashboard.vue')
+const Login = () => import('@/views/Login.vue')
+
+// 설정 관련 컴포넌트들
+const Terms = () => import('@/views/settings/Terms.vue')
+const Privacy = () => import('@/views/settings/Privacy.vue')
+const Refund = () => import('@/views/settings/Refund.vue')
+const Coupon = () => import('@/views/settings/Coupon.vue')
+
+// 입점사 관리
+const StoresList = () => import('@/views/stores/List.vue')
+const StoresRegister = () => import('@/views/stores/Register.vue')
+
+// 회원 관리
+const MembersInfo = () => import('@/views/members/Info.vue')
+const MembersPoints = () => import('@/views/members/Points.vue')
+
+// 예약 관리
+const ReservationsStatus = () => import('@/views/reservations/Status.vue')
+const ReservationsCancellation = () => import('@/views/reservations/Cancellation.vue')
+
+// 이벤트 관리
+const EventsCommunication = () => import('@/views/events/Communication.vue')
+const EventsBanner = () => import('@/views/events/Banner.vue')
+const EventsEvent = () => import('@/views/events/Event.vue')
+
+// 매출 관리
+const Sales = () => import('@/views/Sales.vue')
+
+// 광고 관리
+const AdsRequests = () => import('@/views/ads/Requests.vue')
+const AdsRegister = () => import('@/views/ads/Register.vue')
+
 const routes = [
+  // 인증 관련 페이지들 (BlankLayout)
+  {
+    path: '/auth',
+    component: BlankLayout,
+    children: [
+      {
+        path: 'login',
+        name: 'Login',
+        component: Login,
+        meta: {
+          title: '로그인',
+          requiresAuth: false
+        }
+      }
+    ]
+  },
+
+  // 관리자 페이지들 (AdminLayout)
   {
     path: '/',
-    name: 'Dashboard',
-    component: () =>
-      import(
-        /* webpackChunkName: "dashboard" */
-        '@/views/Dashboard.vue'
-      )
+    component: AdminLayout,
+    meta: { requiresAuth: true },
+    children: [
+      {
+        path: '',
+        name: 'Dashboard',
+        component: Dashboard,
+        meta: {
+          title: 'HOME'
+        }
+      },
+
+      // 설정관리
+      {
+        path: 'settings',
+        children: [
+          {
+            path: 'terms',
+            name: 'Terms',
+            component: Terms,
+            meta: { title: '이용약관' }
+          },
+          {
+            path: 'privacy',
+            name: 'Privacy',
+            component: Privacy,
+            meta: { title: '개인정보 취급방침' }
+          },
+          {
+            path: 'refund',
+            name: 'Refund',
+            component: Refund,
+            meta: { title: '환불 설정' }
+          },
+          {
+            path: 'coupon',
+            name: 'Coupon',
+            component: Coupon,
+            meta: { title: '쿠폰 설정' }
+          }
+        ]
+      },
+
+      // 입점사관리
+      {
+        path: 'stores',
+        children: [
+          {
+            path: 'list',
+            name: 'StoresList',
+            component: StoresList,
+            meta: { title: '입점사 관리' }
+          },
+          {
+            path: 'register',
+            name: 'StoresRegister',
+            component: StoresRegister,
+            meta: { title: '입점사 등록' }
+          }
+        ]
+      },
+
+      // 회원관리
+      {
+        path: 'members',
+        children: [
+          {
+            path: 'info',
+            name: 'MembersInfo',
+            component: MembersInfo,
+            meta: { title: '회원정보관리' }
+          },
+          {
+            path: 'points',
+            name: 'MembersPoints',
+            component: MembersPoints,
+            meta: { title: '포인트관리' }
+          }
+        ]
+      },
+
+      // 예약관리
+      {
+        path: 'reservations',
+        children: [
+          {
+            path: 'status',
+            name: 'ReservationsStatus',
+            component: ReservationsStatus,
+            meta: { title: '예약현황' }
+          },
+          {
+            path: 'cancellation',
+            name: 'ReservationsCancellation',
+            component: ReservationsCancellation,
+            meta: { title: '취소관리' }
+          }
+        ]
+      },
+
+      // 이벤트 관리
+      {
+        path: 'events',
+        children: [
+          {
+            path: 'communication',
+            name: 'EventsCommunication',
+            component: EventsCommunication,
+            meta: { title: '소통방' }
+          },
+          {
+            path: 'banner',
+            name: 'EventsBanner',
+            component: EventsBanner,
+            meta: { title: '배너 관리' }
+          },
+          {
+            path: 'event',
+            name: 'EventsEvent',
+            component: EventsEvent,
+            meta: { title: '이벤트 관리' }
+          }
+        ]
+      },
+
+      // 매출 관리
+      {
+        path: 'sales',
+        name: 'Sales',
+        component: Sales,
+        meta: { title: '매출 관리' }
+      },
+
+      // 광고 관리
+      {
+        path: 'ads',
+        children: [
+          {
+            path: 'requests',
+            name: 'AdsRequests',
+            component: AdsRequests,
+            meta: { title: '광고 신청 현황' }
+          },
+          {
+            path: 'register',
+            name: 'AdsRegister',
+            component: AdsRegister,
+            meta: { title: '광고 등록' }
+          }
+        ]
+      }
+    ]
   },
+
+  // 레거시 로그인 경로 리다이렉트
   {
-    path: '/stores/list',
-    name: 'StoreList',
-    component: () =>
-      import(
-        /* webpackChunkName: "store-management" */
-        '@/views/StoreManagement/StoreList.vue'
-      )
-  },
-  {
-    path: '/stores/register',
-    name: 'StoreRegister',
-    component: () =>
-      import(
-        /* webpackChunkName: "store-management" */
-        '@/views/StoreManagement/StoreRegister.vue'
-      )
-  },
-  {
-    path: '/reservations/status',
-    name: 'ReservationStatus',
-    component: () =>
-      import(
-        /* webpackChunkName: "reservations-management" */
-        '@/views/ReservationManagement/ReservationStatus.vue'
-      )
-  },
-  {
-    path: '/reservations/cancellation',
-    name: 'Cancellation',
-    component: () =>
-      import(
-        /* webpackChunkName: "reservations-management" */
-        '@/views/ReservationManagement/Cancellation.vue'
-      )
-  },
-  {
-    path: '/members/info',
-    name: 'MemberInfo',
-    component: () =>
-      import(
-        /* webpackChunkName: "members-management" */
-        '@/views/MemberManagement/MemberInfo.vue'
-      )
-  },
-  {
-    path: '/members/points',
-    name: 'PointManagement',
-    component: () =>
-      import(
-        /* webpackChunkName: "members-management" */
-        '@/views/MemberManagement/PointManagement.vue'
-      )
-  },
-  {
-    path: '/settings/terms',
-    name: 'Terms',
-    component: () =>
-      import(
-        /* webpackChunkName: "settings-management" */
-        '@/views/Settings/Terms.vue'
-      )
-  },
-  {
-    path: '/settings/privacy',
-    name: 'Privacy',
-    component: () =>
-      import(
-        /* webpackChunkName: "settings-management" */
-        '@/views/Settings/Privacy.vue'
-      )
-  },
-  {
-    path: '/settings/refund',
-    name: 'Refund',
-    component: () =>
-      import(
-        /* webpackChunkName: "settings-management" */
-        '@/views/Settings/Refund.vue'
-      )
-  },
-  {
-    path: '/settings/coupon',
-    name: 'Coupon',
-    component: () =>
-      import(
-        /* webpackChunkName: "settings-management" */
-        '@/views/Settings/Coupon.vue'
-      )
-  },
-  {
-    path: '/events/communication',
-    name: 'Communication',
-    component: () =>
-      import(
-        /* webpackChunkName: "events-management" */
-        '@/views/EventManagement/Communication.vue'
-      )
-  },
-  {
-    path: '/events/banner',
-    name: 'Banner',
-    component: () =>
-      import(
-        /* webpackChunkName: "events-management" */
-        '@/views/EventManagement/Banner.vue'
-      )
-  },
-  {
-    path: '/events/event',
-    name: 'Event',
-    component: () =>
-      import(
-        /* webpackChunkName: "events-management" */
-        '@/views/EventManagement/Event.vue'
-      )
-  },
-  {
-    path: '/sales',
-    name: 'Sales',
-    component: () =>
-      import(
-        /* webpackChunkName: "sales-management" */
-        '@/views/Sales.vue/'
-      )
-  },
-  {
-    path: '/ads/requests',
-    name: 'AdRequests',
-    component: () =>
-      import(
-        /* webpackChunkName: "ads-management" */
-        '@/views/AdManagement/AdRequests.vue/'
-      )
-  },
-  {
-    path: '/ads/register',
-    name: 'AdRegister',
-    component: () =>
-      import(
-        /* webpackChunkName: "ads-management" */
-        '@/views/AdManagement/AdRegister.vue/'
-      )
+    path: '/login',
+    redirect: '/auth/login'
   }
 ]
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  history: createWebHistory(),
   routes
+})
+
+// 라우터 가드 (인증 체크)
+router.beforeEach((to, from, next) => {
+  const isAuthenticated = true // 실제로는 인증 상태를 체크
+
+  if (to.meta?.requiresAuth && !isAuthenticated) {
+    next('/auth/login')
+  } else if (to.path === '/auth/login' && isAuthenticated) {
+    next('/')
+  } else {
+    next()
+  }
 })
 
 export default router

@@ -1,9 +1,9 @@
 <template>
   <div>
-    <h1 class="page-title">매출 통계</h1>
+    <h1 class="page-title">매출 관리</h1>
 
     <div class="table-container">
-      <div class="table-header">매출 통계</div>
+      <div class="table-header">매출 관리</div>
       <div class="search-form">
         <div class="form-grid">
           <va-date-input v-model="salesSearch.startDate" label="시작일" />
@@ -19,9 +19,9 @@
             <va-checkbox v-model="salesSearch.paymentMethods" array-value="휴대폰" label="휴대폰" />
           </div>
         </div>
-        <div class="btn-group">
+        <div class="btn-group" style="margin-top: 20px; display: flex; justify-content: flex-end;">
           <va-button @click="searchSales">검색</va-button>
-          <va-button preset="secondary" @click="resetSalesSearch">초기화</va-button>
+          <!-- <va-button preset="secondary" @click="resetSalesSearch">초기화</va-button> -->
         </div>
       </div>
 

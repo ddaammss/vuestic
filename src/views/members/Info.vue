@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1 class="page-title">회원정보관리</h1>
+    <h1 class="page-title">회원 정보 관리</h1>
 
     <div class="table-container">
       <div class="table-header">회원 정보 관리</div>
@@ -17,9 +17,9 @@
             <va-radio v-model="memberSearch.sortBy" option="포인트순" label="포인트순" />
           </div>
         </div>
-        <div class="btn-group">
+        <div class="btn-group" style="margin-top: 20px; display: flex; justify-content: flex-end;">
           <va-button @click="searchMembers">검색</va-button>
-          <va-button preset="secondary" @click="resetMemberSearch">초기화</va-button>
+          <!-- <va-button preset="secondary" @click="resetMemberSearch">초기화</va-button> -->
         </div>
       </div>
 

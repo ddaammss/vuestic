@@ -10,9 +10,9 @@
           <va-date-input v-model="cancelSearch.startDate" label="시작일" />
           <va-date-input v-model="cancelSearch.endDate" label="종료일" />
         </div>
-        <div class="btn-group">
+        <div class="btn-group" style="margin-top: 20px; display: flex; justify-content: flex-end;">
           <va-button @click="searchCancellations">검색</va-button>
-          <va-button preset="secondary" @click="resetCancelSearch">초기화</va-button>
+          <!-- <va-button preset="secondary" @click="resetCancelSearch">초기화</va-button> -->
         </div>
       </div>
 

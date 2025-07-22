@@ -1,32 +1,31 @@
 <template>
   <div id="app">
-    <va-config>
-      <div class="admin-container">
-        <Sidebar />
-        <main class="main-content">
-          <Header />
-          <div class="content">
-            <router-view />
-          </div>
-        </main>
-      </div>
-    </va-config>
+    <router-view />
   </div>
 </template>
 
 <script>
-import Sidebar from '@/components/Sidebar.vue'
-import Header from '@/components/Header.vue'
-
 export default {
-  name: 'App',
-  components: {
-    Sidebar,
-    Header
-  }
+  name: 'App'
 }
 </script>
 
 <style>
-@import '@/assets/styles/global.css';
+/* 전역 스타일 리셋 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  background-color: #f5f5f5;
+  overflow: hidden;
+}
+
+#app {
+  height: 100vh;
+  overflow: hidden;
+}
 </style>

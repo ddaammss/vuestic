@@ -18,7 +18,7 @@
 
         <div>
           <label style="display: block; margin-bottom: 8px; font-weight: bold;">광고 분야</label>
-          <div class="checkbox-group">
+          <div class="checkbox-group horizontal-checkboxes">
             <va-checkbox v-model="newAd.categories" array-value="신점" label="신점" />
             <va-checkbox v-model="newAd.categories" array-value="철학관" label="철학관" />
             <va-checkbox v-model="newAd.categories" array-value="타로" label="타로" />
@@ -30,7 +30,7 @@
 
         <div style="margin: 20px 0;">
           <label style="display: block; margin-bottom: 8px; font-weight: bold;">노출 순위</label>
-          <div class="checkbox-group">
+          <div class="checkbox-group horizontal-checkboxes">
             <va-checkbox v-model="newAd.positions" array-value="1위" label="1위" />
             <va-checkbox v-model="newAd.positions" array-value="2위" label="2위" />
             <va-checkbox v-model="newAd.positions" array-value="3위" label="3위" />
@@ -39,9 +39,9 @@
           </div>
         </div>
 
-        <div class="btn-group">
-          <va-button type="submit">등록하기</va-button>
-          <va-button preset="secondary" @click="resetAd">취소하기</va-button>
+        <div class="btn-group" style="margin-top: 20px; display: flex; justify-content: flex-end;">
+          <va-button type="submit">저장</va-button>
+          <!-- <va-button preset="secondary" @click="resetAd">취소</va-button> -->
         </div>
       </form>
     </div>
@@ -51,16 +51,16 @@
       <div class="table-header">등록된 광고 목록</div>
       <va-data-table :items="ads" :columns="adColumns" :per-page="10" hoverable striped selectable>
         <template #cell(actions)="{ rowIndex }">
-          <va-button size="small" @click="editAd(rowIndex)" style="margin-right: 5px;">수정하기</va-button>
-          <va-button size="small" preset="danger" @click="deleteAd(rowIndex)">삭제하기</va-button>
+          <va-button size="small" @click="editAd(rowIndex)" style="margin-right: 5px;">수정</va-button>
+          <va-button size="small" preset="danger" @click="deleteAd(rowIndex)">삭제</va-button>
         </template>
       </va-data-table>
 
-      <div class="btn-group" style="margin-top: 20px;">
-        <va-button @click="registerSelectedAds">등록하기</va-button>
+      <!-- <div class="btn-group" style="margin-top: 20px; margin-top: 20px; display: flex; justify-content: flex-end;">
+        <va-button @click="registerSelectedAds">저장</va-button>
         <va-button preset="secondary" @click="editSelectedAds">수정하기</va-button>
         <va-button preset="danger" @click="deleteSelectedAds">삭제하기</va-button>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
@@ -160,3 +160,11 @@ export default {
   }
 }
 </script>
+<style scoped>
+.horizontal-checkboxes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  align-items: center;
+}
+</style>

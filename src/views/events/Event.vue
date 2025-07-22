@@ -23,9 +23,9 @@
           <va-file-upload v-model="newEvent.files" type="gallery" />
         </div>
 
-        <div class="btn-group">
-          <va-button type="submit">확인</va-button>
-          <va-button preset="secondary" @click="resetEvent">초기화</va-button>
+        <div class="btn-group" style="margin-top: 20px; display: flex; justify-content: flex-end;">
+          <va-button type="submit">저장</va-button>
+          <!-- <va-button preset="secondary" @click="resetEvent">초기화</va-button> -->
         </div>
       </form>
     </div>
