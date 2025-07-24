@@ -1,10 +1,10 @@
 <template>
   <div>
     <div class="table-container">
-      <div class="table-header">쿠폰 </div>
+      <div class="table-header">쿠폰 관리 </div>
       <div class="search-form">
         <div class="form-grid">
-          <va-date-input v-model="coupon.startDate" label="쿠폰 시작일" />
+          <va-date-input v-model="coupon.startDate" label="쿠폰 시작일"  />
           <va-date-input v-model="coupon.endDate" label="쿠폰 종료일" />
         </div>
         <div class="form-grid">
@@ -17,14 +17,11 @@
         </div>
       </div>
 
-      <div v-if="selectedItems.length > 0" class="selected-info mb-4">
+      <!-- <div v-if="selectedItems.length > 0" class="selected-info mb-4">
         <va-alert color="success">
           ✅ {{ selectedItems.length }}개 항목이 선택되었습니다.
-          <!-- <va-button size="small" @click="clearSelection" class="ml-2">
-            선택 해제
-          </va-button> -->
         </va-alert>
-      </div>
+      </div> -->
 
       <!-- <div v-else class="no-selection mb-4">
         <va-alert color="info">
@@ -54,7 +51,6 @@ import { formatNumber } from '@/utils/formatters'
 export default {
   name: 'Coupon',
   setup() {
-
     const couponSearch = ref({
       keyword: '',
       couponType: '전체',
@@ -64,6 +60,9 @@ export default {
     const loading = ref(false)
     const perPage = ref(10)
     const statusFilter = ref('')
+
+    const selectedDate = ref('2025-06-01')
+    const dateRange = ref([])
 
     const coupon = ref({
       startDate: null,
