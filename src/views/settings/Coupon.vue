@@ -1,7 +1,5 @@
 <template>
   <div>
-    <h1 class="page-title">쿠폰 설정</h1>
-
     <div class="form-container">
       <form @submit.prevent="saveCoupon">
         <div class="form-grid">
@@ -30,7 +28,8 @@
           <va-input v-model="coupon.maxDiscount" label="최대 할인금액 (원)" type="number" />
         </div>
 
-        <va-textarea v-model="coupon.description" label="쿠폰 설명" class="form-full" />
+        <va-textarea v-model="coupon.description" label="쿠폰 설명" max-rows="10" style="width: 2000px;"
+          class="form-full" />
 
         <div class="btn-group" style="margin-top: 20px; display: flex; justify-content: flex-end;">
           <va-button type="submit">저장</va-button>
@@ -41,7 +40,7 @@
 
     <!-- 기존 쿠폰 목록 -->
     <div class="table-container" style="margin-top: 30px;">
-      <div class="table-header">등록된 쿠폰 목록</div>
+      <div class="table-header">쿠폰 목록</div>
       <va-data-table :items="coupons" :columns="couponColumns" :per-page="10" hoverable striped>
         <template #cell(status)="{ value }">
           <va-badge :text="value" :color="value === '활성' ? 'success' : 'danger'" />
@@ -61,6 +60,12 @@ import { ref } from 'vue'
 export default {
   name: 'Coupon',
   setup() {
+    const memberSearch = ref({
+      keyword: '',
+      memberType: '전체',
+      sortBy: '가입일순'
+    })
+
     const coupon = ref({
       startDate: null,
       endDate: null,
@@ -82,13 +87,16 @@ export default {
     ])
 
     const couponColumns = ref([
+      { key: 'state', label: '쿠폰상태' },
+      { key: 'number', label: '쿠폰번호' },
+      { key: 'type', label: '쿠폰종류' },
       { key: 'name', label: '쿠폰명' },
-      { key: 'type', label: '할인타입' },
-      { key: 'value', label: '할인값' },
-      { key: 'startDate', label: '시작일' },
-      { key: 'endDate', label: '종료일' },
-      { key: 'status', label: '상태' },
-      { key: 'actions', label: '관리' }
+      { key: 'discount', label: '할인액/율' },
+      { key: 'maxDiscount', label: '최대할인금액' },
+      { key: 'issuePeriod', label: '발급기간' },
+      { key: 'effetive', label: '유효기간' },
+      { key: 'regDate', label: '등록일' },
+      { key: 'useCount', label: '사용 건수' },
     ])
 
     const saveCoupon = () => {

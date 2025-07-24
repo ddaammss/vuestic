@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1 class="page-title">대시보드</h1>
+    <!-- <h1 class="page-title">대시보드</h1> -->
 
     <div class="alert-balance">
       <div>

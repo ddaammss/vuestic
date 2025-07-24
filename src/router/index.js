@@ -12,7 +12,7 @@ const Login = () => import('@/views/Login.vue')
 const Terms = () => import('@/views/settings/Terms.vue')
 const Privacy = () => import('@/views/settings/Privacy.vue')
 const Refund = () => import('@/views/settings/Refund.vue')
-const Coupon = () => import('@/views/settings/Coupon.vue')
+const Coupon = () => import('@/views/settings/CouponList.vue')
 
 // 입점사 관리
 const StoresList = () => import('@/views/stores/List.vue')

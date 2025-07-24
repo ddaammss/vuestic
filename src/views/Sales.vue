@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1 class="page-title">매출 관리</h1>
+    <!-- <h1 class="page-title">매출 관리</h1> -->
 
     <div class="table-container">
       <div class="table-header">매출 관리</div>

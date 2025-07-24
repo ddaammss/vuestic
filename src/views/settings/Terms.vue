@@ -1,14 +1,15 @@
 <template>
   <div>
-    <h1 class="page-title">이용약관</h1>
+    <!-- <h1 class="page-title">이용약관</h1> -->
     <div class="form-container">
-      <div style="margin-bottom: 20px;">
+      <!-- <div style="margin-bottom: 20px;">
         <p>수정 후 반드시 '저장' 버튼을 눌러 주셔야 정상적으로 저장이 됩니다.</p>
-      </div>
+      </div> -->
 
       <form @submit.prevent="saveTerms">
         <div class="form-group">
-          <div ref="editorContainer"></div>
+          <!-- <div ref="editorContainer"></div> -->
+          <va-textarea v-model="terms" label="이용 약관" max-rows="30" style="width: 2000px;" class="form-full" />
         </div>
 
         <!-- <div class="btn-group" style="margin-top: 20px;">
@@ -17,7 +18,7 @@
         </div> -->
         <div class="btn-group" style="margin-top: 20px; display: flex; justify-content: flex-end;">
           <va-button type="submit">저장</va-button>
-          <va-button preset="secondary" @click="$router.push('/')" style="margin-left: 10px;">홈으로</va-button>
+          <!-- <va-button preset="secondary" @click="$router.push('/')" style="margin-left: 10px;">홈으로</va-button> -->
         </div>
       </form>
     </div>
@@ -30,56 +31,55 @@ import { ref, onMounted, onBeforeUnmount } from 'vue'
 export default {
   name: 'Terms',
   setup() {
-    const editorContainer = ref(null);
+    //const editorContainer = ref(null);
+    //let editor = null;
     const terms = ref('이용약관 내용을 입력하세요...');
-    let editor = null;
 
-    onMounted(async () => {
-      // CDN에서 CKEditor 스크립트 로드
-      const script = document.createElement('script');
-      script.src = 'https://cdn.ckeditor.com/ckeditor5/36.0.0/classic/ckeditor.js';
-      script.async = true;
-      document.head.appendChild(script);
+    // onMounted(async () => {
+    //   // CDN에서 CKEditor 스크립트 로드
+    //   const script = document.createElement('script');
+    //   script.src = 'https://cdn.ckeditor.com/ckeditor5/36.0.0/classic/ckeditor.js';
+    //   script.async = true;
+    //   document.head.appendChild(script);
 
-      script.onload = () => {
-        // CKEditor 초기화
-        window.ClassicEditor
-          .create(editorContainer.value, {
-            toolbar: [
-              'heading', '|',
-              'bold', 'italic', 'link', 'bulletedList', 'numberedList', '|',
-              'indent', 'outdent', '|',
-              'blockQuote', 'insertTable', 'undo', 'redo'
-            ],
-          })
-          .then(editorInstance => {
-            editor = editorInstance;
-            //editor.setData(terms.value);
+    //   script.onload = () => {
+    //     // CKEditor 초기화
+    //     window.ClassicEditor
+    //       .create(editorContainer.value, {
+    //         toolbar: [
+    //           'heading', '|',
+    //           'bold', 'italic', 'link', 'bulletedList', 'numberedList', '|',
+    //           'indent', 'outdent', '|',
+    //           'blockQuote', 'insertTable', 'undo', 'redo'
+    //         ],
+    //       })
+    //       .then(editorInstance => {
+    //         editor = editorInstance;
+    //         //editor.setData(terms.value);
 
-            // 내용 변경 시 terms 업데이트
-            editor.model.document.on('change:data', () => {
-              terms.value = editor.getData();
-            });
-          })
-          .catch(error => {
-            console.error(error);
-          });
-      };
-    });
+    //         // 내용 변경 시 terms 업데이트
+    //         editor.model.document.on('change:data', () => {
+    //           terms.value = editor.getData();
+    //         });
+    //       })
+    //       .catch(error => {
+    //         console.error(error);
+    //       });
+    //   };
+    // });
 
-    onBeforeUnmount(() => {
-      // 컴포넌트 제거 시 에디터 인스턴스 제거
-      if (editor) {
-        editor.destroy();
-      }
-    });
+    // onBeforeUnmount(() => {
+    //   // 컴포넌트 제거 시 에디터 인스턴스 제거
+    //   if (editor) {
+    //     editor.destroy();
+    //   }
+    // });
 
     const saveTerms = () => {
       // 현재 에디터 내용 가져오기
-      if (editor) {
-        terms.value = editor.getData();
-      }
-
+      // if (editor) {
+      //   terms.value = editor.getData();
+      // }
       console.log('이용약관 저장:', terms.value);
       alert('이용약관이 저장되었습니다.');
     };
@@ -87,13 +87,13 @@ export default {
     return {
       terms,
       saveTerms,
-      editorContainer
+      //editorContainer
     };
   }
 }
 </script>
 
-<style scoped>
+<style>
 .form-group {
   margin-bottom: 20px;
 }
@@ -105,8 +105,8 @@ export default {
 }
 
 /* CKEditor 높이 조정 */
-:deep(.ck-editor__editable_inline) {
+/* :deep(.ck-editor__editable_inline) {
   min-height: 400px;
   max-height: 600px;
-}
+} */
 </style>

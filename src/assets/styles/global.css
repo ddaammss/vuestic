@@ -6,6 +6,12 @@
   box-sizing: border-box;
 }
 
+.va-input-label {
+  font-size: 15px;
+}
+.va-data-table .va-data-table__table {
+  cursor: pointer;
+}
 body {
   /* font-family: "Source Sans Pro", sans-serif; */
   font-family: 'Malgun Gothic', '맑은 고딕';

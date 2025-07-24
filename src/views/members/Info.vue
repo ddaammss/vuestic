@@ -1,7 +1,5 @@
 <template>
   <div>
-    <h1 class="page-title">회원 정보 관리</h1>
-
     <div class="table-container">
       <div class="table-header">회원 정보 관리</div>
       <div class="search-form">
