@@ -6,16 +6,17 @@ import { createPinia } from 'pinia'
 // Vuestic UI
 import { createVuestic } from 'vuestic-ui'
 import 'vuestic-ui/dist/vuestic-ui.css'
-
+import axios from 'axios'
 // Material Icons
 import 'material-design-icons-iconfont/dist/material-design-icons.css'
 
 // 글로벌 스타일
 import './assets/styles/global.css'
 
+axios.defaults.baseURL = 'http://localhost:8080/admin/api'
+
 const app = createApp(App)
 const pinia = createPinia()
-
 app.use(pinia)
 app.use(router)
 app.use(

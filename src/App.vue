@@ -18,12 +18,6 @@ export default {
   box-sizing: border-box;
 }
 
-/* body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-  background-color: #f5f5f5;
-  overflow: hidden;
-} */
-
 #app {
   height: 100vh;
   overflow: hidden;

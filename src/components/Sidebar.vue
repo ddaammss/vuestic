@@ -98,140 +98,22 @@
   </nav>
 </template>
 
-<script>
+<script setup>
 import { ref } from 'vue'
+import '@/assets/styles/sidebar.css'
+defineOptions({
+  name: 'Sidebar'
+})
+const openMenus = ref({
+  settings: false,
+  stores: false,
+  members: false,
+  reservations: false,
+  events: false,
+  ads: false
+})
 
-export default {
-  name: 'Sidebar',
-  setup() {
-    const openMenus = ref({
-      settings: false,
-      stores: false,
-      members: false,
-      reservations: false,
-      events: false,
-      ads: false
-    })
-
-    const toggleMenu = (menu) => {
-      openMenus.value[menu] = !openMenus.value[menu]
-    }
-
-    return {
-      openMenus,
-      toggleMenu
-    }
-  }
+const toggleMenu = (menu) => {
+  openMenus.value[menu] = !openMenus.value[menu]
 }
 </script>
-
-<style scoped>
-.sidebar {
-  width: 250px;
-  background: linear-gradient(180deg, #2c3e50 0%, #34495e 100%);
-  color: white;
-  overflow-y: auto;
-  height: 100vh;
-}
-
-.sidebar-header {
-  padding: 20px;
-  text-align: center;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(0, 0, 0, 0.1);
-}
-
-.logo {
-  font-size: 24px;
-  font-weight: bold;
-  margin-bottom: 5px;
-  color: #f39c12;
-}
-
-.subtitle {
-  font-size: 14px;
-  opacity: 0.8;
-  color: rgba(255, 255, 255, 0.8);
-}
-
-.nav-menu {
-  padding: 10px 0;
-}
-
-.nav-item {
-  margin-bottom: 2px;
-}
-
-.nav-link {
-  display: flex;
-  align-items: center;
-  padding: 15px 20px;
-  color: rgba(255, 255, 255, 0.8);
-  text-decoration: none;
-  transition: all 0.3s ease;
-  cursor: pointer;
-  position: relative;
-}
-
-.nav-link:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: white;
-}
-
-/* Active 상태 스타일 */
-.nav-link.active {
-  background: linear-gradient(90deg, #3498db 0%, #2980b9 100%);
-  color: white;
-  font-weight: 600;
-  box-shadow: inset 3px 0 0 #f39c12;
-}
-
-.nav-link.active::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 4px;
-  background: #f39c12;
-}
-
-.nav-link .material-icons {
-  margin-right: 12px;
-  font-size: 20px;
-}
-
-.nav-link span {
-  flex: 1;
-}
-
-.expand-icon {
-  margin-left: auto;
-  transition: transform 0.3s ease;
-}
-
-.expand-icon.expanded {
-  transform: rotate(180deg);
-}
-
-.sub-menu {
-  background: rgba(0, 0, 0, 0.1);
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.sub-menu .nav-link {
-  padding: 12px 20px 12px 52px;
-  font-size: 14px;
-}
-
-.sub-menu .nav-link:hover {
-  background: rgba(255, 255, 255, 0.05);
-}
-
-.sub-menu .nav-link.active {
-  background: linear-gradient(90deg, rgba(52, 152, 219, 0.8) 0%, rgba(41, 128, 185, 0.8) 100%);
-  color: white;
-  font-weight: 500;
-  box-shadow: inset 3px 0 0 #f39c12;
-}
-</style>

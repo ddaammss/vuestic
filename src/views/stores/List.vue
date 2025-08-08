@@ -1,7 +1,5 @@
 <template>
   <div>
-    <h1 class="page-title">입점사 관리</h1>
-
     <div class="table-container">
       <div class="table-header">입점사 관리</div>
       <div class="search-form">
