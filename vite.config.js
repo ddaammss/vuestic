@@ -37,7 +37,7 @@ export default defineConfig({
             './src/views/reservations/Status.vue'
           ],
           settings: [
-            './src/views/settings/Coupon.vue',
+            './src/views/settings/CouponList.vue',
             './src/views/settings/Privacy.vue',
             './src/views/settings/Refund.vue',
             './src/views/settings/Terms.vue'
