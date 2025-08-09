@@ -29,11 +29,12 @@
       </div>
 
       <va-data-table v-model="selectedItems" :items="list" :columns="columns" :loading="loading"
-        no-data-html="🔍 검색 결과가 없습니다." selectable hoverable striped sticky-header show-expand="true">
-        <template #cell(actions)="{ row }">
+        no-data-html="🔍 검색 결과가 없습니다." selectable hoverable striped sticky-header @row:click="deleteItemById" clickable>
+
+        <!-- <template #cell(actions)="{ row }">
           <VaButton preset="plain" icon="edit" @click="row.toggleRowDetails()" />
           <VaButton preset="plain" icon="delete" class="ml-3" @click="deleteItemById(row)" />
-        </template>
+        </template> -->
       </va-data-table>
 
       <Pagination :current-page="currentPage" :total-page="totalPage" @page-change="handlePageChange"></Pagination>
@@ -175,7 +176,7 @@ const editCoupon = (index) => {
 }
 
 const deleteItemById = (id) => {
-  console.log(id)
+  console.log(id.item.couponCode)
 }
 // 페이지 변경 핸들러
 const handlePageChange = (page) => {
