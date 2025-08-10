@@ -13,7 +13,7 @@ import 'material-design-icons-iconfont/dist/material-design-icons.css'
 // 글로벌 스타일
 import './assets/styles/global.css'
 
-axios.defaults.baseURL = 'https://lmanager-production.up.railway.app:8080/admin/api'
+axios.defaults.baseURL = 'https://lmanager-production.up.railway.app/admin/api'
 
 const app = createApp(App)
 const pinia = createPinia()
