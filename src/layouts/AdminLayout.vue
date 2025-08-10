@@ -12,17 +12,9 @@
   </div>
 </template>
 
-<script>
-import Header from '@/components/Header.vue'
-import Sidebar from '@/components/Sidebar.vue'
-
-export default {
-  name: 'AdminLayout',
-  components: {
-    Header,
-    Sidebar
-  }
-}
+<script setup>
+import Header from '@/components/common/Header.vue'
+import Sidebar from '@/components/common/Sidebar.vue'
 </script>
 
 <style scoped>
@@ -70,7 +62,6 @@ export default {
   padding: 0 20px !important;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
   position: relative !important;
-  z-index: 1000 !important;
   flex-shrink: 0 !important;
   width: 100% !important;
   margin: 0 !important;
@@ -232,5 +223,8 @@ export default {
 
 :deep(.sub-menu .nav-link:hover) {
   background: rgba(255, 255, 255, 0.05) !important;
+}
+:global(body.modal-open) :deep(.header) {
+  filter: blur(2px) !important;
 }
 </style>

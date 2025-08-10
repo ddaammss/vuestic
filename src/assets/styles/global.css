@@ -15,7 +15,7 @@ body {
 }
 
 .va-data-table {
-  border: 0.5px solid #b3b2b2 !important;
+  /* border: 0.5px solid #b3b2b2 !important; */
 }
 .admin-container {
   display: flex;
@@ -212,7 +212,8 @@ body {
   font-size: 14px;
 }
 
-.selected-info,
+/* .selected-info,
 .no-selection {
   margin-bottom: 16px;
-}
+} */
+

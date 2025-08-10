@@ -29,16 +29,22 @@
       </div>
 
       <va-data-table v-model="selectedItems" :items="list" :columns="columns" :loading="loading"
-        no-data-html="🔍 검색 결과가 없습니다." selectable hoverable striped sticky-header @row:click="deleteItemById" clickable>
-
-        <!-- <template #cell(actions)="{ row }">
-          <VaButton preset="plain" icon="edit" @click="row.toggleRowDetails()" />
+        no-data-html="🔍 검색 결과가 없습니다." selectable hoverable striped sticky-header @row:click="detailRow" clickable>
+         <!-- <template #cell(actions)="{ row }">
           <VaButton preset="plain" icon="delete" class="ml-3" @click="deleteItemById(row)" />
         </template> -->
       </va-data-table>
 
       <Pagination :current-page="currentPage" :total-page="totalPage" @page-change="handlePageChange"></Pagination>
     </div>
+
+    <CouponDetailModal
+      :show="showDetailModal"
+      :coupon-data="selectedCoupon"
+      @close="closeDetailModal"
+      @saved="handleCouponSaved"
+    />
+
   </div>
 </template>
 
@@ -48,7 +54,8 @@
 
 import { ref, computed, watch, onMounted } from 'vue'
 import { formatDateForAPI } from '@/utils/formatters'
-import Pagination from '@/components/Pagination.vue'
+import Pagination from '@/components/common/Pagination.vue'
+import CouponDetailModal from '@/components/settings/CouponDetailModal.vue'
 import axios from 'axios'
 onMounted(() => {
   fetList()
@@ -100,6 +107,11 @@ const search = ref({
   couponState: '전체',
   category: '전체',
 })
+
+// 모달 관련 추가
+const showDetailModal = ref(false)
+const selectedCoupon = ref({})
+
 const resetSearch = () => {
   search.value = {
     startDate: null,
@@ -119,7 +131,6 @@ const columns = ref([
   { key: 'expireDate', label: '유효기간' },
   { key: 'maxIssueCount', label: '총 발급건수' },
   { key: 'createdAt', label: '등록일' },
-  { key: 'actions', label: '' },
 ])
 
 const couponStateOptions = ref([
@@ -170,13 +181,41 @@ const saveCoupon = () => {
   alert('쿠폰이 저장되었습니다.')
 }
 
-const editCoupon = (index) => {
-  console.log('쿠폰 수정:', index)
-  alert('쿠폰 수정 기능을 구현하세요.')
+const detailRow = async (rowData) => {
+  const couponCode = rowData.row.cells[1].value // 쿠폰코드
+
+  try {
+    // 상세 데이터 조회 API 호출
+    //const response = await axios.get(`/settings/coupon/${couponCode}`)
+    //selectedCoupon.value = response.data.data || rowData.item
+  } catch (error) {
+    console.error('상세 조회 에러:', error)
+    // API 에러 시 기본 데이터 사용
+    selectedCoupon.value = rowData.item
+  }
+
+  showDetailModal.value = true
+}
+
+// 모달 닫기
+const closeDetailModal = () => {
+  showDetailModal.value = false
+  selectedCoupon.value = {}
+}
+
+// 쿠폰 저장 후 처리
+const handleCouponSaved = (savedData) => {
+  console.log('쿠폰 저장 완료:', savedData)
+
+  // 목록 새로고침
+  fetList()
+
+  // 모달 닫기
+  closeDetailModal()
 }
 
 const deleteItemById = (id) => {
-  console.log(id.item.couponCode)
+  console.log(id.item)
 }
 // 페이지 변경 핸들러
 const handlePageChange = (page) => {

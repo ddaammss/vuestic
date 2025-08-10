@@ -100,7 +100,7 @@
 
 <script setup>
 import { ref } from 'vue'
-import '@/assets/styles/sidebar.css'
+//import '@/assets/styles/sidebar.css'
 defineOptions({
   name: 'Sidebar'
 })

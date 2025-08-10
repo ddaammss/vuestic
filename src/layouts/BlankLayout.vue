@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
   <div class="blank-layout">
     <div class="background-overlay"></div>
     <div class="auth-container">
@@ -14,14 +14,13 @@
       </div>
     </div>
 
-    <!-- 장식용 요소들 -->
     <div class="decorative-elements">
       <div class="circle circle-1"></div>
       <div class="circle circle-2"></div>
       <div class="circle circle-3"></div>
     </div>
   </div>
-</template>
+</template> -->
 
 <script>
 export default {
@@ -29,7 +28,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<!-- <style scoped>
 .blank-layout {
   height: 100vh;
   display: flex;
@@ -350,4 +349,4 @@ export default {
   color: #2980b9;
   text-decoration: underline;
 }
-</style>
+</style> -->

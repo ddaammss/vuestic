@@ -1,5 +1,5 @@
 .header {
-  height: 60px;
+  height: 601px;
   background: white;
   border-bottom: 1px solid #e0e0e0;
   display: flex;
@@ -8,7 +8,13 @@
   padding: 0 20px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   position: relative;
-  z-index: 1000;
+  z-index: 99; /* 100에서 99로 변경 */
+  transition: filter 0.3s ease; /* 블러 트랜지션 추가 */
+}
+
+body.modal-open .header {
+  filter: blur(2px);
+  pointer-events: none;
 }
 
 .header-left h1 {

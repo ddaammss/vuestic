@@ -7,7 +7,6 @@ import { createPinia } from 'pinia'
 import { createVuestic } from 'vuestic-ui'
 import 'vuestic-ui/dist/vuestic-ui.css'
 import axios from 'axios'
-// Material Icons
 import 'material-design-icons-iconfont/dist/material-design-icons.css'
 
 // 글로벌 스타일
