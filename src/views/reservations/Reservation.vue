@@ -26,7 +26,6 @@
           <div class="filter-section">
             <label class="filter-label">결제 여부</label>
             <div class="checkbox-group">
-              <va-checkbox v-model="search.result_type" array-value="9" label="모두" />
               <va-checkbox v-model="search.result_type" array-value="0" label="미결제" />
               <va-checkbox v-model="search.result_type" array-value="1" label="결제완료" />
             </div>
@@ -58,6 +57,9 @@
       </div>
       <va-data-table v-model="selectedItems" :items="list" :columns="columns" :loading="loading"
         no-data-html="🔍 검색 결과가 없습니다." selectable hoverable striped sticky-header @row:click="goDetail" clickable>
+        <template #cell(reservationTypeNm)="{ value }">
+          <va-badge :text="value" :color="getStatusColor(value)" />
+        </template>
       </va-data-table>
 
       <Pagination :current-page="currentPage" :total-page="totalPage" @page-change="handlePageChange"></Pagination>
@@ -103,7 +105,7 @@ const getSearchParams = () => {
     name: search.value.name,
     categoryType: search.value.category_type,
     resultType: search.value.result_type,
-    reservationType: search.value.reservation_type,
+    reservationType: search.value.reservation_type === '전체' ? '' : search.value.reservation_type,
     page: currentPage.value,
     pageSize: pageSize.value,
   }
@@ -138,22 +140,21 @@ const router = useRouter()
 const loading = ref(false)
 const selectedItems = ref([])
 const list = ref([])
-
 const currentPage = ref(1)
 const totalCount = ref(0)
 const totalPage = ref(1)
 const pageSize = ref(10)
 
 const columns = ref([
-  { key: 'receiptDate', label: '접수일자' },
+  { key: 'createdAt', label: '접수일자' },
   { key: 'reservationDate', label: '예약일자' },
   { key: 'confirmDate', label: '확정일자' },
-  { key: 'store', label: '입점사' },
-  { key: 'user', label: '사용자' },
-  { key: 'contact', label: '연락처' },
-  { key: 'people', label: '예약인원' },
-  { key: 'amount', label: '결제금액' },
-  { key: 'status', label: '예약상태' },
+  { key: 'storeNo', label: '입점사' },
+  { key: 'reserverName', label: '예약자' },
+  { key: 'reserverPhone', label: '연락처' },
+  { key: 'guestCount', label: '예약인원' },
+  { key: 'paymentAmount', label: '결제금액' },
+  { key: 'reservationTypeNm', label: '예약상태' },
 ])
 
 const searchList = () => {
@@ -173,12 +174,12 @@ const searchList = () => {
 }
 
 // 상태별 색상 반환
-const getStatusColor = (status) => {
-  switch (status) {
-    case '확정완료': return 'success'
+const getStatusColor = (value) => {
+  switch (value) {
+    case '예약확정': return 'info'
     case '예약대기': return 'warning'
     case '예약취소': return 'danger'
-    default: return 'info'
+    default: return 'success'
   }
 }
 
