@@ -58,7 +58,7 @@
           <i class="material-icons expand-icon" :class="{ expanded: openMenus.reservations }">expand_more</i>
         </a>
         <div v-show="openMenus.reservations" class="sub-menu">
-          <router-link to="/reservations/status" class="nav-link" active-class="active">예약 관리</router-link>
+          <router-link to="/reservations/reservation" class="nav-link" active-class="active">예약 관리</router-link>
           <router-link to="/reservations/cancellation" class="nav-link" active-class="active">취소 관리</router-link>
         </div>
       </div>

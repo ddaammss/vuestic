@@ -1,12 +1,5 @@
 <template>
-  <va-modal
-    v-model="isOpen"
-    size="large"
-    max-width="800px"
-    :hide-default-actions="true"
-    overlay
-    overlay-opacity="0.6"
-  >
+  <va-modal v-model="isOpen" size="large" max-width="800px" :hide-default-actions="true" overlay overlay-opacity="0.6">
     <template #header>
       <div class="modal-header">
         <h3>쿠폰 상세 정보</h3>
@@ -17,114 +10,64 @@
       <div class="form-section">
         <h4>기본 정보</h4>
         <div class="form-grid">
-          <va-input
-            v-model="form.couponName"
-            label="쿠폰명"
-            placeholder="쿠폰명을 입력하세요"
-            :rules="[value => !!value || '쿠폰명은 필수입니다.']"
-          />
+          <va-input v-model="form.couponName" label="쿠폰명" placeholder="쿠폰명을 입력하세요"
+            :rules="[value => !!value || '쿠폰명은 필수입니다.']" />
 
-          <va-select
-            v-model="form.category"
-            label="쿠폰 종류"
-            :options="categoryOptions"
-            text-by="text"
-            value-by="value"
-          />
+          <va-select v-model="form.category" label="쿠폰 종류" :options="categoryOptions" text-by="text" value-by="value" />
 
-          <va-select
-            v-model="form.status"
-            label="쿠폰 상태"
-            :options="statusOptions"
-            text-by="text"
-            value-by="value"
-          />
+          <va-select v-model="form.status" label="쿠폰 상태" :options="statusOptions" text-by="text" value-by="value" />
         </div>
       </div>
 
       <div class="form-section">
         <h4>할인 정보</h4>
         <div class="form-grid">
-          <va-select
-            v-model="form.discountType"
-            label="할인 종류"
-            :options="discountTypeOptions"
-            text-by="text"
-            value-by="value"
-            @update:model-value="handleDiscountTypeChange"
-          />
+          <va-select v-model="form.discountType" label="할인 방식" :options="discountTypeOptions" text-by="text"
+            value-by="value" @update:model-value="handleDiscountTypeChange" />
 
-          <va-input
-            v-model="form.discountValue"
-            label="할인값"
-            type="number"
-            :suffix="form.discountType === 'percent' ? '%' : '원'"
-            placeholder="할인값을 입력하세요"
-            :rules="[value => !!value || '할인값은 필수입니다.']"
-          />
+          <va-input v-model="form.discountValue" label="할인값" type="number"
+            :suffix="form.discountType === 'percent' ? '%' : '원'" placeholder="할인값을 입력하세요"
+            :rules="[value => !!value || '할인값은 필수입니다.']" />
 
-          <va-input
-            v-model="form.maxDiscountAmount"
-            label="최대 할인 금액"
-            type="number"
-            suffix="원"
-            placeholder="최대 할인 금액"
-            :disabled="form.discountType === 'fixed'"
-          />
+          <va-input v-model="form.maxDiscountAmount" label="최대 할인 금액" type="number" suffix="원" placeholder="최대 할인 금액"
+            :disabled="form.discountType === 'fixed'" />
         </div>
       </div>
 
       <div class="form-section">
         <h4>발급 정보</h4>
         <div class="form-grid">
-          <va-date-input
-            v-model="form.issueDate"
-            label="발급일"
-            placeholder="발급일을 선택하세요"
-          />
-
-          <va-date-input
-            v-model="form.expireDate"
-            label="유효기간"
-            placeholder="유효기간을 선택하세요"
-          />
-
-          <va-input
-            v-model="form.maxIssueCount"
-            label="총 발급 건수"
-            type="number"
-            placeholder="발급 건수를 입력하세요"
-          />
+          <va-date-input v-model="form.issueDate" label="발급일" placeholder="발급일을 선택하세요" />
+          <va-input v-model="form.maxIssueCount" label="총 발급 건수" type="number" placeholder="발급 건수를 입력하세요" />
+          <va-date-input v-model="form.startDate" label="유효기간(시작일)" placeholder="유효기간(시작일)을 선택하세요" />
+          <va-date-input v-model="form.endDate" label="유효기간(종료일)" placeholder="유효기간(종료일)을 선택하세요" />
         </div>
       </div>
 
       <div class="form-section">
         <h4>사용 조건</h4>
         <div class="form-grid">
-          <va-input
-            v-model="form.minOrderAmount"
-            label="최소 주문 금액"
-            type="number"
-            suffix="원"
-            placeholder="최소 주문 금액"
-          />
-
-          <va-input
-            v-model="form.usageLimit"
-            label="사용 횟수 제한"
-            type="number"
-            placeholder="사용 제한 횟수"
-          />
+          <va-input v-model="form.minOrderAmount" label="최소 주문 금액" type="number" suffix="원" placeholder="최소 주문 금액" />
+          <!-- <va-input v-model="form.usageLimit" label="사용 횟수 제한" type="number" placeholder="사용 제한 횟수" /> -->
         </div>
 
-        <va-textarea
+
+        <!-- <va-textarea
           v-model="form.description"
           label="쿠폰 설명"
           placeholder="쿠폰에 대한 상세 설명을 입력하세요"
           :max-rows="4"
-        />
+        /> -->
       </div>
-
+      <div class="form-section">
+        <h4>지급대상자</h4>
+        <div class="form-grid">
+          <div class="form-grid">
+            <va-button @click="searchMember">회원검색</va-button>
+            <va-button @click="searchMember">전체삭제</va-button>
+          </div>
+        </div>
+      </div>
 
     </div>
 
@@ -172,16 +115,17 @@ const form = ref({
   category: 0,
   status: 0,
   discountType: 'percent',
-  discountValue: null,
-  maxDiscountAmount: null,
-  issueDate: null,
-  expireDate: null,
-  maxIssueCount: null,
-  minOrderAmount: null,
-  usageLimit: null,
+  discountValue: '',
+  maxDiscountAmount: '',
+  issueDate: '',
+  expireDate: '',
+  maxIssueCount: '',
+  minOrderAmount: '',
   description: '',
   createdAt: '',
-  updatedAt: ''
+  updatedAt: '',
+  startDate: '',
+  endDate: ''
 })
 
 // 옵션들
@@ -224,7 +168,9 @@ watch(() => props.couponData, (newData) => {
       usageLimit: newData.usageLimit || null,
       description: newData.description || '',
       createdAt: newData.createdAt || '',
-      updatedAt: newData.updatedAt || ''
+      updatedAt: newData.updatedAt || '',
+      startDate: newData.startDate || '',
+      endDate: newData.endDate || ''
     }
   }
 }, { immediate: true, deep: true })

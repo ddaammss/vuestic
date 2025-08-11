@@ -12,7 +12,9 @@ const Login = () => import('@/views/Login.vue')
 const Terms = () => import('@/views/settings/Terms.vue')
 const Privacy = () => import('@/views/settings/Privacy.vue')
 const Refund = () => import('@/views/settings/Refund.vue')
-const Coupon = () => import('@/views/settings/CouponList.vue')
+const CouponList = () => import('@/views/settings/CouponList.vue')
+const CouponDetail = () => import('@/views/settings/CouponDetail.vue')
+const CouponRegist = () => import('@/views/settings/CouponRegist.vue')
 
 // 입점사 관리
 const StoresList = () => import('@/views/stores/List.vue')
@@ -23,7 +25,7 @@ const MembersInfo = () => import('@/views/members/Info.vue')
 const MembersPoints = () => import('@/views/members/Points.vue')
 
 // 예약 관리
-const ReservationsStatus = () => import('@/views/reservations/Status.vue')
+const ReservationsStatus = () => import('@/views/reservations/Reservation.vue')
 const ReservationsCancellation = () => import('@/views/reservations/Cancellation.vue')
 
 // 이벤트 관리
@@ -95,9 +97,21 @@ const routes = [
           },
           {
             path: 'coupon',
-            name: 'Coupon',
-            component: Coupon,
+            name: 'CouponList',
+            component: CouponList,
             meta: { title: '쿠폰 설정' }
+          },
+          {
+            path: 'coupon/detail/:couponCode?', // 파라미터 추가
+            name: 'CouponDetail',
+            component: CouponDetail,
+            meta: { title: '쿠폰 상세' }
+          },
+          {
+            path: 'coupon/regist',
+            name: 'CouponRegist',
+            component: CouponRegist,
+            meta: { title: '쿠폰 등록' }
           }
         ]
       },
@@ -145,7 +159,7 @@ const routes = [
         path: 'reservations',
         children: [
           {
-            path: 'status',
+            path: 'reservation',
             name: 'ReservationsStatus',
             component: ReservationsStatus,
             meta: { title: '예약현황' }

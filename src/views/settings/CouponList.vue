@@ -4,16 +4,17 @@
       <div class="table-header">쿠폰 관리</div>
       <div class="search-form">
         <div class="form-grid">
-          <va-date-input v-model="search.startDate" label="쿠폰 시작일" placeholder="시작일 선택" clearable highlightWeekend />
-          <va-date-input v-model="search.endDate" label="쿠폰 종료일" placeholder="종료일 선택" clearable highlightWeekend />
+          <va-date-input v-model="search.startDate" label="쿠폰 시작일" placeholder="시작일 선택" />
+          <va-date-input v-model="search.endDate" label="쿠폰 종료일" placeholder="종료일 선택" />
           <va-select v-model="search.couponState" label="쿠폰 상태" :options="couponStateOptions" text-by="text"
             value-by="value" />
           <va-select v-model="search.category" label="쿠폰 종류" :options="categoryOptions" text-by="text"
             value-by="value" />
         </div>
         <div class="btn-group" style="margin-top: 20px; display: flex; justify-content: flex-end;">
-          <va-button @click="searchList">검색</va-button>
-          <va-button @click="resetSearch">초기화</va-button>
+          <va-button @click="searchList" icon="search">검색</va-button>
+          <va-button @click="goRegist" icon="save">등록</va-button>
+          <va-button @click="resetSearch" icon="">초기화</va-button>
         </div>
       </div>
 
@@ -29,8 +30,8 @@
       </div>
 
       <va-data-table v-model="selectedItems" :items="list" :columns="columns" :loading="loading"
-        no-data-html="🔍 검색 결과가 없습니다." selectable hoverable striped sticky-header @row:click="detailRow" clickable>
-         <!-- <template #cell(actions)="{ row }">
+        no-data-html="🔍 검색 결과가 없습니다." selectable hoverable striped sticky-header @row:click="goDetail" clickable>
+        <!-- <template #cell(actions)="{ row }">
           <VaButton preset="plain" icon="delete" class="ml-3" @click="deleteItemById(row)" />
         </template> -->
       </va-data-table>
@@ -38,25 +39,22 @@
       <Pagination :current-page="currentPage" :total-page="totalPage" @page-change="handlePageChange"></Pagination>
     </div>
 
-    <CouponDetailModal
-      :show="showDetailModal"
-      :coupon-data="selectedCoupon"
-      @close="closeDetailModal"
-      @saved="handleCouponSaved"
-    />
+    <!-- <CouponDetailModal :show="showDetailModal" :coupon-data="selectedDetail" @close="closeDetailModal"
+      @saved="handleCouponSaved" /> -->
 
   </div>
 </template>
 
 
 <script setup>
-
-
 import { ref, computed, watch, onMounted } from 'vue'
 import { formatDateForAPI } from '@/utils/formatters'
 import Pagination from '@/components/common/Pagination.vue'
-import CouponDetailModal from '@/components/settings/CouponDetailModal.vue'
+import { useRouter } from 'vue-router'
+
+import CouponDetailModal from '@/components/modal/settings/CouponDetailModal.vue'
 import axios from 'axios'
+
 onMounted(() => {
   fetList()
 })
@@ -68,7 +66,6 @@ const fetList = async () => {
     //console.log('API 호출 파라미터:', params)
 
     const response = await axios.post('/settings/coupon/list', params)
-
     list.value = response.data.data || []
     totalPage.value = response.data.totalPage
     totalCount.value = response.data.totalCount
@@ -91,7 +88,36 @@ const getSearchParams = () => {
     pageSize: pageSize.value,
   }
 }
+const goDetail = async (rowData) => {
+  const couponCode = rowData.row.cells[1].value // 쿠폰코드
 
+  router.push({
+    name: 'CouponDetail',
+    params: { couponCode: couponCode }
+  })
+}
+const goRegist = async () => {
+  router.push('/settings/coupon/regist')
+}
+
+// const fetchDetail = async (rowData) => {
+//   const couponCode = rowData.row.cells[1].value // 쿠폰코드
+//   const params = getDetailParams(couponCode)
+//   try {
+//     // 상세 데이터 조회 API 호출
+//     const response = await axios.post('/settings/coupon/detail', params)
+//     console.log(response.data.data)
+//     selectedDetail.value = response.data.data || rowData.item
+//   } catch (error) {
+//     console.error('상세 조회 에러:', error)
+//     // API 에러 시 기본 데이터 사용
+//     //selectedDetail.value = rowData.item
+//   }
+//   //showDetailModal.value = true
+// }
+
+
+const router = useRouter()
 const loading = ref(false)
 const selectedItems = ref([])
 const list = ref([])
@@ -110,7 +136,7 @@ const search = ref({
 
 // 모달 관련 추가
 const showDetailModal = ref(false)
-const selectedCoupon = ref({})
+const selectedDetail = ref({})
 
 const resetSearch = () => {
   search.value = {
@@ -175,32 +201,10 @@ const searchList = () => {
 // }, { deep: true })
 
 
-
-const saveCoupon = () => {
-  console.log('쿠폰 저장:', search.value)
-  alert('쿠폰이 저장되었습니다.')
-}
-
-const detailRow = async (rowData) => {
-  const couponCode = rowData.row.cells[1].value // 쿠폰코드
-
-  try {
-    // 상세 데이터 조회 API 호출
-    //const response = await axios.get(`/settings/coupon/${couponCode}`)
-    //selectedCoupon.value = response.data.data || rowData.item
-  } catch (error) {
-    console.error('상세 조회 에러:', error)
-    // API 에러 시 기본 데이터 사용
-    selectedCoupon.value = rowData.item
-  }
-
-  showDetailModal.value = true
-}
-
 // 모달 닫기
 const closeDetailModal = () => {
   showDetailModal.value = false
-  selectedCoupon.value = {}
+  selectedDetail.value = {}
 }
 
 // 쿠폰 저장 후 처리
@@ -221,17 +225,5 @@ const deleteItemById = (id) => {
 const handlePageChange = (page) => {
   currentPage.value = page
   fetList()
-}
-const handleCellClick = (event) => {
-  console.log('🔥 셀 클릭 이벤트 발생!')
-  console.log('Event object:', event)
-
-  // 바로 라우팅 (return false 제거)
-  // if (event.item?.id) {
-  //   router.push({
-  //     name: 'CouponDetail',
-  //     params: { id: event.item.id }
-  //   })
-  // }
 }
 </script>

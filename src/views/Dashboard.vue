@@ -51,7 +51,7 @@
             <va-badge :text="reservation.status" :color="getStatusColor(reservation.status)" />
           </div>
           <div style="text-align: center; margin-top: 15px;">
-            <va-button preset="secondary" size="small" @click="$router.push('/reservations/status')">
+            <va-button preset="secondary" size="small" @click="$router.push('/reservations/reservation')">
               예약 현황 더 보기
             </va-button>
           </div>

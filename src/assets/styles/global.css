@@ -33,7 +33,6 @@ body {
   font-size: 18px;
   font-weight: bold;
   color: #2c3e50;
-  margin-bottom: 30px;
 }
 .stats-grid {
   display: grid;
@@ -149,31 +148,16 @@ body {
 }
 .checkbox-group {
   display: flex;
-  gap: 15px;
+  gap: 10px;
   flex-wrap: wrap;
+  margin-top: 15px;
 }
 .radio-group {
   display: flex;
-  gap: 15px;
-  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 15px;
 }
-@media (max-width: 768px) {
-  .main-content {
-    margin-left: 0;
-  }
 
-  .dashboard-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .stats-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .form-grid {
-    grid-template-columns: 1fr;
-  }
-}
 /* 페이징관련 css */
 .pagination-container {
   display: flex;
@@ -216,4 +200,3 @@ body {
 .no-selection {
   margin-bottom: 16px;
 } */
-

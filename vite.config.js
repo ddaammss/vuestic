@@ -34,7 +34,7 @@ export default defineConfig({
           members: ['./src/views/members/Info.vue', './src/views/members/Points.vue'],
           reservations: [
             './src/views/reservations/Cancellation.vue',
-            './src/views/reservations/Status.vue'
+            './src/views/reservations/Reservation.vue'
           ],
           settings: [
             './src/views/settings/CouponList.vue',
