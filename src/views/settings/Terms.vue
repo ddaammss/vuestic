@@ -1,112 +1,148 @@
 <template>
   <div>
-    <!-- <h1 class="page-title">이용약관</h1> -->
-    <div class="form-container">
-      <!-- <div style="margin-bottom: 20px;">
-        <p>수정 후 반드시 '저장' 버튼을 눌러 주셔야 정상적으로 저장이 됩니다.</p>
-      </div> -->
+    <div v-if="loading" class="loading-overlay">
+      <va-progress-circle indeterminate size="large" />
+    </div>
+    <div class="table-container">
+      <div class="table-header">이용약관 관리</div>
+      <div class="search-form">
+        <form @submit.prevent="save">
+          <div class="form-group">
+            <div ref="quillEditor" style="height: 400px;"></div>
 
-      <form @submit.prevent="saveTerms">
-        <div class="form-group">
-          <!-- <div ref="editorContainer"></div> -->
-          <va-textarea v-model="terms" label="이용 약관" max-rows="30" style="width: 2000px;" class="form-full" />
-        </div>
+          </div>
+          <div class="btn-group" style="margin-top: 20px; display: flex; justify-content: flex-end;">
+            <va-button @click="save" icon="save">저장</va-button>
+          </div>
+        </form>
+      </div>
 
-        <!-- <div class="btn-group" style="margin-top: 20px;">
-          <va-button type="submit">확인</va-button>
-          <va-button preset="secondary" @click="$router.push('/')">홈으로</va-button>
-        </div> -->
-        <div class="btn-group" style="margin-top: 20px; display: flex; justify-content: flex-end;">
-          <va-button type="submit">저장</va-button>
-          <!-- <va-button preset="secondary" @click="$router.push('/')" style="margin-left: 10px;">홈으로</va-button> -->
-        </div>
-      </form>
+      <!-- <va-card class="mt-4">
+        <va-card-title>미리보기</va-card-title>
+        <va-card-content>
+          <div v-html="content" class="preview-content"></div>
+        </va-card-content>
+      </va-card> -->
     </div>
   </div>
+
+
 </template>
 
-<script>
-import { ref, onMounted, onBeforeUnmount } from 'vue'
+<script setup>
+import { ref, onMounted } from 'vue'
+import axios from 'axios'
 
-export default {
-  name: 'Terms',
-  setup() {
-    //const editorContainer = ref(null);
-    //let editor = null;
-    const terms = ref('이용약관 내용을 입력하세요...');
+const quillEditor = ref(null)
+const content = ref('')
+let quill = null // quill 인스턴스를 변수에 저장
+const loading = ref(false)
 
-    // onMounted(async () => {
-    //   // CDN에서 CKEditor 스크립트 로드
-    //   const script = document.createElement('script');
-    //   script.src = 'https://cdn.ckeditor.com/ckeditor5/36.0.0/classic/ckeditor.js';
-    //   script.async = true;
-    //   document.head.appendChild(script);
+onMounted(() => {
+  quilljsCall()
+  fetDetail()
+})
 
-    //   script.onload = () => {
-    //     // CKEditor 초기화
-    //     window.ClassicEditor
-    //       .create(editorContainer.value, {
-    //         toolbar: [
-    //           'heading', '|',
-    //           'bold', 'italic', 'link', 'bulletedList', 'numberedList', '|',
-    //           'indent', 'outdent', '|',
-    //           'blockQuote', 'insertTable', 'undo', 'redo'
-    //         ],
-    //       })
-    //       .then(editorInstance => {
-    //         editor = editorInstance;
-    //         //editor.setData(terms.value);
+// CSS 로드
+const quilljsCall = async () => {
+  const link = document.createElement('link')
+  link.href = 'https://cdn.quilljs.com/1.3.6/quill.snow.css'
+  link.rel = 'stylesheet'
+  document.head.appendChild(link)
 
-    //         // 내용 변경 시 terms 업데이트
-    //         editor.model.document.on('change:data', () => {
-    //           terms.value = editor.getData();
-    //         });
-    //       })
-    //       .catch(error => {
-    //         console.error(error);
-    //       });
-    //   };
-    // });
+  // JS 로드
+  const script = document.createElement('script')
+  script.src = 'https://cdn.quilljs.com/1.3.6/quill.min.js'
+  script.onload = () => {
+    quill = new window.Quill(quillEditor.value, {
+      theme: 'snow',
+      modules: {
+        toolbar: [
+          [{ 'header': [1, 2, 3, false] }],
+          ['bold', 'italic', 'underline'],
+          [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+          // ['link', 'image'],
+          ['link'],
+          ['clean']
+        ]
+      }
+    })
 
-    // onBeforeUnmount(() => {
-    //   // 컴포넌트 제거 시 에디터 인스턴스 제거
-    //   if (editor) {
-    //     editor.destroy();
-    //   }
-    // });
+    // 🔥 핵심: 내용 변경 감지 이벤트 추가
+    quill.on('text-change', () => {
+      content.value = quill.root.innerHTML
+    })
 
-    const saveTerms = () => {
-      // 현재 에디터 내용 가져오기
-      // if (editor) {
-      //   terms.value = editor.getData();
-      // }
-      console.log('이용약관 저장:', terms.value);
-      alert('이용약관이 저장되었습니다.');
-    };
+    // 이미지 핸들러 커스터마이징
+    quill.getModule('toolbar').addHandler('image', () => {
+      const input = document.createElement('input')
+      input.setAttribute('type', 'file')
+      input.setAttribute('accept', 'image/*')
+      input.click()
 
-    return {
-      terms,
-      saveTerms,
-      //editorContainer
-    };
+      input.onchange = () => {
+        const file = input.files[0]
+        if (file) {
+          const reader = new FileReader()
+          reader.onload = (e) => {
+            const range = quill.getSelection()
+            quill.insertEmbed(range.index, 'image', e.target.result)
+            // 🔥 이미지 삽입 후 content 업데이트
+            content.value = quill.root.innerHTML
+          }
+          reader.readAsDataURL(file)
+        }
+      }
+    })
+
+    // 기존 내용이 있다면 로드
+    if (content.value) {
+      quill.root.innerHTML = content.value
+    }
+  }
+  document.head.appendChild(script)
+}
+
+const fetDetail = async () => {
+  loading.value = true
+  try {
+    // axios는 기본적으로 JSON을 처리하므로 헤더 생략 가능
+    const response = await axios.post('/settings/terms/detail', {
+      type: 'terms'
+    })
+    if (quill && response.data.data.content) {
+      quill.root.innerHTML = response.data.data.content
+      content.value = response.data.data.content
+    }
+
+  } catch (error) {
+    console.error('API 에러:', error)
+  } finally {
+    loading.value = false
+  }
+}
+
+const save = async () => {
+  try {
+
+    if (quill) {
+      content.value = quill.root.innerHTML
+    }
+
+    const saveData = {
+      type: 'terms',
+      content: content.value
+    }
+    console.log('저장할 데이터:', saveData)
+    const response = await axios.post('/settings/terms/upsert', saveData)
+    if (response.data.code === 200) {
+      alert('저장되었습니다.')
+    } else {
+      alert(response.data.message);
+    }
+  } catch (error) {
+    console.error('저장 에러:', error)
+    alert('저장 중 오류가 발생했습니다.')
   }
 }
 </script>
-
-<style>
-.form-group {
-  margin-bottom: 20px;
-}
-
-.form-group label {
-  display: block;
-  margin-bottom: 8px;
-  font-weight: bold;
-}
-
-/* CKEditor 높이 조정 */
-/* :deep(.ck-editor__editable_inline) {
-  min-height: 400px;
-  max-height: 600px;
-} */
-</style>

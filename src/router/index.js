@@ -25,7 +25,8 @@ const MembersInfo = () => import('@/views/members/Info.vue')
 const MembersPoints = () => import('@/views/members/Points.vue')
 
 // 예약 관리
-const ReservationsStatus = () => import('@/views/reservations/Reservation.vue')
+const ReservationList = () => import('@/views/reservations/Reservation.vue')
+const ReservationDetail = () => import('@/views/reservations/ReservationDetail.vue')
 const ReservationsCancellation = () => import('@/views/reservations/Cancellation.vue')
 
 // 이벤트 관리
@@ -159,10 +160,16 @@ const routes = [
         path: 'reservations',
         children: [
           {
-            path: 'reservation',
-            name: 'ReservationsStatus',
-            component: ReservationsStatus,
+            path: 'list',
+            name: 'ReservationList',
+            component: ReservationList,
             meta: { title: '예약현황' }
+          },
+          {
+            path: 'detail/:reservationNo?',
+            name: 'ReservationDetail',
+            component: ReservationDetail,
+            meta: { title: '예약 상세' }
           },
           {
             path: 'cancellation',

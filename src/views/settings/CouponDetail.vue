@@ -22,7 +22,7 @@
       <div class="detail-section">
         <div class="section-header">
           <h3>기본 정보</h3>
-          <div class="coupon-code-badge">{{ detail.couponCode }}</div>
+          <div class="info-badge">{{ detail.couponCode }}</div>
         </div>
 
         <div class="form-grid">
@@ -254,12 +254,21 @@ const saveCoupon = async () => {
 }
 
 const goBack = () => {
-  router.push('/settings/coupon')
+  const searchData = {
+    startDate: route.query.startDate,
+    endDate: route.query.endDate,
+    category: route.query.category,
+    status: route.query.status
+  }
+
+  router.push({
+    path: '/settings/coupon',
+    query: searchData
+  })
 }
 </script>
 
 <style scoped>
-/* 기본 컨테이너 - 목록 페이지와 동일 */
 .table-container {
   background: white;
   border-radius: 12px;
@@ -269,7 +278,6 @@ const goBack = () => {
   margin: 0 auto;
 }
 
-/* 헤더 영역 */
 .table-header {
   margin-bottom: 32px;
   border-radius: 12px;
@@ -368,7 +376,7 @@ const goBack = () => {
   font-weight: 600;
 }
 
-.coupon-code-badge {
+.info-badge {
   background: var(--va-primary);
   color: white;
   padding: 8px 16px;
@@ -473,19 +481,5 @@ const goBack = () => {
   .info-item .value {
     text-align: left;
   }*/
-}
-
-/* 로딩 상태 */
-.loading-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(255, 255, 255, 0.8);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
 }
 </style>

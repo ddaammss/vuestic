@@ -6,9 +6,8 @@
         <div class="form-grid">
           <va-date-input v-model="search.startDate" label="쿠폰 시작일" placeholder="시작일 선택" />
           <va-date-input v-model="search.endDate" label="쿠폰 종료일" placeholder="종료일 선택" />
-          <va-select v-model="search.couponState" label="쿠폰 상태" :options="couponStateOptions" text-by="text"
-            value-by="value" />
-          <va-select v-model="search.category" label="쿠폰 종류" :options="categoryOptions" text-by="text"
+          <va-select v-model="search.status" label="쿠폰 상태" :options="statusOptions" text-by="label" value-by="value" />
+          <va-select v-model="search.category" label="쿠폰 종류" :options="categoryOptions" text-by="label"
             value-by="value" />
         </div>
         <div class="btn-group" style="margin-top: 20px; display: flex; justify-content: flex-end;">
@@ -50,13 +49,22 @@
 import { ref, computed, watch, onMounted } from 'vue'
 import { formatDateForAPI } from '@/utils/formatters'
 import Pagination from '@/components/common/Pagination.vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 
 import CouponDetailModal from '@/components/modal/settings/CouponDetailModal.vue'
 import axios from 'axios'
 
 onMounted(() => {
-  fetList()
+  if (Object.keys(route.query).length > 0) {
+    search.value.startDate = new Date(route.query.startDate)
+    search.value.endDate = new Date(route.query.endDate)
+    search.value.status = route.query.status === '' ? '전체' : route.query.status
+    search.value.category = route.query.category === '' ? '전체' : route.query.category
+    searchList()
+  } else {
+    fetList()
+  }
+
 })
 
 const fetList = async () => {
@@ -64,7 +72,6 @@ const fetList = async () => {
     loading.value = true
     const params = getSearchParams()
     //console.log('API 호출 파라미터:', params)
-
     const response = await axios.post('/settings/coupon/list', params)
     list.value = response.data.data || []
     totalPage.value = response.data.totalPage
@@ -83,19 +90,51 @@ const getSearchParams = () => {
     startDate: formatDateForAPI(search.value.startDate),
     endDate: formatDateForAPI(search.value.endDate),
     category: search.value.category === '전체' ? '' : search.value.category,
-    status: search.value.couponState === '전체' ? '' : search.value.couponState,
+    status: search.value.status === '전체' ? '' : search.value.status,
     page: currentPage.value,
     pageSize: pageSize.value,
   }
 }
+
+const searchList = () => {
+  if (search.value.startDate && search.value.endDate) {
+    const startDate = new Date(search.value.startDate)
+    const endDate = new Date(search.value.endDate)
+
+    if (startDate > endDate) {
+      alert('시작일이 종료일보다 늦을 수 없습니다.')
+      return
+    }
+  }
+
+  currentPage.value = 1
+  selectedItems.value = []
+  fetList()
+}
+
 const goDetail = async (rowData) => {
   const couponCode = rowData.row.cells[1].value // 쿠폰코드
-
   router.push({
     name: 'CouponDetail',
-    params: { couponCode: couponCode }
+    params: { couponCode: couponCode },
+    query: {
+      startDate: search.value.startDate,
+      endDate: search.value.endDate,
+      status: search.value.status === '전체' ? '' : search.value.status,
+      category: search.value.category === '전체' ? '' : search.value.category
+    }
   })
 }
+
+const resetSearch = () => {
+  search.value = {
+    startDate: null,
+    endDate: null,
+    status: '전체',
+    category: '전체',
+  }
+}
+
 const goRegist = async () => {
   router.push('/settings/coupon/regist')
 }
@@ -116,12 +155,11 @@ const goRegist = async () => {
 //   //showDetailModal.value = true
 // }
 
-
+const route = useRoute()
 const router = useRouter()
 const loading = ref(false)
 const selectedItems = ref([])
 const list = ref([])
-
 const currentPage = ref(1)
 const totalCount = ref(0)
 const totalPage = ref(1)
@@ -130,7 +168,7 @@ const pageSize = ref(10)
 const search = ref({
   startDate: null,
   endDate: null,
-  couponState: '전체',
+  status: '전체',
   category: '전체',
 })
 
@@ -138,14 +176,7 @@ const search = ref({
 const showDetailModal = ref(false)
 const selectedDetail = ref({})
 
-const resetSearch = () => {
-  search.value = {
-    startDate: null,
-    endDate: null,
-    couponState: '전체',
-    category: '전체',
-  }
-}
+
 const columns = ref([
   { key: 'statusName', label: '쿠폰상태' },
   { key: 'couponCode', label: '쿠폰번호' },
@@ -159,40 +190,26 @@ const columns = ref([
   { key: 'createdAt', label: '등록일' },
 ])
 
-const couponStateOptions = ref([
-  { text: '전체', value: "전체" },
-  { text: '발급 대기', value: 0 },
-  { text: '발급중', value: 1 },
-  { text: '발급 중지', value: 2 },
-  { text: '만료', value: 3 }
+const statusOptions = ref([
+  { label: '전체', value: "전체" },
+  { label: '발급 대기', value: '0' },
+  { label: '발급중', value: '1' },
+  { label: '발급 중지', value: '2' },
+  { label: '만료', value: '3' }
 ])
 
 const categoryOptions = ref([
-  { text: '전체', value: "전체" },
-  { text: '신점', value: 0 },
-  { text: '철학관', value: 1 },
-  { text: '타로', value: 2 },
-  { text: '굿당', value: 3 },
-  { text: '기도터', value: 4 },
-  { text: '사찰', value: 5 }
+  { label: '전체', value: "전체" },
+  { label: '신점', value: '0' },
+  { label: '철학관', value: '1' },
+  { label: '타로', value: '2' },
+  { label: '굿당', value: '3' },
+  { label: '기도터', value: '4' },
+  { label: '사찰', value: '5' }
 ])
 
 
-const searchList = () => {
-  if (search.value.startDate && search.value.endDate) {
-    const startDate = new Date(search.value.startDate)
-    const endDate = new Date(search.value.endDate)
 
-    if (startDate > endDate) {
-      alert('시작일이 종료일보다 늦을 수 없습니다.')
-      return
-    }
-  }
-
-  currentPage.value = 1
-  selectedItems.value = []
-  fetList()
-}
 
 // 필터 조건 변경 감시
 // watch(() => coupon.value, () => {
@@ -210,10 +227,8 @@ const closeDetailModal = () => {
 // 쿠폰 저장 후 처리
 const handleCouponSaved = (savedData) => {
   console.log('쿠폰 저장 완료:', savedData)
-
   // 목록 새로고침
   fetList()
-
   // 모달 닫기
   closeDetailModal()
 }

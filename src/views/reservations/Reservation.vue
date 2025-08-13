@@ -4,42 +4,45 @@
       <div class="table-header">예약 관리</div>
       <div class="search-form">
         <div class="form-grid">
-          <va-select v-model="search.type1" label="예약자 / 입점사" :options="typeOptions" />
-          <va-input v-model="search.name" label=" " />
-          <va-select v-model="search.type2" label="접수일자 / 예약일자 / 확정일자" :options="type2Options" />
-          <va-date-input v-model="search.startDate" label="시작일" placeholder="시작일 선택" />
-          <va-date-input v-model="search.endDate" label="종료일" placeholder="종료일 선택" />
+          <va-select v-model="search.type1" label="예약자 / 입점사" :options="typeOptions" text-by="label" value-by="value" />
+          <va-input v-model="search.name" label=" " :disabled="search.type1 === '전체'" />
+          <va-select v-model="search.type2" label="접수일자 / 예약일자 / 확정일자" :options="type2Options" text-by="label"
+            value-by="value" />
+          <va-date-input v-model="search.startDate" label="시작일" placeholder="시작일 선택"
+            :disabled="search.type2 === '전체'" />
+          <va-date-input v-model="search.endDate" label="종료일" placeholder="종료일 선택" :disabled="search.type2 === '전체'" />
         </div>
         <div class="filter-row">
           <div class="filter-section">
             <label class="filter-label">분야</label>
             <div class="checkbox-group">
-              <va-checkbox v-model="search.category_type" array-value="0" label="신점" />
-              <va-checkbox v-model="search.category_type" array-value="1" label="철학관" />
-              <va-checkbox v-model="search.category_type" array-value="2" label="타로" />
-              <va-checkbox v-model="search.category_type" array-value="3" label="굿당" />
-              <va-checkbox v-model="search.category_type" array-value="4" label="기도터" />
-              <va-checkbox v-model="search.category_type" array-value="5" label="사찰" />
+              <va-checkbox v-model="search.categoryType" array-value="0" label="신점" />
+              <va-checkbox v-model="search.categoryType" array-value="1" label="철학관" />
+              <va-checkbox v-model="search.categoryType" array-value="2" label="타로" />
+              <va-checkbox v-model="search.categoryType" array-value="3" label="굿당" />
+              <va-checkbox v-model="search.categoryType" array-value="4" label="기도터" />
+              <va-checkbox v-model="search.categoryType" array-value="5" label="사찰" />
+            </div>
+          </div>
+          <div class="filter-section">
+            <label class="filter-label">예약 상태</label>
+            <div class="radio-group">
+              <va-radio v-model="search.reservationType" option="전체" label="전체" />
+              <va-radio v-model="search.reservationType" option="0" label="예약대기" />
+              <va-radio v-model="search.reservationType" option="1" label="예약확정" />
+              <va-radio v-model="search.reservationType" option="2" label="예약취소" />
             </div>
           </div>
 
           <div class="filter-section">
             <label class="filter-label">결제 여부</label>
             <div class="checkbox-group">
-              <va-checkbox v-model="search.result_type" array-value="0" label="미결제" />
-              <va-checkbox v-model="search.result_type" array-value="1" label="결제완료" />
+              <va-checkbox v-model="search.resultType" array-value="0" label="미결제" />
+              <va-checkbox v-model="search.resultType" array-value="1" label="결제완료" />
             </div>
           </div>
 
-          <div class="filter-section">
-            <label class="filter-label">예약 상태</label>
-            <div class="radio-group">
-              <va-radio v-model="search.reservation_type" option="전체" label="전체" />
-              <va-radio v-model="search.reservation_type" option="예약대기" label="예약대기" />
-              <va-radio v-model="search.reservation_type" option="예약확정" label="예약확정" />
-              <va-radio v-model="search.reservation_type" option="예약취소" label="예약취소" />
-            </div>
-          </div>
+
         </div>
         <div>
 
@@ -72,18 +75,31 @@
 import { ref, computed, watch, onMounted } from 'vue'
 import { formatDateForAPI } from '@/utils/formatters'
 import Pagination from '@/components/common/Pagination.vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import axios from 'axios'
 
 onMounted(() => {
-  fetList()
+  console.log(route.query)
+  if (Object.keys(route.query).length > 0) {
+    search.value.type1 = route.query.type1 === '' ? '전체' : route.query.type1
+    search.value.type2 = route.query.type1 === '' ? '전체' : route.query.type2
+    search.value.name = route.query.name
+    search.value.startDate = new Date(route.query.startDate)
+    search.value.endDate = new Date(route.query.endDate)
+    search.value.reservationType = route.query.reservationType === '' ? '전체' : route.query.reservationType
+    search.value.categoryType = route.query.categoryType
+    search.value.resultType = route.query.resultType
+    searchList()
+  } else {
+    fetList()
+  }
 })
 
 const fetList = async () => {
   try {
     loading.value = true
     const params = getSearchParams()
-    console.log('API 호출 파라미터:', params)
+    //console.log('API 호출 파라미터:', params)
     const response = await axios.post('/reservation/list', params)
     list.value = response.data.data || []
     totalPage.value = response.data.totalPage
@@ -98,44 +114,69 @@ const fetList = async () => {
 }
 const getSearchParams = () => {
   return {
-    type1: search.value.type1,
-    type2: search.value.type2,
+    type1: search.value.type1 === '전체' ? '' : search.value.type1,
+    type2: search.value.type2 === '전체' ? '' : search.value.type2,
     startDate: formatDateForAPI(search.value.startDate),
     endDate: formatDateForAPI(search.value.endDate),
     name: search.value.name,
-    categoryType: search.value.category_type,
-    resultType: search.value.result_type,
-    reservationType: search.value.reservation_type === '전체' ? '' : search.value.reservation_type,
+    categoryType: search.value.categoryType,
+    resultType: search.value.resultType,
+    reservationType: search.value.reservationType === '전체' ? '' : search.value.reservationType,
     page: currentPage.value,
     pageSize: pageSize.value,
   }
 }
 
-const goDetail = async (rowData) => {
-  // const couponCode = rowData.row.cells[1].value // 쿠폰코드
+const searchList = () => {
+  if (search.value.startDate && search.value.endDate) {
+    const startDate = new Date(search.value.startDate)
+    const endDate = new Date(search.value.endDate)
+    if (search.value.type2 != '전체') {
+      if (startDate > endDate) {
+        alert('시작일이 종료일보다 늦을 수 없습니다.')
+        return
+      }
+    }
+  }
 
-  // router.push({
-  //   name: 'CouponDetail',
-  //   params: { couponCode: couponCode }
-  // })
+  currentPage.value = 1
+  selectedItems.value = []
+  fetList()
 }
 
-// 검색 조건
-const search = ref({
-  type1: '전체',
-  type2: '전체',
-  name: '',
-  startDate: null,
-  endDate: null,
-  category_type: [],
-  result_type: [],
-  reservation_type: '전체',
-})
+const goDetail = async (rowData) => {
+  const reservationNo = rowData.row.cells[0].value
 
-// 타입 옵션
-const typeOptions = ref(['전체', '예약자', '입점사'])
-const type2Options = ref(['전체', '접수일자', '예약일자', '확정일자'])
+  router.push({
+    name: 'ReservationDetail',
+    params: { reservationNo: reservationNo },
+    query: {
+      type1: search.value.type1,
+      type2: search.value.type2,
+      name: search.value.name,
+      startDate: search.value.startDate,
+      endDate: search.value.endDate,
+      reservationType: search.value.reservationType,
+      categoryType: search.value.categoryType,
+      resultType: search.value.resultType
+    }
+  })
+}
 
+const resetSearch = () => {
+  search.value = {
+    type1: '전체',
+    type2: '전체',
+    name: '',
+    startDate: null,
+    endDate: null,
+    categoryType: [],
+    resultType: [],
+    reservationType: '전체',
+  }
+}
+
+const route = useRoute()
 const router = useRouter()
 const loading = ref(false)
 const selectedItems = ref([])
@@ -145,7 +186,19 @@ const totalCount = ref(0)
 const totalPage = ref(1)
 const pageSize = ref(10)
 
+const search = ref({
+  type1: '전체',
+  type2: '전체',
+  name: '',
+  startDate: null,
+  endDate: null,
+  categoryType: [],
+  resultType: [],
+  reservationType: '전체',
+})
+
 const columns = ref([
+  { key: 'reservationNo', label: '예약번호' },
   { key: 'createdAt', label: '접수일자' },
   { key: 'reservationDate', label: '예약일자' },
   { key: 'confirmDate', label: '확정일자' },
@@ -154,24 +207,16 @@ const columns = ref([
   { key: 'reserverPhone', label: '연락처' },
   { key: 'guestCount', label: '예약인원' },
   { key: 'paymentAmount', label: '결제금액' },
-  { key: 'reservationTypeNm', label: '예약상태' },
+  { key: 'reservationTypeNm', label: '예약상태' }
 ])
 
-const searchList = () => {
-  if (search.value.startDate && search.value.endDate) {
-    const startDate = new Date(search.value.startDate)
-    const endDate = new Date(search.value.endDate)
-
-    if (startDate > endDate) {
-      alert('시작일이 종료일보다 늦을 수 없습니다.')
-      return
-    }
-  }
-
-  currentPage.value = 1
-  selectedItems.value = []
-  fetList()
-}
+const typeOptions = ref([{ label: '전체', value: '전체' },
+{ label: '예약자', value: '0' },
+{ label: '입점사', value: '1' }])
+const type2Options = ref([{ label: '전체', value: '전체' },
+{ label: '접수일자', value: '0' },
+{ label: '예약일자', value: '1' },
+{ label: '확정일자', value: '2' }])
 
 // 상태별 색상 반환
 const getStatusColor = (value) => {
@@ -183,19 +228,7 @@ const getStatusColor = (value) => {
   }
 }
 
-// 검색 조건 초기화
-const resetSearch = () => {
-  search.value = {
-    type1: '전체',
-    type2: '전체',
-    name: '',
-    startDate: null,
-    endDate: null,
-    category_type: [],
-    result_type: [],
-    reservation_type: '전체',
-  }
-}
+
 
 // 예약 수정
 const editReservation = (index) => {
@@ -212,10 +245,6 @@ const handlePageChange = (page) => {
 }
 </script>
 
-
-
-
-
 <style scope>
 .form-grid {
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
@@ -229,7 +258,6 @@ const handlePageChange = (page) => {
 
 .filter-section {
   flex: 1;
-
 }
 
 .filter-label {
