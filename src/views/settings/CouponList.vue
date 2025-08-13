@@ -23,8 +23,11 @@
         </va-alert>
       </div> -->
       <div class="no-selection">
-        <va-alert>
-          총 {{ totalCount }}개 <!-- ℹ️ -->
+        <va-alert v-if="selectedItems.length <= 0 " color="info">
+           총 {{ totalCount }}개
+        </va-alert>
+        <va-alert v-else color="danger">
+           <va-icon :size="15" name="delete" style="cursor: pointer;" @click="deleteSelectedItem"></va-icon>
         </va-alert>
       </div>
 
@@ -56,8 +59,8 @@ import axios from 'axios'
 
 onMounted(() => {
   if (Object.keys(route.query).length > 0) {
-    search.value.startDate = new Date(route.query.startDate)
-    search.value.endDate = new Date(route.query.endDate)
+    search.value.startDate = route.query.startDate === null ? null : new Date(route.query.startDate)
+    search.value.endDate = route.query.endDate === null ? null : new Date(route.query.endDate)
     search.value.status = route.query.status === '' ? '전체' : route.query.status
     search.value.category = route.query.category === '' ? '전체' : route.query.category
     searchList()
@@ -112,7 +115,7 @@ const searchList = () => {
   fetList()
 }
 
-const goDetail = async (rowData) => {
+const goDetail = (rowData) => {
   const couponCode = rowData.row.cells[1].value // 쿠폰코드
   router.push({
     name: 'CouponDetail',
@@ -135,10 +138,36 @@ const resetSearch = () => {
   }
 }
 
-const goRegist = async () => {
+const goRegist = () => {
   router.push('/settings/coupon/regist')
 }
 
+const deleteSelectedItem = async () => {
+  selectedItems.value.forEach(item => {
+    deleteItems.value.push(item.couponCode)
+  })
+
+
+if (!confirm(`${deleteItems.value.length}개 항목을 삭제하시겠습니까?`)) {
+    return
+  }
+try {
+    const deleteData = {
+      couponCodeList: deleteItems.value
+    }
+    const response = await axios.post('/settings/coupon/delete', deleteData)
+    if (response.data.code === 200) {
+      alert('삭제되었습니다.')
+      selectedItems.value.length = 0;
+      fetList();
+    } else {
+      alert(response.data.message);
+    }
+  } catch (error) {
+    console.error('삭제 에러:', error)
+    alert('삭제 중 오류가 발생했습니다.')
+  }
+}
 // const fetchDetail = async (rowData) => {
 //   const couponCode = rowData.row.cells[1].value // 쿠폰코드
 //   const params = getDetailParams(couponCode)
@@ -159,6 +188,7 @@ const route = useRoute()
 const router = useRouter()
 const loading = ref(false)
 const selectedItems = ref([])
+const deleteItems = ref([])
 const list = ref([])
 const currentPage = ref(1)
 const totalCount = ref(0)

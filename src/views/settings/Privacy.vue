@@ -123,7 +123,7 @@ const save = async () => {
       type: 'privacy',
       content: content.value
     }
-    console.log('저장할 데이터:', saveData)
+    //console.log('저장할 데이터:', saveData)
     const response = await axios.post('/settings/privacy/upsert', saveData)
     if (response.data.code === 200) {
       alert('저장되었습니다.')

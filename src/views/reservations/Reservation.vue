@@ -11,7 +11,15 @@
           <va-date-input v-model="search.startDate" label="시작일" placeholder="시작일 선택"
             :disabled="search.type2 === '전체'" />
           <va-date-input v-model="search.endDate" label="종료일" placeholder="종료일 선택" :disabled="search.type2 === '전체'" />
+
+
+            <div class="btn-group">
+              <va-button @click="datePeriod('today')" :disabled="search.type2 === '전체'">오늘</va-button>
+              <va-button @click="datePeriod('week')" :disabled="search.type2 === '전체'">일주일</va-button>
+              <va-button @click="datePeriod('month')" :disabled="search.type2 === '전체'">이전달</va-button>
+            </div>
         </div>
+
         <div class="filter-row">
           <div class="filter-section">
             <label class="filter-label">분야</label>
@@ -41,8 +49,6 @@
               <va-checkbox v-model="search.resultType" array-value="1" label="결제완료" />
             </div>
           </div>
-
-
         </div>
         <div>
 
@@ -54,10 +60,14 @@
       </div>
 
       <div class="no-selection">
-        <va-alert>
-          총 {{ totalCount }}개
+        <va-alert v-if="selectedItems.length <= 0 " color="info">
+           총 {{ totalCount }}개
+        </va-alert>
+        <va-alert v-else color="danger">
+           <va-icon :size="15" name="delete" style="cursor: pointer;" @click="deleteSelectedItem"></va-icon>
         </va-alert>
       </div>
+
       <va-data-table v-model="selectedItems" :items="list" :columns="columns" :loading="loading"
         no-data-html="🔍 검색 결과가 없습니다." selectable hoverable striped sticky-header @row:click="goDetail" clickable>
         <template #cell(reservationTypeNm)="{ value }">
@@ -79,13 +89,12 @@ import { useRouter, useRoute } from 'vue-router'
 import axios from 'axios'
 
 onMounted(() => {
-  console.log(route.query)
   if (Object.keys(route.query).length > 0) {
     search.value.type1 = route.query.type1 === '' ? '전체' : route.query.type1
     search.value.type2 = route.query.type1 === '' ? '전체' : route.query.type2
     search.value.name = route.query.name
-    search.value.startDate = new Date(route.query.startDate)
-    search.value.endDate = new Date(route.query.endDate)
+    search.value.startDate = route.query.startDate === null ? null : new Date(route.query.startDate)
+    search.value.endDate = route.query.endDate === null ? null : new Date(route.query.endDate)
     search.value.reservationType = route.query.reservationType === '' ? '전체' : route.query.reservationType
     search.value.categoryType = route.query.categoryType
     search.value.resultType = route.query.resultType
@@ -144,7 +153,7 @@ const searchList = () => {
   fetList()
 }
 
-const goDetail = async (rowData) => {
+const goDetail = (rowData) => {
   const reservationNo = rowData.row.cells[0].value
 
   router.push({
@@ -176,15 +185,74 @@ const resetSearch = () => {
   }
 }
 
+const deleteSelectedItem = async () => {
+  selectedItems.value.forEach(item => {
+    deleteItems.value.push(item.reservationNo)
+  })
+
+
+if (!confirm(`${deleteItems.value.length}개 항목을 삭제하시겠습니까?`)) {
+    return
+  }
+try {
+    const deleteData = {
+      reservationNoList: deleteItems.value
+    }
+    const response = await axios.post('/reservation/delete', deleteData)
+    if (response.data.code === 200) {
+      alert('삭제되었습니다.')
+      selectedItems.value.length = 0;
+      fetList();
+    } else {
+      alert(response.data.message);
+    }
+  } catch (error) {
+    console.error('삭제 에러:', error)
+    alert('삭제 중 오류가 발생했습니다.')
+  }
+}
+
+const datePeriod = (period) => {
+  const today = new Date()
+  selectedPeriod.value = period
+
+  switch (period) {
+    case 'today':
+      // 오늘: 당일 00:00:00 ~ 23:59:59
+      search.value.startDate = new Date(today.getFullYear(), today.getMonth(), today.getDate())
+      search.value.endDate = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59)
+      break
+
+    case 'week':
+      // 일주일전: 7일 전 00:00:00 ~ 오늘 23:59:59
+      const weekAgo = new Date(today)
+      weekAgo.setDate(today.getDate() - 7)
+      search.value.startDate = new Date(weekAgo.getFullYear(), weekAgo.getMonth(), weekAgo.getDate())
+      search.value.endDate = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59)
+      break
+
+    case 'month':
+      // 이전달: 전달 1일 00:00:00 ~ 전달 말일 23:59:59
+      const prevMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1)
+      const lastDayOfPrevMonth = new Date(today.getFullYear(), today.getMonth(), 0)
+      search.value.startDate = new Date(prevMonth.getFullYear(), prevMonth.getMonth(), prevMonth.getDate())
+      search.value.endDate = new Date(lastDayOfPrevMonth.getFullYear(), lastDayOfPrevMonth.getMonth(), lastDayOfPrevMonth.getDate(), 23, 59, 59)
+      break
+  }
+}
+
 const route = useRoute()
 const router = useRouter()
 const loading = ref(false)
 const selectedItems = ref([])
+const deleteItems = ref([])
 const list = ref([])
 const currentPage = ref(1)
 const totalCount = ref(0)
 const totalPage = ref(1)
 const pageSize = ref(10)
+
+const selectedPeriod = ref('today')
 
 const search = ref({
   type1: '전체',
@@ -228,16 +296,6 @@ const getStatusColor = (value) => {
   }
 }
 
-
-
-// 예약 수정
-const editReservation = (index) => {
-  console.log('예약 수정:', index)
-  console.log('선택된 예약:', filteredReservations.value[index])
-  alert('예약 수정 기능을 구현하세요.')
-  // 실제 구현 시 수정 모달 또는 페이지 이동 로직 추가
-}
-
 // 페이지 변경 핸들러
 const handlePageChange = (page) => {
   currentPage.value = page
@@ -247,7 +305,7 @@ const handlePageChange = (page) => {
 
 <style scope>
 .form-grid {
-  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
 }
 
 .filter-row {

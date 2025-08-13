@@ -208,7 +208,7 @@ const saveCoupon = async () => {
     // TODO: 실제 API 호출
     // await axios.put(`/settings/coupon/${form.value.couponCode}`, saveData)
 
-    console.log('저장할 데이터:', saveData)
+    //console.log('저장할 데이터:', saveData)
 
     // 성공 처리
     alert('쿠폰이 성공적으로 저장되었습니다.')

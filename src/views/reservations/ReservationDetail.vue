@@ -88,7 +88,7 @@ const fetchDetail = async (data) => {
     })
     detail.value = response.data.data
 
-    console.log(response.data.data);
+    //console.log(response.data.data);
   } catch (error) {
     console.error('상세 조회 에러:', error)
   } finally {
