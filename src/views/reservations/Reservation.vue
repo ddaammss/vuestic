@@ -304,10 +304,6 @@ const handlePageChange = (page) => {
 </script>
 
 <style scope>
-.form-grid {
-  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-}
-
 .filter-row {
   display: flex;
   gap: 40px;

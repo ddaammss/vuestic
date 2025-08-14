@@ -14,9 +14,9 @@ body {
   font-size: 12px;
 }
 
-.va-data-table {
-  /* border: 0.5px solid #b3b2b2 !important; */
-}
+/* .va-data-table {
+   border: 0.5px solid #b3b2b2 !important;
+} */
 .admin-container {
   display: flex;
   min-height: 100vh;
