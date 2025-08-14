@@ -13,11 +13,11 @@
           <va-date-input v-model="search.endDate" label="종료일" placeholder="종료일 선택" :disabled="search.type2 === '전체'" />
 
 
-            <div class="btn-group">
-              <va-button @click="datePeriod('today')" :disabled="search.type2 === '전체'">오늘</va-button>
-              <va-button @click="datePeriod('week')" :disabled="search.type2 === '전체'">일주일</va-button>
-              <va-button @click="datePeriod('month')" :disabled="search.type2 === '전체'">이전달</va-button>
-            </div>
+          <div class="btn-group">
+            <va-button @click="datePeriod('today')" :disabled="search.type2 === '전체'">오늘</va-button>
+            <va-button @click="datePeriod('week')" :disabled="search.type2 === '전체'">일주일</va-button>
+            <va-button @click="datePeriod('month')" :disabled="search.type2 === '전체'">이전달</va-button>
+          </div>
         </div>
 
         <div class="filter-row">
@@ -60,11 +60,11 @@
       </div>
 
       <div class="no-selection">
-        <va-alert v-if="selectedItems.length <= 0 " color="info">
-           총 {{ totalCount }}개
+        <va-alert v-if="selectedItems.length <= 0" color="info">
+          총 {{ totalCount }}개
         </va-alert>
         <va-alert v-else color="danger">
-           <va-icon :size="15" name="delete" style="cursor: pointer;" @click="deleteSelectedItem"></va-icon>
+          <va-icon :size="15" name="delete" style="cursor: pointer;" @click="deleteSelectedItem"></va-icon>
         </va-alert>
       </div>
 
@@ -191,10 +191,10 @@ const deleteSelectedItem = async () => {
   })
 
 
-if (!confirm(`${deleteItems.value.length}개 항목을 삭제하시겠습니까?`)) {
+  if (!confirm(`${deleteItems.value.length}개 항목을 삭제하시겠습니까?`)) {
     return
   }
-try {
+  try {
     const deleteData = {
       reservationNoList: deleteItems.value
     }
