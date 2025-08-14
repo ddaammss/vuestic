@@ -108,6 +108,7 @@ body {
   grid-template-columns: 1fr 1fr 1fr 1fr auto; /* 4개 입력 + 1개 버튼 */
   gap: 15px;
   align-items: end; /* 버튼을 아래쪽에 정렬 */
+  margin-bottom: 20px;
 }
 .form-full {
   grid-column: 1 / -1;

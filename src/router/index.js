@@ -17,8 +17,9 @@ const CouponDetail = () => import('@/views/settings/CouponDetail.vue')
 const CouponRegist = () => import('@/views/settings/CouponRegist.vue')
 
 // 입점사 관리
-const StoresList = () => import('@/views/stores/List.vue')
-const StoresRegister = () => import('@/views/stores/Register.vue')
+const StoreList = () => import('@/views/stores/List.vue')
+const StoreDetail = () => import('@/views/stores/Detail.vue')
+const StoreRegister = () => import('@/views/stores/Register.vue')
 
 // 회원 관리
 const MembersInfo = () => import('@/views/members/Info.vue')
@@ -123,14 +124,20 @@ const routes = [
         children: [
           {
             path: 'list',
-            name: 'StoresList',
-            component: StoresList,
+            name: 'StoreList',
+            component: StoreList,
             meta: { title: '입점사 관리' }
           },
           {
+            path: 'detail/:storeCode?',
+            name: 'StoreDetail',
+            component: StoreDetail,
+            meta: { title: '입점사 상세' }
+          },
+          {
             path: 'register',
-            name: 'StoresRegister',
-            component: StoresRegister,
+            name: 'StoreRegister',
+            component: StoreRegister,
             meta: { title: '입점사 등록' }
           }
         ]

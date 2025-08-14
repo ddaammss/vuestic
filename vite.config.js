@@ -42,7 +42,11 @@ export default defineConfig({
             './src/views/settings/Refund.vue',
             './src/views/settings/Terms.vue'
           ],
-          stores: ['./src/views/stores/List.vue', './src/views/stores/Register.vue']
+          stores: [
+            './src/views/stores/List.vue',
+            './src/views/stores/Detail.vue',
+            './src/views/stores/Register.vue'
+          ]
         }
       }
     }

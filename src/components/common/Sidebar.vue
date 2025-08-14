@@ -1,7 +1,7 @@
 <template>
   <nav class="sidebar">
     <div class="sidebar-header">
-      <div class="logo">사주나라</div>
+      <div class="logo">무물</div>
       <div class="subtitle">관리자</div>
     </div>
 
@@ -9,7 +9,7 @@
       <div class="nav-item">
         <router-link to="/dashboard" class="nav-link" exact-active-class="active">
           <i class="material-icons">dashboard</i>
-          <span>대쉬보드</span>
+          <span>DashBoard</span>
         </router-link>
       </div>
 
@@ -27,7 +27,7 @@
         </div>
       </div>
 
-      <!-- <div class="nav-item">
+      <div class="nav-item">
         <a class="nav-link" @click="toggleMenu('stores')">
           <i class="material-icons">store</i>
           <span>입점사</span>
@@ -35,9 +35,9 @@
         </a>
         <div v-show="openMenus.stores" class="sub-menu">
           <router-link to="/stores/list" class="nav-link" exact-active-class="active">입점사 관리</router-link>
-          <router-link to="/stores/register" class="nav-link" exact-active-class="active">입점사 등록</router-link>
+          <!-- <router-link to="/stores/register" class="nav-link" exact-active-class="active">입점사 등록</router-link> -->
         </div>
-      </div> -->
+      </div>
 
       <!-- <div class="nav-item">
         <a class="nav-link" @click="toggleMenu('members')">

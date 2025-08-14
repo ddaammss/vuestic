@@ -24,7 +24,8 @@
           <va-input v-model="detail.storeNo" label="입점사" readonly />
           <va-input v-model="detail.reserverPhone" label="연락처" readonly />
           <va-input v-model="detail.guestCount" label="예약인원" readonly />
-          <va-input v-model="detail.paymentAmount" label="결제금액" readonly style="color: red;" />
+          <va-input v-model="detail.paymentAmount" label="결제금액" input-class="va-text-right" readonly
+            style="color: red;" />
         </div>
       </div>
 
