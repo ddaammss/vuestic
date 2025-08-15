@@ -5,7 +5,7 @@
       <div class="search-form">
         <div class="form-grid">
           <va-select v-model="search.type1" label="예약자 / 입점사" :options="typeOptions" text-by="label" value-by="value" />
-          <va-input v-model="search.name" label=" " :disabled="search.type1 === '전체'" />
+          <va-input v-model="search.name" label=" " :disabled="search.type1 === '전체'" @keydown.enter="searchList"/>
           <va-select v-model="search.type2" label="접수일자 / 예약일자 / 확정일자" :options="type2Options" text-by="label"
             value-by="value" />
           <va-date-input v-model="search.startDate" label="시작일" placeholder="시작일 선택"
@@ -50,9 +50,6 @@
             </div>
           </div>
         </div>
-        <div>
-
-        </div>
         <div class="btn-group" style="margin-top: 20px; display: flex; justify-content: flex-end;">
           <va-button @click="searchList" icon="search">검색</va-button>
           <va-button @click="resetSearch" icon="">초기화</va-button>
@@ -70,9 +67,14 @@
 
       <va-data-table v-model="selectedItems" :items="list" :columns="columns" :loading="loading"
         no-data-html="🔍 검색 결과가 없습니다." selectable hoverable striped sticky-header @row:click="goDetail" clickable>
+        <template #cell(resultTypeNm)="{ value }">
+          <va-badge :text="value" :color="getResultTypeColor(value)" />
+        </template>
         <template #cell(reservationTypeNm)="{ value }">
           <va-badge :text="value" :color="getStatusColor(value)" />
         </template>
+
+
       </va-data-table>
 
       <Pagination :current-page="currentPage" :total-page="totalPage" @page-change="handlePageChange"></Pagination>
@@ -154,11 +156,11 @@ const searchList = () => {
 }
 
 const goDetail = (rowData) => {
-  const reservationNo = rowData.row.cells[0].value
+  const reservationCode = rowData.row.cells[0].value
 
   router.push({
     name: 'ReservationDetail',
-    params: { reservationNo: reservationNo },
+    params: { reservationCode: reservationCode },
     query: {
       type1: search.value.type1,
       type2: search.value.type2,
@@ -187,7 +189,7 @@ const resetSearch = () => {
 
 const deleteSelectedItem = async () => {
   selectedItems.value.forEach(item => {
-    deleteItems.value.push(item.reservationNo)
+    deleteItems.value.push(item.reservationCode)
   })
 
 
@@ -196,7 +198,7 @@ const deleteSelectedItem = async () => {
   }
   try {
     const deleteData = {
-      reservationNoList: deleteItems.value
+      reservationCodeList: deleteItems.value
     }
     const response = await axios.post('/reservation/delete', deleteData)
     if (response.data.code === 200) {
@@ -266,14 +268,15 @@ const search = ref({
 })
 
 const columns = ref([
-  { key: 'reservationNo', label: '예약번호' },
+  { key: 'reservationCode', label: '예약번호' },
   { key: 'createdAt', label: '접수일자' },
   { key: 'reservationDate', label: '예약일자' },
   { key: 'confirmDate', label: '확정일자' },
-  { key: 'storeNo', label: '입점사' },
+  { key: 'storeName', label: '입점사' },
   { key: 'reserverName', label: '예약자' },
   { key: 'reserverPhone', label: '연락처' },
   { key: 'guestCount', label: '예약인원' },
+  { key: 'resultTypeNm', label: '결제여부' },
   { key: 'paymentAmount', label: '결제금액' },
   { key: 'reservationTypeNm', label: '예약상태' }
 ])
@@ -296,6 +299,16 @@ const getStatusColor = (value) => {
   }
 }
 
+// 상태별 색상 반환
+const getResultTypeColor = (value) => {
+  switch (value) {
+    case '결제완료': return 'success'
+    case '미결제': return 'warning'
+    default: return ''
+  }
+}
+
+
 // 페이지 변경 핸들러
 const handlePageChange = (page) => {
   currentPage.value = page
@@ -306,7 +319,7 @@ const handlePageChange = (page) => {
 <style scope>
 .filter-row {
   display: flex;
-  gap: 40px;
+  gap: 20px;
   align-items: flex-start;
 }
 

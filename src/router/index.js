@@ -173,7 +173,7 @@ const routes = [
             meta: { title: '예약현황' }
           },
           {
-            path: 'detail/:reservationNo?',
+            path: 'detail/:reservationCode?',
             name: 'ReservationDetail',
             component: ReservationDetail,
             meta: { title: '예약 상세' }

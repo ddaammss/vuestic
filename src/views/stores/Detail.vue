@@ -14,7 +14,7 @@
       </div>
       <div class="detail-section">
         <div class="section-header">
-          <h3>기본 정보 {{ detail.products }}</h3>
+          <h3>기본 정보</h3>
           <div class="info-badge">{{ detail.storeCode }}</div>
         </div>
         <div class="form-grid">
@@ -43,6 +43,7 @@
             <va-checkbox v-model="detail.categoryType" array-value="5" label="사찰" />
           </div>
         </div>
+
         <label for="quill1" class="form-label">입점사 설명</label>
         <div class="form-group">
           <div ref="quillEditor" style="height: 200px;"></div>
@@ -68,12 +69,12 @@
               </div>
             </div>
 
-            <!-- <div>
+             <div>
               <div class="form-grid">
-                <va-input v-model="detail.address" :label="상품명1" />
-                <va-input v-model="detail.address" :label="가격" type="number" />
+                <va-input v-model="detail.product1" :label="상품명1" />
+                <va-input v-model="detail.product2" :label="가격" type="number" />
               </div>
-            </div> -->
+            </div>
           </div>
         </div>
 
@@ -210,6 +211,8 @@ const detail = ref({
   startTime: '',
   endTime: '',
   products: [],
+  product1: '',
+  product2: '',
   createdAt: '',
   updatedAt: '',
   createdBy: ''

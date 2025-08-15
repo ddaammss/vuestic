@@ -16,12 +16,12 @@
       <div class="detail-section">
         <div class="section-header">
           <h3>기본 정보</h3>
-          <div class="info-badge">{{ detail.reservationNo }}</div>
+          <div class="info-badge">{{ detail.reservationCode }}</div>
         </div>
 
         <div class="form-grid">
           <va-input v-model="detail.reserverName" label="예약자" readonly />
-          <va-input v-model="detail.storeNo" label="입점사" readonly />
+          <va-input v-model="detail.storeName" label="입점사" readonly />
           <va-input v-model="detail.reserverPhone" label="연락처" readonly />
           <va-input v-model="detail.guestCount" label="예약인원" readonly />
           <va-input v-model="detail.paymentAmount" label="결제금액" input-class="va-text-right" readonly
@@ -73,7 +73,7 @@ import axios from 'axios'
 const route = useRoute()
 const router = useRouter()
 const loading = ref(false)
-const rowData = route.params.reservationNo
+const rowData = route.params.reservationCode
 
 onMounted(async () => {
   if (rowData) {
@@ -85,7 +85,7 @@ const fetchDetail = async (data) => {
   loading.value = true
   try {
     const response = await axios.post('/reservation/detail', {
-      reservationNo: data
+      reservationCode: data
     })
     detail.value = response.data.data
 
@@ -97,24 +97,24 @@ const fetchDetail = async (data) => {
   }
 }
 
-// 쿠폰 상세 데이터
 const detail = ref({
-  reservationNo: '',
-  couponName: '',
-  category: 0,
-  status: 0,
-  couponType: '',
-  discountValue: '',
-  maxDiscountAmount: '',
-  issueDate: '',
-  startDate: '',
-  endDate: '',
-  maxIssueCount: '',
-  minOrderAmount: '',
-  description: '',
-  createdAt: '',
-  updatedAt: '',
-  createdBy: ''
+  reservationCode: '',
+  // storeName: '',
+  // categoryType: 0,
+  // status: 0,
+  // discountValue: '',
+  // maxDiscountAmount: '',
+  // issueDate: '',
+  // startDate: '',
+  // endDate: '',
+  // maxIssueCount: '',
+  // minOrderAmount: '',
+  // description: '',
+  // createdAt: '',
+  // updatedAt: '',
+  // createdBy: '',
+  resultType:0,
+  reservationType:0
 })
 
 
@@ -126,19 +126,17 @@ const reservationTypeOptions = ref([
 
 const resultTypeOptions = ref([
   { label: '미결제', value: 0 },
-  { label: '결제', value: 1 }
+  { label: '결제완료', value: 1 }
 ])
 
 const save = async () => {
   try {
-
     const saveData = {
       ...detail.value,
-      startDate: formatDateForAPI(new Date(detail.value.startDate)),
-      endDate: formatDateForAPI(new Date(detail.value.endDate))
     }
+    console.log(detail.value)
     //console.log('저장할 데이터:', saveData)
-    const response = await axios.post('/settings/coupon/upsert', saveData)
+    const response = await axios.post('/reservation/update', saveData)
     if (response.data.code === 200) {
       alert('저장되었습니다.')
       goBack()

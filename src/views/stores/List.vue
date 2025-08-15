@@ -4,28 +4,27 @@
       <div class="table-header">입점사 관리</div>
       <div class="search-form">
         <div class="form-grid">
-          <va-input v-model="search.name" label="입점사명" />
-          <va-input v-model="search.address" label="주소" />
+          <va-input v-model="search.name" label="입점사명" @keydown.enter="searchList"/>
+          <va-input v-model="search.address" label="주소" @keydown.enter="searchList"/>
           <va-date-input v-model="search.startDate" label="시작일" placeholder="시작일 선택" />
           <va-date-input v-model="search.endDate" label="종료일" placeholder="종료일 선택" />
-
-
           <div class="btn-group" style="margin-left:40px ;">
             <va-button @click="datePeriod('today')">오늘</va-button>
             <va-button @click="datePeriod('week')">일주일</va-button>
             <va-button @click="datePeriod('month')">이전달</va-button>
           </div>
-
         </div>
-        <div>
-          <label style="display: block; margin-bottom: 8px; font-weight: bold;">분야</label>
-          <div class="checkbox-group">
-            <va-checkbox v-model="search.categoryType" array-value="0" label="신점" />
-            <va-checkbox v-model="search.categoryType" array-value="1" label="철학관" />
-            <va-checkbox v-model="search.categoryType" array-value="2" label="타로" />
-            <va-checkbox v-model="search.categoryType" array-value="3" label="굿당" />
-            <va-checkbox v-model="search.categoryType" array-value="4" label="기도터" />
-            <va-checkbox v-model="search.categoryType" array-value="5" label="사찰" />
+        <div class="filter-row">
+          <div class="filter-section">
+            <label class="filter-label">분야</label>
+            <div class="checkbox-group">
+              <va-checkbox v-model="search.categoryType" array-value="0" label="신점" />
+              <va-checkbox v-model="search.categoryType" array-value="1" label="철학관" />
+              <va-checkbox v-model="search.categoryType" array-value="2" label="타로" />
+              <va-checkbox v-model="search.categoryType" array-value="3" label="굿당" />
+              <va-checkbox v-model="search.categoryType" array-value="4" label="기도터" />
+              <va-checkbox v-model="search.categoryType" array-value="5" label="사찰" />
+            </div>
           </div>
         </div>
         <div class="btn-group" style="margin-top: 20px; display: flex; justify-content: flex-end;">
@@ -251,3 +250,18 @@ const handlePageChange = (page) => {
 
 
 </script>
+<style scoped>
+.filter-row {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.filter-section {
+  flex: 1;
+}
+
+.filter-label {
+  font-weight: bold;
+}
+</style>
