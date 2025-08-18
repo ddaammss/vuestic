@@ -29,6 +29,7 @@
         </div>
         <div class="btn-group" style="margin-top: 20px; display: flex; justify-content: flex-end;">
           <va-button @click="searchList" icon="search">검색</va-button>
+           <va-button @click="goRegist" icon="save">등록</va-button>
           <va-button @click="resetSearch" icon="">초기화</va-button>
         </div>
       </div>
@@ -145,6 +146,10 @@ const resetSearch = () => {
     endDate: null,
     categoryType: [],
   }
+}
+
+const goRegist = () => {
+  router.push('/stores/regist')
 }
 
 const deleteSelectedItem = async () => {

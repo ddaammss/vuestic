@@ -35,12 +35,12 @@
         <div style="margin-bottom: 20px;">
           <label style="display: block; margin-bottom: 10px; font-weight: bold;">분야</label>
           <div class="checkbox-group">
-            <va-checkbox v-model="categoryFlags.type0" @input="updateCategoryType" label="신점" />
-            <va-checkbox v-model="categoryFlags.type1" @input="updateCategoryType" label="철학관" />
-            <va-checkbox v-model="categoryFlags.type2" @input="updateCategoryType" label="타로" />
-            <va-checkbox v-model="categoryFlags.type3" @input="updateCategoryType" label="굿당" />
-            <va-checkbox v-model="categoryFlags.type4" @input="updateCategoryType" label="기도터" />
-            <va-checkbox v-model="categoryFlags.type5" @input="updateCategoryType" label="사찰" />
+            <va-checkbox v-model="categoryFlags.type0" label="신점" />
+            <va-checkbox v-model="categoryFlags.type1" label="철학관" />
+            <va-checkbox v-model="categoryFlags.type2" label="타로" />
+            <va-checkbox v-model="categoryFlags.type3" label="굿당" />
+            <va-checkbox v-model="categoryFlags.type4" label="기도터" />
+            <va-checkbox v-model="categoryFlags.type5" label="사찰" />
           </div>
         </div>
 
@@ -76,8 +76,6 @@
         </div>
       </div>
 
-
-
       <div class="detail-section">
         <div class="section-header">
           <h3>상태 관리</h3>
@@ -98,24 +96,7 @@
 </template>
 
 <script setup>
-const categoryFlags = reactive({
-  type0: false,
-  type1: false,
-  type2: false,
-  type3: false,
-  type4: false,
-  type5: false
-})
-const updateCategoryType = () => {
-  detail.categoryType = []
-  Object.keys(categoryFlags).forEach((key, index) => {
-    if (categoryFlags[key]) {
-      detail.categoryType.push(index)
-    }
-  })
-}
-
-import { ref, onMounted, reactive, computed, readonly } from 'vue'
+import { ref, onMounted, reactive, computed, readonly, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { formatDateForAPI } from '@/utils/formatters'
 import axios from 'axios'
@@ -164,7 +145,7 @@ const quilljsCall = async () => {
 
     // 🔥 핵심: 내용 변경 감지 이벤트 추가
     quill.on('text-change', () => {
-      content.value = quill.root.innerHTML
+      detail.value.memo = quill.root.innerHTML
     })
 
     // 이미지 핸들러 커스터마이징
@@ -182,7 +163,7 @@ const quilljsCall = async () => {
             const range = quill.getSelection()
             quill.insertEmbed(range.index, 'image', e.target.result)
             // 🔥 이미지 삽입 후 content 업데이트
-            content.value = quill.root.innerHTML
+            detail.value.memo = quill.root.innerHTML
           }
           reader.readAsDataURL(file)
         }
@@ -190,8 +171,8 @@ const quilljsCall = async () => {
     })
 
     // 기존 내용이 있다면 로드
-    if (content.value) {
-      quill.root.innerHTML = content.value
+    if (detail.value.memo) {
+      quill.root.innerHTML = detail.value.memo
     }
   }
   document.head.appendChild(script)
@@ -204,15 +185,10 @@ const fetchDetail = async (data) => {
     const response = await axios.post('/store/detail', {
       storeCode: data
     })
-    detail.value = response.data.data
-    console.log(typeof detail.value.categoryType)
-    if (typeof detail.value.categoryType === 'string') {
-      detail.value.categoryType = detail.value.categoryType.split(',').map(item => parseInt(item.trim()))
-    } else {
-      detail.categoryType = []  // 기본값
-    }
-    setInitialFlags()
+    Object.assign(detail.value, response.data.data)
+    detail.value.categoryType = detail.value.categoryType.split(',').map(item => parseInt(item.trim()))
 
+    setInitialFlags()
   } catch (error) {
     console.error('상세 조회 에러:', error)
   } finally {
@@ -221,16 +197,21 @@ const fetchDetail = async (data) => {
 }
 
 const setInitialFlags = () => {
-  console.log(categoryFlags)
-  Object.keys(categoryFlags).forEach(key => {
-    categoryFlags[key] = false
-  })
-
-  // 서버에서 받은 categoryType 값에 따라 체크박스 설정
-  detail.categoryType.forEach(value => {
-    categoryFlags[`type${value}`] = true
-  })
+  if (Array.isArray(detail.value.categoryType)) {
+    detail.value.categoryType.forEach(value => {
+      categoryFlags[`type${value}`] = true
+    })
+  }
 }
+
+const categoryFlags = reactive({
+  type0: false,
+  type1: false,
+  type2: false,
+  type3: false,
+  type4: false,
+  type5: false
+})
 
 const detail = ref({
   storeCode: '',
@@ -247,9 +228,6 @@ const detail = ref({
   memo: '',
   startTime: '',
   endTime: '',
-  createdAt: '',
-  updatedAt: '',
-  createdBy: ''
 })
 
 const statusOptions = ref([
@@ -276,7 +254,6 @@ const removeProduct = (index) => {
 
 const save = async () => {
   try {
-    // 유효성 검사
     if (!detail.value.storeName) {
       alert('입점사를 입력해주세요.')
       return;
@@ -284,15 +261,16 @@ const save = async () => {
 
     const saveData = {
       ...detail.value,
+      categoryType: detail.value.categoryType.join(',')
     }
-    console.log('저장할 데이터:', saveData)
-    // const response = await axios.post('/store/upsert', saveData)
-    // if (response.data.code === 200) {
-    //   alert('저장되었습니다.')
-    //   goBack()
-    // } else {
-    //   alert(response.data.message);
-    // }
+    //console.log('저장할 데이터:', saveData)
+    const response = await axios.post('/store/upsert', saveData)
+    if (response.data.code === 200) {
+      alert('저장되었습니다.')
+      goBack()
+    } else {
+      alert(response.data.message);
+    }
   } catch (error) {
     console.error('저장 에러:', error)
     alert('저장 중 오류가 발생했습니다.')
@@ -309,10 +287,19 @@ const goBack = () => {
   }
 
   router.push({
-    path: '/store/list',
+    path: '/stores/list',
     query: searchData
   })
 }
+
+watch(categoryFlags, () => {
+  detail.value.categoryType = []
+  Object.keys(categoryFlags).forEach((key, index) => {
+    if (categoryFlags[key]) {
+      detail.value.categoryType.push(index)
+    }
+  })
+}, { deep: true })
 
 </script>
 
