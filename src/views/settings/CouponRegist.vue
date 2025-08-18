@@ -18,9 +18,9 @@
 
         <div class="form-grid">
           <va-input v-model="detail.couponName" label="쿠폰명" :rules="[value => !!value || '쿠폰명은 필수입니다.']" />
-          <va-select v-model="detail.category" label="쿠폰 종류" :options="categoryOptions" text-by="text"
+          <va-select v-model="detail.category" label="쿠폰 종류" :options="categoryOptions" text-by="label"
             value-by="value" />
-          <va-select v-model="detail.status" label="쿠폰 상태" :options="statusOptions" text-by="text" value-by="value" />
+          <va-select v-model="detail.status" label="쿠폰 상태" :options="statusOptions" text-by="label" value-by="value" />
           <va-input v-model="detail.minOrderAmount" label="최소 주문 금액" type="number" suffix="원" />
         </div>
       </div>
@@ -32,7 +32,7 @@
         </div>
 
         <div class="form-grid">
-          <va-select v-model="detail.couponType" label="할인 종류" :options="discountTypeOptions" text-by="text"
+          <va-select v-model="detail.couponType" label="할인 종류" :options="discountTypeOptions" text-by="label"
             value-by="value" />
           <va-input v-model="detail.discountValue" label="할인값" type="number"
             :suffix="detail.discountType === 'percent' ? '%' : '원'" :rules="[value => !!value || '할인값은 필수입니다.']" />
@@ -76,7 +76,7 @@ const router = useRouter()
 const detail = ref({
   couponCode: '',
   couponName: '',
-  category: 0,
+  category: 9,
   status: 0,
   couponType: 0,
   discountValue: 0,
@@ -93,24 +93,25 @@ const detail = ref({
 })
 
 const categoryOptions = ref([
-  { text: '신점', value: 0 },
-  { text: '철학관', value: 1 },
-  { text: '타로', value: 2 },
-  { text: '굿당', value: 3 },
-  { text: '기도터', value: 4 },
-  { text: '사찰', value: 5 }
+  { label: 'ALL', value: 9 },
+  { label: '신점', value: 0 },
+  { label: '철학관', value: 1 },
+  { label: '타로', value: 2 },
+  { label: '굿당', value: 3 },
+  { label: '기도터', value: 4 },
+  { label: '사찰', value: 5 }
 ])
 
 const statusOptions = ref([
-  { text: '발급 대기', value: 0 },
-  { text: '발급중', value: 1 },
-  { text: '발급 중지', value: 2 },
-  { text: '만료', value: 3 }
+  { label: '발급 대기', value: 0 },
+  { label: '발급중', value: 1 },
+  { label: '발급 중지', value: 2 },
+  { label: '만료', value: 3 }
 ])
 
 const discountTypeOptions = ref([
-  { text: '정율 할인 (%)', value: 0 },
-  { text: '정액 할인 (원)', value: 1 }
+  { label: '정율 할인 (%)', value: 0 },
+  { label: '정액 할인 (원)', value: 1 }
 ])
 
 const saveCoupon = async () => {

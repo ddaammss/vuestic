@@ -23,11 +23,11 @@
         </va-alert>
       </div> -->
       <div class="no-selection">
-        <va-alert v-if="selectedItems.length <= 0 " color="info">
-           총 {{ totalCount }}개
+        <va-alert v-if="selectedItems.length <= 0" color="info">
+          총 {{ totalCount }}개
         </va-alert>
         <va-alert v-else color="danger">
-           <va-icon :size="15" name="delete" style="cursor: pointer;" @click="deleteSelectedItem"></va-icon>
+          <va-icon :size="15" name="delete" style="cursor: pointer;" @click="deleteSelectedItem"></va-icon>
         </va-alert>
       </div>
 
@@ -92,8 +92,8 @@ const getSearchParams = () => {
   return {
     startDate: formatDateForAPI(search.value.startDate),
     endDate: formatDateForAPI(search.value.endDate),
-    category: search.value.category === '전체' ? '' : search.value.category,
     status: search.value.status === '전체' ? '' : search.value.status,
+    category: search.value.category === '전체' ? '' : search.value.category,
     page: currentPage.value,
     pageSize: pageSize.value,
   }
@@ -148,10 +148,10 @@ const deleteSelectedItem = async () => {
   })
 
 
-if (!confirm(`${deleteItems.value.length}개 항목을 삭제하시겠습니까?`)) {
+  if (!confirm(`${deleteItems.value.length}개 항목을 삭제하시겠습니까?`)) {
     return
   }
-try {
+  try {
     const deleteData = {
       couponCodeList: deleteItems.value
     }
@@ -230,6 +230,7 @@ const statusOptions = ref([
 
 const categoryOptions = ref([
   { label: '전체', value: "전체" },
+  { label: 'ALL', value: " 9" },
   { label: '신점', value: '0' },
   { label: '철학관', value: '1' },
   { label: '타로', value: '2' },

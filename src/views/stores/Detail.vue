@@ -35,12 +35,12 @@
         <div style="margin-bottom: 20px;">
           <label style="display: block; margin-bottom: 10px; font-weight: bold;">분야</label>
           <div class="checkbox-group">
-            <va-checkbox v-model="detail.categoryType" array-value="0" label="신점" />
-            <va-checkbox v-model="detail.categoryType" array-value="1" label="철학관" />
-            <va-checkbox v-model="detail.categoryType" array-value="2" label="타로" />
-            <va-checkbox v-model="detail.categoryType" array-value="3" label="굿당" />
-            <va-checkbox v-model="detail.categoryType" array-value="4" label="기도터" />
-            <va-checkbox v-model="detail.categoryType" array-value="5" label="사찰" />
+            <va-checkbox v-model="categoryFlags.type0" @input="updateCategoryType" label="신점" />
+            <va-checkbox v-model="categoryFlags.type1" @input="updateCategoryType" label="철학관" />
+            <va-checkbox v-model="categoryFlags.type2" @input="updateCategoryType" label="타로" />
+            <va-checkbox v-model="categoryFlags.type3" @input="updateCategoryType" label="굿당" />
+            <va-checkbox v-model="categoryFlags.type4" @input="updateCategoryType" label="기도터" />
+            <va-checkbox v-model="categoryFlags.type5" @input="updateCategoryType" label="사찰" />
           </div>
         </div>
 
@@ -50,36 +50,33 @@
         </div>
       </div>
 
+
       <div class="detail-section">
         <div class="section-header">
           <h3>상품 관리</h3>
         </div>
-        <div class="form-grid-single-row">
-          <div style="margin-bottom: 20px;">
-            <div v-if="!detail.products">
-              <div v-for="(product, index) in detail.products" :key="index"
-                style="margin-bottom: 15px; padding: 15px; border: 1px solid #ddd; border-radius: 4px;">
-                <div class="form-grid">
-                  <va-input v-model="product.name" :label="`상품명 ${index + 1}`" />
-                  <va-input v-model="product.price" :label="`가격 ${index + 1}`" type="number" />
-                </div>
-                <va-button @click="removeProduct(index)" preset="secondary" size="small" style="margin-top: 10px;">
-                  삭제
-                </va-button>
-              </div>
+        <div>
+          <div v-for="(product, index) in products" :key="index" class="form-grid">
+            <va-input v-model="product.name" label="상품명" placeholder="상품명을 입력하세요" />
+            <va-input v-model="product.price" label="가격" type="number" placeholder="가격을 입력하세요" />
+
+            <div v-if="index === 0">
+              <va-button @click="addProduct" icon="add" style="margin-top: 25px;" preset="secondary">
+                추가
+              </va-button>
             </div>
 
-             <div>
-              <div class="form-grid">
-                <va-input v-model="detail.product1" :label="상품명1" />
-                <va-input v-model="detail.product2" :label="가격" type="number" />
-              </div>
+            <div v-else>
+              <va-button @click="removeProduct(index)" preset="secondary" icon="delete"
+                style="margin-top: 25px; margin-right: 8px;">
+                삭제
+              </va-button>
             </div>
           </div>
         </div>
-
-
       </div>
+
+
 
       <div class="detail-section">
         <div class="section-header">
@@ -101,7 +98,24 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed, readonly } from 'vue'
+const categoryFlags = reactive({
+  type0: false,
+  type1: false,
+  type2: false,
+  type3: false,
+  type4: false,
+  type5: false
+})
+const updateCategoryType = () => {
+  detail.categoryType = []
+  Object.keys(categoryFlags).forEach((key, index) => {
+    if (categoryFlags[key]) {
+      detail.categoryType.push(index)
+    }
+  })
+}
+
+import { ref, onMounted, reactive, computed, readonly } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { formatDateForAPI } from '@/utils/formatters'
 import axios from 'axios'
@@ -113,6 +127,9 @@ const rowData = route.params.storeCode
 const quillEditor = ref(null)
 const content = ref('')
 let quill = null
+const products = ref([
+  { name: '', price: '' }
+])
 
 onMounted(async () => {
   if (rowData) {
@@ -188,11 +205,31 @@ const fetchDetail = async (data) => {
       storeCode: data
     })
     detail.value = response.data.data
+    console.log(typeof detail.value.categoryType)
+    if (typeof detail.value.categoryType === 'string') {
+      detail.value.categoryType = detail.value.categoryType.split(',').map(item => parseInt(item.trim()))
+    } else {
+      detail.categoryType = []  // 기본값
+    }
+    setInitialFlags()
+
   } catch (error) {
     console.error('상세 조회 에러:', error)
   } finally {
     loading.value = false;
   }
+}
+
+const setInitialFlags = () => {
+  console.log(categoryFlags)
+  Object.keys(categoryFlags).forEach(key => {
+    categoryFlags[key] = false
+  })
+
+  // 서버에서 받은 categoryType 값에 따라 체크박스 설정
+  detail.categoryType.forEach(value => {
+    categoryFlags[`type${value}`] = true
+  })
 }
 
 const detail = ref({
@@ -210,9 +247,6 @@ const detail = ref({
   memo: '',
   startTime: '',
   endTime: '',
-  products: [],
-  product1: '',
-  product2: '',
   createdAt: '',
   updatedAt: '',
   createdBy: ''
@@ -231,15 +265,14 @@ const timeOptions = ref([
 ])
 
 const addProduct = () => {
-  detail.value.products.push({ name: '', price: 0 })
+  products.value.push({ name: '', price: '' })
 }
 
 const removeProduct = (index) => {
-  if (detail.value.products.length > 1) {
-    detail.value.products.splice(index, 1)
+  if (products.value.length > 1) {
+    products.value.splice(index, 1)
   }
 }
-
 
 const save = async () => {
   try {
@@ -249,21 +282,17 @@ const save = async () => {
       return;
     }
 
-    if (!detail.value.discountValue) {
-      alert('할인값을 입력해주세요.')
-      return;
-    }
     const saveData = {
       ...detail.value,
     }
-    //console.log('저장할 데이터:', saveData)
-    const response = await axios.post('/store/upsert', saveData)
-    if (response.data.code === 200) {
-      alert('저장되었습니다.')
-      goBack()
-    } else {
-      alert(response.data.message);
-    }
+    console.log('저장할 데이터:', saveData)
+    // const response = await axios.post('/store/upsert', saveData)
+    // if (response.data.code === 200) {
+    //   alert('저장되었습니다.')
+    //   goBack()
+    // } else {
+    //   alert(response.data.message);
+    // }
   } catch (error) {
     console.error('저장 에러:', error)
     alert('저장 중 오류가 발생했습니다.')
@@ -284,6 +313,7 @@ const goBack = () => {
     query: searchData
   })
 }
+
 </script>
 
 <style scoped>
