@@ -268,7 +268,7 @@ const search = ref({
 })
 
 const columns = ref([
-  { key: 'reservationCode', label: '예약번호' },
+  { key: 'reservationCode', label: '예약코드' },
   { key: 'createdAt', label: '접수일자' },
   { key: 'reservationDate', label: '예약일자' },
   { key: 'confirmDate', label: '확정일자' },
