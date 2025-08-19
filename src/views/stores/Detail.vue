@@ -46,7 +46,7 @@
 
         <label for="quill1" class="form-label">입점사 설명</label>
         <div class="form-group">
-          <div ref="quillEditor" style="height: 200px;"></div>
+          <div ref="quillEditor" style="height: 400px;"></div>
         </div>
       </div>
 
@@ -56,23 +56,62 @@
           <h3>상품 관리</h3>
         </div>
         <div>
-          <div v-for="(product, index) in products" :key="index" class="form-grid">
-            <va-input v-model="product.name" label="상품명" placeholder="상품명을 입력하세요" />
-            <va-input v-model="product.price" label="가격" type="number" placeholder="가격을 입력하세요" />
+          <div v-if="detail.products?.length > 0">
+            <div v-for="(product, index) in detail.products" :key="product.productCode || index" class="form-grid">
+              <va-input v-model="product.name" label="상품명" placeholder="상품명을 입력하세요" />
+              <va-input v-model="product.price" label="가격" type="number" placeholder="가격을 입력하세요" />
 
-            <div v-if="index === 0">
-              <va-button @click="addProduct" icon="add" style="margin-top: 25px;" preset="secondary">
-                추가
-              </va-button>
-            </div>
+              <div v-if="index === 0">
+                <va-button @click="addProduct" icon="add" style="margin-top: 25px;" preset="secondary">
+                  추가
+                </va-button>
+              </div>
 
-            <div v-else>
-              <va-button @click="removeProduct(index)" preset="secondary" icon="delete"
-                style="margin-top: 25px; margin-right: 8px;">
-                삭제
-              </va-button>
+              <div v-else>
+                <va-button @click="removeProduct(index)" preset="secondary" icon="delete"
+                  style="margin-top: 25px; margin-right: 8px;">
+                  삭제
+                </va-button>
+              </div>
             </div>
           </div>
+
+
+
+
+
+
+
+
+
+          <div v-else>
+            <div v-for="(product, index) in products" :key="index" class="form-grid">
+              <va-input v-model="product.name" label="상품명" placeholder="상품명을 입력하세요" />
+              <va-input v-model="product.price" label="가격" type="number" placeholder="가격을 입력하세요" />
+
+              <div v-if="index === 0">
+                <va-button @click="addProduct" icon="add" style="margin-top: 25px;" preset="secondary">
+                  추가
+                </va-button>
+              </div>
+
+              <div v-else>
+                <va-button @click="removeProduct(index)" preset="secondary" icon="delete"
+                  style="margin-top: 25px; margin-right: 8px;">
+                  삭제
+                </va-button>
+              </div>
+            </div>
+          </div>
+
+
+
+
+
+
+
+
+
         </div>
       </div>
 
@@ -106,7 +145,6 @@ const router = useRouter()
 const loading = ref(false)
 const rowData = route.params.storeCode
 const quillEditor = ref(null)
-const content = ref('')
 let quill = null
 const products = ref([
   { name: '', price: '' }
@@ -185,8 +223,11 @@ const fetchDetail = async (data) => {
     const response = await axios.post('/store/detail', {
       storeCode: data
     })
+
+
     Object.assign(detail.value, response.data.data)
     detail.value.categoryType = detail.value.categoryType.split(',').map(item => parseInt(item.trim()))
+    console.log(detail.value.products)
 
     setInitialFlags()
   } catch (error) {
@@ -243,7 +284,7 @@ const timeOptions = ref([
 ])
 
 const addProduct = () => {
-  products.value.push({ name: '', price: '' })
+  detail.products.value.push({ name: '', price: '' })
 }
 
 const removeProduct = (index) => {
@@ -259,9 +300,19 @@ const save = async () => {
       return;
     }
 
+    const validProducts = products.value.filter(product =>
+      product.name.trim() !== '' && product.price !== ''
+    )
+
+    if (validProducts.length === 0) {
+      alert('상품은 1개 이상 등록해야합니다.')
+      return
+    }
+
     const saveData = {
       ...detail.value,
-      categoryType: detail.value.categoryType.join(',')
+      categoryType: detail.value.categoryType.join(','),
+      products: validProducts
     }
     //console.log('저장할 데이터:', saveData)
     const response = await axios.post('/store/upsert', saveData)
