@@ -45,7 +45,7 @@ export default defineConfig({
           stores: [
             './src/views/stores/List.vue',
             './src/views/stores/Detail.vue',
-            './src/views/stores/Register.vue'
+            './src/views/stores/Regist.vue'
           ]
         }
       }
