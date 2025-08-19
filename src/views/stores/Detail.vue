@@ -46,7 +46,7 @@
 
         <label for="quill1" class="form-label">입점사 설명</label>
         <div class="form-group">
-          <div ref="quillEditor" style="height: 400px;"></div>
+          <div ref="quillEditor" style="height: 100px;"></div>
         </div>
       </div>
 
@@ -60,13 +60,11 @@
             <div v-for="(product, index) in detail.products" :key="product.productCode || index" class="form-grid">
               <va-input v-model="product.name" label="상품명" placeholder="상품명을 입력하세요" />
               <va-input v-model="product.price" label="가격" type="number" placeholder="가격을 입력하세요" />
-
               <div v-if="index === 0">
                 <va-button @click="addProduct" icon="add" style="margin-top: 25px;" preset="secondary">
                   추가
                 </va-button>
               </div>
-
               <div v-else>
                 <va-button @click="removeProduct(index)" preset="secondary" icon="delete"
                   style="margin-top: 25px; margin-right: 8px;">
@@ -75,26 +73,15 @@
               </div>
             </div>
           </div>
-
-
-
-
-
-
-
-
-
           <div v-else>
-            <div v-for="(product, index) in products" :key="index" class="form-grid">
+            <div v-for="(product, index) in detail.products" :key="index" class="form-grid">
               <va-input v-model="product.name" label="상품명" placeholder="상품명을 입력하세요" />
               <va-input v-model="product.price" label="가격" type="number" placeholder="가격을 입력하세요" />
-
               <div v-if="index === 0">
                 <va-button @click="addProduct" icon="add" style="margin-top: 25px;" preset="secondary">
                   추가
                 </va-button>
               </div>
-
               <div v-else>
                 <va-button @click="removeProduct(index)" preset="secondary" icon="delete"
                   style="margin-top: 25px; margin-right: 8px;">
@@ -103,17 +90,82 @@
               </div>
             </div>
           </div>
-
-
-
-
-
-
-
-
-
         </div>
       </div>
+
+      <div class="detail-section">
+        <div class="section-header">
+          <h3>이미지 관리</h3>
+        </div>
+        <va-input ref="fileInput" type="file" multiple accept="image/*" style="display: none" @change="handleFileSelect"/>
+
+        <va-button
+        icon="upload"
+        @click="$refs.fileInput.$el.querySelector('input').click()"
+        :loading="isUploading"
+        preset="secondary"
+      >
+        이미지 선택
+      </va-button>
+
+      <!-- <va-alert
+        v-if="selectedImages.length > 0"
+        color="info"
+        icon="info"
+        class="mt-3"
+      >
+        선택된 파일: {{ selectedImages.length }}개
+      </va-alert> -->
+
+      <div v-if="selectedImages.length > 0" class="preview-grid mt-4">
+        <va-card
+          v-for="(image, index) in selectedImages"
+          :key="index"
+          class="image-preview-card"
+        >
+          <div class="image-container">
+            <img :src="image.url" :alt="image.name" class="preview-image" />
+            <va-button
+              icon="close"
+              size="small"
+              color="danger"
+              class="remove-button"
+              @click="removeImage(index)"
+            />
+          </div>
+          <va-card-content>
+            <div class="text-sm">{{ image.name }}</div>
+          </va-card-content>
+        </va-card>
+      </div>
+
+      <!-- 업로드 버튼 -->
+      <div v-if="selectedImages.length > 0" class="mt-4">
+        <va-button
+          icon="upload"
+          @click="uploadImages"
+          :loading="isUploading"
+        >
+          업로드
+        </va-button>
+
+        <va-button
+          icon="delete"
+          preset="secondary"
+          color="danger"
+          @click="clearAll"
+          class="ml-2"
+        >
+          전체 삭제
+        </va-button>
+      </div>
+      </div>
+
+
+
+
+
+
 
       <div class="detail-section">
         <div class="section-header">
@@ -139,6 +191,7 @@ import { ref, onMounted, reactive, computed, readonly, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { formatDateForAPI } from '@/utils/formatters'
 import axios from 'axios'
+import { useToast } from 'vuestic-ui'
 
 const route = useRoute()
 const router = useRouter()
@@ -146,9 +199,11 @@ const loading = ref(false)
 const rowData = route.params.storeCode
 const quillEditor = ref(null)
 let quill = null
-const products = ref([
-  { name: '', price: '' }
-])
+
+const { init: initToast } = useToast()
+const selectedImages = ref([])
+const isUploading = ref(false)
+const fileInput = ref(null)
 
 onMounted(async () => {
   if (rowData) {
@@ -183,7 +238,7 @@ const quilljsCall = async () => {
 
     // 🔥 핵심: 내용 변경 감지 이벤트 추가
     quill.on('text-change', () => {
-      detail.value.memo = quill.root.innerHTML
+      detail.memo = quill.root.innerHTML
     })
 
     // 이미지 핸들러 커스터마이징
@@ -201,7 +256,7 @@ const quilljsCall = async () => {
             const range = quill.getSelection()
             quill.insertEmbed(range.index, 'image', e.target.result)
             // 🔥 이미지 삽입 후 content 업데이트
-            detail.value.memo = quill.root.innerHTML
+            detail.memo = quill.root.innerHTML
           }
           reader.readAsDataURL(file)
         }
@@ -209,8 +264,8 @@ const quilljsCall = async () => {
     })
 
     // 기존 내용이 있다면 로드
-    if (detail.value.memo) {
-      quill.root.innerHTML = detail.value.memo
+    if (detail.memo) {
+      quill.root.innerHTML = detail.memo
     }
   }
   document.head.appendChild(script)
@@ -224,10 +279,13 @@ const fetchDetail = async (data) => {
       storeCode: data
     })
 
+    Object.assign(detail, response.data.data)
+    console.log(detail)
+    detail.categoryType = detail.categoryType.split(',').map(item => parseInt(item.trim()))
+    if(detail.products.length === 0){
+      detail.products.push({ name: '', price: '' })
+    }
 
-    Object.assign(detail.value, response.data.data)
-    detail.value.categoryType = detail.value.categoryType.split(',').map(item => parseInt(item.trim()))
-    console.log(detail.value.products)
 
     setInitialFlags()
   } catch (error) {
@@ -238,8 +296,8 @@ const fetchDetail = async (data) => {
 }
 
 const setInitialFlags = () => {
-  if (Array.isArray(detail.value.categoryType)) {
-    detail.value.categoryType.forEach(value => {
+  if (Array.isArray(detail.categoryType)) {
+    detail.categoryType.forEach(value => {
       categoryFlags[`type${value}`] = true
     })
   }
@@ -254,7 +312,7 @@ const categoryFlags = reactive({
   type5: false
 })
 
-const detail = ref({
+const detail = reactive({
   storeCode: '',
   storeName: '',
   ceoName: '',
@@ -269,6 +327,9 @@ const detail = ref({
   memo: '',
   startTime: '',
   endTime: '',
+  products : [
+  { name: '', price: '' }
+  ]
 })
 
 const statusOptions = ref([
@@ -284,23 +345,90 @@ const timeOptions = ref([
 ])
 
 const addProduct = () => {
-  detail.products.value.push({ name: '', price: '' })
+  detail.products.push({ name: '', price: '' })
 }
 
 const removeProduct = (index) => {
-  if (products.value.length > 1) {
-    products.value.splice(index, 1)
+  if (detail.products.length > 1) {
+    detail.products.splice(index, 1)
+  }
+}
+//------------------------------------------------------------------------------------------------- 이미지 처리 함수
+const handleFileSelect = (event) => {
+  const files = Array.from(event.target.files)
+
+  files.forEach(file => {
+    if (file.type.startsWith('image/')) {
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        selectedImages.value.push({
+          file: file,
+          name: file.name,
+          url: e.target.result
+        })
+      }
+      reader.readAsDataURL(file)
+    }
+  })
+}
+
+// 이미지 제거
+const removeImage = (index) => {
+  selectedImages.value.splice(index, 1)
+}
+
+// 전체 삭제
+const clearAll = () => {
+  selectedImages.value = []
+  if (fileInput.value) {
+    fileInput.value.$el.querySelector('input').value = ''
+  }
+}
+
+// 업로드 처리
+const uploadImages = async () => {
+  isUploading.value = true
+
+  try {
+    const formData = new FormData()
+    selectedImages.value.forEach((image, index) => {
+      formData.append(`images[${index}]`, image.file)
+    })
+
+    // 실제 업로드 API 호출
+    // const response = await fetch('/api/upload', {
+    //   method: 'POST',
+    //   body: formData
+    // })
+
+    // 시뮬레이션
+    await new Promise(resolve => setTimeout(resolve, 1000))
+
+    initToast({
+      message: '업로드 완료!',
+      color: 'success'
+    })
+
+    clearAll()
+
+  } catch (error) {
+    initToast({
+      message: '업로드 실패',
+      color: 'danger'
+    })
+  } finally {
+    isUploading.value = false
   }
 }
 
 const save = async () => {
   try {
-    if (!detail.value.storeName) {
+    if (!detail.storeName) {
       alert('입점사를 입력해주세요.')
       return;
     }
 
-    const validProducts = products.value.filter(product =>
+    const validProducts = detail.products.filter(product =>
       product.name.trim() !== '' && product.price !== ''
     )
 
@@ -310,11 +438,12 @@ const save = async () => {
     }
 
     const saveData = {
-      ...detail.value,
-      categoryType: detail.value.categoryType.join(','),
+      ...detail,
+      categoryType: detail.categoryType.join(','),
       products: validProducts
     }
     //console.log('저장할 데이터:', saveData)
+    loading.value = true
     const response = await axios.post('/store/upsert', saveData)
     if (response.data.code === 200) {
       alert('저장되었습니다.')
@@ -325,6 +454,8 @@ const save = async () => {
   } catch (error) {
     console.error('저장 에러:', error)
     alert('저장 중 오류가 발생했습니다.')
+  }finally{
+    loading.value = false;
   }
 }
 
@@ -344,10 +475,10 @@ const goBack = () => {
 }
 
 watch(categoryFlags, () => {
-  detail.value.categoryType = []
+  detail.categoryType = []
   Object.keys(categoryFlags).forEach((key, index) => {
     if (categoryFlags[key]) {
-      detail.value.categoryType.push(index)
+      detail.categoryType.push(index)
     }
   })
 }, { deep: true })
@@ -447,5 +578,29 @@ watch(categoryFlags, () => {
   font-size: 12px;
   color: #154EC1;
   margin-bottom: 8px;
+}
+
+.preview-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.image-container {
+  position: relative;
+  height: 150px;
+}
+
+
+.preview-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.remove-button {
+  position: absolute;
+  top: 5px;
+  right: 5px;
 }
 </style>
