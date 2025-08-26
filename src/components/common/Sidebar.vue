@@ -39,17 +39,17 @@
         </div>
       </div>
 
-      <!-- <div class="nav-item">
+      <div class="nav-item">
         <a class="nav-link" @click="toggleMenu('members')">
           <i class="material-icons">people</i>
           <span>회원</span>
           <i class="material-icons expand-icon" :class="{ expanded: openMenus.members }">expand_more</i>
         </a>
         <div v-show="openMenus.members" class="sub-menu">
-          <router-link to="/members/info" class="nav-link" exact-active-class="active">회원 정보 관리</router-link>
-          <router-link to="/members/points" class="nav-link" exact-active-class="active">포인트 관리</router-link>
+          <router-link to="/members/info" class="nav-link" exact-active-class="active">회원 관리</router-link>
+          <router-link to="/members/point" class="nav-link" exact-active-class="active">포인트 관리</router-link>
         </div>
-      </div> -->
+      </div>
 
       <div class="nav-item">
         <a class="nav-link" @click="toggleMenu('reservations')">
