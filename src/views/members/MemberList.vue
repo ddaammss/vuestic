@@ -6,10 +6,8 @@
         <div class="form-grid">
           <va-select v-model="search.type1" label="ID / 이름" :options="typeOptions" text-by="label" value-by="value" />
           <va-input v-model="search.name" label=" " :disabled="search.type1 === '전체'" @keydown.enter="searchList" />
-          <va-select v-model="search.type2" label="가입일 / 접속일 / 생일" :options="type2Options" text-by="label"
-            value-by="value" />
-          <va-date-input v-model="search.startDate" label="시작일" placeholder="시작일 선택"
-            :disabled="search.type2 === '전체'" />
+          <va-select v-model="search.type2" label="가입일 / 접속일 / 생일" :options="type2Options" text-by="label" value-by="value" />
+          <va-date-input v-model="search.startDate" label="시작일" placeholder="시작일 선택" :disabled="search.type2 === '전체'" />
             <va-date-input v-model="search.endDate" label="종료일" placeholder="종료일 선택" :disabled="search.type2 === '전체'" />
         </div>
 
@@ -59,8 +57,7 @@
         </va-alert>
       </div>
 
-      <va-data-table v-model="selectedItems" :items="list" :columns="columns" :loading="loading"
-        no-data-html="🔍 검색 결과가 없습니다." selectable hoverable striped sticky-header @row:click="goDetail" clickable>
+      <va-data-table v-model="selectedItems" :items="list" :columns="columns" :loading="loading" no-data-html="🔍 검색 결과가 없습니다." selectable hoverable striped sticky-header @row:click="goDetail" clickable>
         <template #cell(resultTypeNm)="{ value }">
           <va-badge :text="value" :color="getResultTypeColor(value)" />
         </template>
@@ -69,7 +66,6 @@
         </template>
       </va-data-table>
       <Pagination :current-page="currentPage" :total-page="totalPage" @page-change="handlePageChange"></Pagination>
-
     </div>
   </div>
 </template>

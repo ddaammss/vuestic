@@ -22,7 +22,7 @@ const StoreDetail = () => import('@/views/stores/Detail.vue')
 const StoreRegist = () => import('@/views/stores/Regist.vue')
 
 // 회원 관리
-const MemberList = () => import('@/views/members/Member.vue')
+const MemberList = () => import('@/views/members/MemberList.vue')
 const MemberDetail = () => import('@/views/members/MemberDetail.vue')
 const Point = () => import('@/views/members/Point.vue')
 
@@ -32,7 +32,8 @@ const ReservationDetail = () => import('@/views/reservations/ReservationDetail.v
 const ReservationsCancellation = () => import('@/views/reservations/Cancellation.vue')
 
 // 이벤트 관리
-const EventsCommunication = () => import('@/views/events/Communication.vue')
+const Communication = () => import('@/views/events/Communication.vue')
+const CommunicationDetail = () => import('@/views/events/CommunicationDetail.vue')
 const EventsBanner = () => import('@/views/events/Banner.vue')
 const EventsEvent = () => import('@/views/events/Event.vue')
 
@@ -200,9 +201,15 @@ const routes = [
         children: [
           {
             path: 'communication',
-            name: 'EventsCommunication',
-            component: EventsCommunication,
+            name: 'Communication',
+            component: Communication,
             meta: { title: '소통방' }
+          },
+          {
+            path: 'detail/:seq?',
+            name: 'CommunicationDetail',
+            component: CommunicationDetail,
+            meta: { title: '소통방 상세' }
           },
           {
             path: 'banner',

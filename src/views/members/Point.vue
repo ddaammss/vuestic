@@ -65,8 +65,6 @@ const fetList = async () => {
   }
 }
 
-const route = useRoute()
-const router = useRouter()
 const loading = ref(false)
 const point = ref({
 })
@@ -83,7 +81,7 @@ const save = async () => {
       minUsePoint : point.value.minUsePoint.replace(/,/g,''),
       maxHoldPoint : point.value.maxHoldPoint.replace(/,/g,'')
     }
-    console.log('저장할 데이터:', saveData)
+    //console.log('저장할 데이터:', saveData)
     const response = await axios.post('/point/update', saveData)
     if (response.data.code === 200) {
       alert('저장되었습니다.')

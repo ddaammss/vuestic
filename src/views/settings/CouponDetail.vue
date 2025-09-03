@@ -26,15 +26,10 @@
         </div>
 
         <div class="form-grid">
-
           <va-input v-model="detail.couponName" label="쿠폰명" :rules="[value => !!value || '쿠폰명은 필수입니다.']" />
-
-          <va-select v-model="detail.category" label="쿠폰 종류" :options="categoryOptions" text-by="label"
-            value-by="value" />
-
+          <va-select v-model="detail.category" label="쿠폰 종류" :options="categoryOptions" text-by="label" value-by="value" />
           <va-select v-model="detail.status" label="쿠폰 상태" :options="statusOptions" text-by="label" value-by="value" />
-
-          <va-input v-model="detail.minOrderAmount" label="최소 주문 금액" type="number" suffix="원" />
+          <va-input v-model="detail.minOrderAmount" label="최소 주문 금액" />
         </div>
       </div>
 
@@ -45,13 +40,9 @@
         </div>
 
         <div class="form-grid">
-          <va-select v-model="detail.couponType" label="할인 종류" :options="discountTypeOptions" text-by="label"
-            value-by="value" />
-          <!-- @update:model-value="handleDiscountTypeChange"  -->
-          <va-input v-model="detail.discountValue" label="할인값" type="number"
-            :suffix="detail.discountType === 'percent' ? '%' : '원'" :rules="[value => !!value || '할인값은 필수입니다.']" />
-
-          <va-input v-model="detail.maxDiscountAmount" label="최대 할인 금액" type="number" suffix="원" />
+          <va-select v-model="detail.couponType" label="할인 종류" :options="discountTypeOptions" text-by="label" value-by="value" />
+          <va-input v-model="detail.discountValue" label="할인값" :rules="[value => !!value || '할인값은 필수입니다.']" />
+          <va-input v-model="detail.maxDiscountAmount" label="최대 할인 금액" />
         </div>
       </div>
 
@@ -63,53 +54,11 @@
 
         <div class="form-grid">
           <va-date-input v-model="detail.issueDate" label="발급일" />
-
           <va-date-input v-model="detail.startDate" label="유효기간(시작일)" />
           <va-date-input v-model="detail.endDate" label="유효기간(종료일)" />
-
-          <va-input v-model="detail.maxIssueCount" label="총 발급 건수" type="number" />
+          <va-input v-model="detail.maxIssueCount" label="총 발급 건수" />
         </div>
       </div>
-
-      <!-- 사용 조건 -->
-      <!-- <div class="detail-section">
-        <div class="section-header">
-          <h3>사용 조건</h3>
-        </div>
-
-        <div class="form-grid">
-
-          <va-input v-model="detail.usageLimit" label="사용 횟수 제한" type="number" :readonly="!isEditMode" />
-        </div>
-
-        <va-textarea v-model="detail.description" label="쿠폰 설명" :readonly="!isEditMode" :max-rows="4" class="full-width" />
-      </div> -->
-
-      <!-- 시스템 정보 -->
-      <!-- <div class="detail-section readonly-section">
-        <div class="section-header">
-          <h3>시스템 정보</h3>
-        </div>
-
-        <div class="info-grid">
-          <div class="info-item">
-            <span class="label">쿠폰 코드:</span>
-            <span class="value">{{ detail.couponCode }}</span>
-          </div>
-          <div class="info-item">
-            <span class="label">등록일:</span>
-            <span class="value">{{ detail.createdAt }}</span>
-          </div>
-          <div class="info-item">
-            <span class="label">수정일:</span>
-            <span class="value">{{ detail.updatedAt || '-' }}</span>
-          </div>
-          <div class="info-item">
-            <span class="label">등록자:</span>
-            <span class="value">{{ detail.createdBy || '관리자' }}</span>
-          </div>
-        </div>
-      </div> -->
 
       <!-- 액션 버튼 -->
       <div class="action-section">
@@ -195,33 +144,6 @@ const discountTypeOptions = ref([
   { label: '정액 할인 (원)', value: 1 }
 ])
 
-// 상태별 클래스 반환
-// const getStatusClass = (status) => {
-//   const statusClasses = {
-//     0: 'status-waiting',
-//     1: 'status-active',
-//     2: 'status-stopped',
-//     3: 'status-expired'
-//   }
-//   return statusClasses[status] || 'status-default'
-// }
-
-// 상태 텍스트 반환
-// const getStatusText = (status) => {
-//   const statusTexts = {
-//     0: '발급 대기',
-//     1: '발급중',
-//     2: '발급 중지',
-//     3: '만료'
-//   }
-//   return statusTexts[status] || '알 수 없음'
-// }
-
-// 할인 타입 변경 시 처리
-// const handleDiscountTypeChange = (type) => {
-//   detail.value.maxDiscountAmount = '0'
-// }
-
 const save = async () => {
   try {
     // 유효성 검사
@@ -284,12 +206,6 @@ const goBack = () => {
   border-radius: 12px;
 }
 
-/* .header-content {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-} */
-
 .header-left {
   display: flex;
   align-items: center;
@@ -307,35 +223,6 @@ const goBack = () => {
   align-items: center;
 }
 
-/* 상태 배지 */
-/* .coupon-status {
-  padding: 8px 16px;
-  border-radius: 20px;
-  font-size: 14px;
-  font-weight: 600;
-  text-align: center;
-  min-width: 80px;
-} */
-
-/* .status-waiting {
-  background: #fef3cd;
-  color: #664d03;
-}
-
-.status-active {
-  background: #d1edff;
-  color: #055160;
-}
-
-.status-stopped {
-  background: #f8d7da;
-  color: #721c24;
-}
-
-.status-expired {
-  background: #e2e3e5;
-  color: #41464b;
-} */
 
 /* 섹션 스타일 */
 .detail-section {
@@ -344,22 +231,6 @@ const goBack = () => {
   background: var(--va-background-secondary);
   border-left: 4px solid var(--va-primary);
 }
-
-/* .detail-section::before {
-  content: '';
-  position: absolute;
-  top: -8px;
-  left: 20px;
-  width: 60px;
-  height: 16px;
-  background: var(--va-primary);
-  border-radius: 4px;
-} */
-
-/* .readonly-section {
-  background: var(--va-background-element);
-  border-left-color: #6c757d;
-} */
 
 .section-header {
   display: flex;

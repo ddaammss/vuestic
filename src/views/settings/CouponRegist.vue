@@ -18,10 +18,9 @@
 
         <div class="form-grid">
           <va-input v-model="detail.couponName" label="쿠폰명" :rules="[value => !!value || '쿠폰명은 필수입니다.']" />
-          <va-select v-model="detail.category" label="쿠폰 종류" :options="categoryOptions" text-by="label"
-            value-by="value" />
+          <va-select v-model="detail.category" label="쿠폰 종류" :options="categoryOptions" text-by="label" value-by="value" />
           <va-select v-model="detail.status" label="쿠폰 상태" :options="statusOptions" text-by="label" value-by="value" />
-          <va-input v-model="detail.minOrderAmount" label="최소 주문 금액" type="number" suffix="원" />
+          <va-input v-model="detail.minOrderAmount" label="최소 주문 금액"  />
         </div>
       </div>
 
@@ -32,11 +31,9 @@
         </div>
 
         <div class="form-grid">
-          <va-select v-model="detail.couponType" label="할인 종류" :options="discountTypeOptions" text-by="label"
-            value-by="value" />
-          <va-input v-model="detail.discountValue" label="할인값" type="number"
-            :suffix="detail.discountType === 'percent' ? '%' : '원'" :rules="[value => !!value || '할인값은 필수입니다.']" />
-          <va-input v-model="detail.maxDiscountAmount" label="최대 할인 금액" type="number" suffix="원" />
+          <va-select v-model="detail.couponType" label="할인 종류" :options="discountTypeOptions" text-by="label" value-by="value" />
+          <va-input v-model="detail.discountValue" label="할인값" :rules="[value => !!value || '할인값은 필수입니다.']" />
+          <va-input v-model="detail.maxDiscountAmount" label="최대 할인 금액"  />
         </div>
       </div>
 
@@ -49,7 +46,7 @@
           <va-date-input v-model="detail.issueDate" label="발급일" />
           <va-date-input v-model="detail.startDate" label="유효기간(시작일)" />
           <va-date-input v-model="detail.endDate" label="유효기간(종료일)" />
-          <va-input v-model="detail.maxIssueCount" label="총 발급 건수" type="number" />
+          <va-input v-model="detail.maxIssueCount" label="총 발급 건수" />
         </div>
       </div>
 

@@ -63,7 +63,7 @@
         </div>
       </div>
 
-      <!-- <div class="nav-item">
+      <div class="nav-item">
         <a class="nav-link" @click="toggleMenu('events')">
           <i class="material-icons">celebration</i>
           <span>이벤트 </span>
@@ -74,7 +74,7 @@
           <router-link to="/events/banner" class="nav-link" exact-active-class="active">배너 관리</router-link>
           <router-link to="/events/event" class="nav-link" exact-active-class="active">이벤트 관리</router-link>
         </div>
-      </div> -->
+      </div>
 
       <!-- <div class="nav-item">
         <router-link to="/sales" class="nav-link" exact-active-class="active">

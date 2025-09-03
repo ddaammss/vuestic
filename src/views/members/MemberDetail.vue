@@ -16,18 +16,17 @@
       <div class="detail-section">
         <div class="section-header">
           <h3>기본 정보</h3>
-          <!-- <div class="info-badge">{{ detail.memberId }}</div> -->
         </div>
 
         <div class="form-grid">
-          <va-input v-model="detail.memberId" label="회원ID" readonly />
-          <va-input v-model="detail.memberName" label="회원명" readonly />
-          <va-input v-model="detail.nickName" label="닉네임" readonly />
-          <va-input v-model="detail.phone" label="연락처" readonly />
-          <va-input v-model="detail.email" label="이메일" readonly />
-          <va-input v-model="detail.genderNm" label="성별" readonly />
-          <va-input v-model="detail.emoney" label="emoney" readonly />
-          <va-input v-model="detail.point" label="point" readonly />
+          <va-input v-model="detail.memberId" label="회원ID" :disabled="true" />
+          <va-input v-model="detail.memberName" label="회원명" :disabled="true" />
+          <va-input v-model="detail.nickName" label="닉네임" :disabled="true" />
+          <va-input v-model="detail.phone" label="연락처" :disabled="true" />
+          <va-input v-model="detail.email" label="이메일" :disabled="true" />
+          <va-input v-model="detail.genderNm" label="성별" :disabled="true" />
+          <va-input v-model="detail.emoney" label="emoney" :disabled="true" />
+          <va-input v-model="detail.point" label="point" :disabled="true" />
         </div>
       </div>
 
@@ -37,8 +36,7 @@
         </div>
 
         <div class="form-grid">
-          <va-select v-model="detail.memberType" label="회원등급" :options="memberTypeOptions" text-by="label"
-            value-by="value" />
+          <va-select v-model="detail.memberType" label="회원등급" :options="memberTypeOptions" text-by="label" value-by="value" />
         </div>
       </div>
 
@@ -48,7 +46,7 @@
         </div>
 
         <div class="form-grid">
-          <va-input v-model="detail.loginCount" label="로그인 횟수" :disabled="true" />
+          <!-- <va-input v-model="detail.loginCount" label="로그인 횟수" readonly /> -->
           <va-input v-model="detail.lastLoginAt" label="최종 로그인 일시" :disabled="true" />
           <va-input v-model="detail.createdAt" label="가입일" :disabled="true" />
         </div>
@@ -66,7 +64,6 @@
 <script setup>
 import { ref, onMounted, computed, readonly } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { formatDateForAPI } from '@/utils/formatters'
 import axios from 'axios'
 
 const route = useRoute()
@@ -94,23 +91,7 @@ const fetchDetail = async (data) => {
   }
 }
 
-const detail = ref({
-  // memberId: '',
-  // storeName: '',
-  // categoryType: 0,
-  // status: 0,
-  // discountValue: '',
-  // maxDiscountAmount: '',
-  // issueDate: '',
-  // startDate: '',
-  // endDate: '',
-  // maxIssueCount: '',
-  // minOrderAmount: '',
-  // description: '',
-  // createdAt: '',
-  // updatedAt: '',
-  // createdBy: '',
-})
+const detail = ref({})
 
 const memberTypeOptions = ref([
   { label: '일반회원', value: 0 },
@@ -169,12 +150,6 @@ const goBack = () => {
   border-radius: 12px;
 }
 
-/* .header-content {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-} */
-
 .header-left {
   display: flex;
   align-items: center;
@@ -192,36 +167,6 @@ const goBack = () => {
   align-items: center;
 }
 
-/* 상태 배지 */
-/* .coupon-status {
-  padding: 8px 16px;
-  border-radius: 20px;
-  font-size: 14px;
-  font-weight: 600;
-  text-align: center;
-  min-width: 80px;
-} */
-
-/* .status-waiting {
-  background: #fef3cd;
-  color: #664d03;
-}
-
-.status-active {
-  background: #d1edff;
-  color: #055160;
-}
-
-.status-stopped {
-  background: #f8d7da;
-  color: #721c24;
-}
-
-.status-expired {
-  background: #e2e3e5;
-  color: #41464b;
-} */
-
 /* 섹션 스타일 */
 .detail-section {
   margin-bottom: 22px;
@@ -229,22 +174,6 @@ const goBack = () => {
   background: var(--va-background-secondary);
   border-left: 4px solid var(--va-primary);
 }
-
-/* .detail-section::before {
-  content: '';
-  position: absolute;
-  top: -8px;
-  left: 20px;
-  width: 60px;
-  height: 16px;
-  background: var(--va-primary);
-  border-radius: 4px;
-} */
-
-/* .readonly-section {
-  background: var(--va-background-element);
-  border-left-color: #6c757d;
-} */
 
 .section-header {
   display: flex;

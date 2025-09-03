@@ -6,10 +6,8 @@
         <div class="form-grid">
           <va-select v-model="search.type1" label="예약자 / 입점사" :options="typeOptions" text-by="label" value-by="value" />
           <va-input v-model="search.name" label=" " :disabled="search.type1 === '전체'" @keydown.enter="searchList"/>
-          <va-select v-model="search.type2" label="접수일자 / 예약일자 / 확정일자" :options="type2Options" text-by="label"
-            value-by="value" />
-          <va-date-input v-model="search.startDate" label="시작일" placeholder="시작일 선택"
-            :disabled="search.type2 === '전체'" />
+          <va-select v-model="search.type2" label="접수일자 / 예약일자 / 확정일자" :options="type2Options" text-by="label" value-by="value" />
+          <va-date-input v-model="search.startDate" label="시작일" placeholder="시작일 선택" :disabled="search.type2 === '전체'" />
           <va-date-input v-model="search.endDate" label="종료일" placeholder="종료일 선택" :disabled="search.type2 === '전체'" />
 
 
@@ -65,16 +63,13 @@
         </va-alert>
       </div>
 
-      <va-data-table v-model="selectedItems" :items="list" :columns="columns" :loading="loading"
-        no-data-html="🔍 검색 결과가 없습니다." selectable hoverable striped sticky-header @row:click="goDetail" clickable>
+      <va-data-table v-model="selectedItems" :items="list" :columns="columns" :loading="loading" no-data-html="🔍 검색 결과가 없습니다." selectable hoverable striped sticky-header @row:click="goDetail" clickable>
         <template #cell(resultTypeNm)="{ value }">
           <va-badge :text="value" :color="getResultTypeColor(value)" />
         </template>
         <template #cell(reservationTypeNm)="{ value }">
           <va-badge :text="value" :color="getStatusColor(value)" />
         </template>
-
-
       </va-data-table>
 
       <Pagination :current-page="currentPage" :total-page="totalPage" @page-change="handlePageChange"></Pagination>
@@ -192,7 +187,6 @@ const deleteSelectedItem = async () => {
     deleteItems.value.push(item.reservationCode)
   })
 
-
   if (!confirm(`${deleteItems.value.length}개 항목을 삭제하시겠습니까?`)) {
     return
   }
@@ -307,7 +301,6 @@ const getResultTypeColor = (value) => {
     default: return ''
   }
 }
-
 
 // 페이지 변경 핸들러
 const handlePageChange = (page) => {

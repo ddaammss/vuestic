@@ -24,20 +24,27 @@ export default defineConfig({
           // 페이지별로 청크 분리
           dashboard: ['./src/views/Dashboard.vue'],
           settings: [
+            './src/views/settings/CouponDetail.vue',
             './src/views/settings/CouponList.vue',
+            './src/views/settings/CouponRegist.vue',
             './src/views/settings/Privacy.vue',
             './src/views/settings/Refund.vue',
             './src/views/settings/Terms.vue'
           ],
           stores: [
-            './src/views/stores/List.vue',
             './src/views/stores/Detail.vue',
+            './src/views/stores/List.vue',
             './src/views/stores/Regist.vue'
           ],
-          members: ['./src/views/members/Member.vue', './src/views/members/Point.vue'],
+          members: [
+            './src/views/members/MemberDetail.vue',
+            './src/views/members/MemberList.vue',
+            './src/views/members/Point.vue'
+          ],
           reservations: [
             './src/views/reservations/Cancellation.vue',
-            './src/views/reservations/Reservation.vue'
+            './src/views/reservations/Reservation.vue',
+            './src/views/reservations/ReservationDetail.vue'
           ],
           sales: ['./src/views/Sales.vue'],
           login: ['./src/views/Login.vue'],

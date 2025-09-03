@@ -32,7 +32,7 @@
             style="margin-bottom: 15px; padding: 15px; border: 1px solid #ddd; border-radius: 4px;">
             <div class="form-grid">
               <va-input v-model="product.name" :label="`상품명 ${index + 1}`" />
-              <va-input v-model="product.price" :label="`가격 ${index + 1}`" type="number" />
+              <va-input v-model="product.price" :label="`가격 ${index + 1}`" />
             </div>
             <va-button @click="removeProduct(index)" preset="secondary" size="small" style="margin-top: 10px;">
               삭제

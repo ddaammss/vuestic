@@ -59,7 +59,7 @@
           <div v-if="detail.products?.length > 0">
             <div v-for="(product, index) in detail.products" :key="product.productCode || index" class="form-grid">
               <va-input v-model="product.name" label="상품명" placeholder="상품명을 입력하세요" />
-              <va-input v-model="product.price" label="가격" type="number" placeholder="가격을 입력하세요" />
+              <va-input v-model="product.price" label="가격" placeholder="가격을 입력하세요" />
               <div v-if="index === 0">
                 <va-button @click="addProduct" icon="add" style="margin-top: 25px;" preset="secondary">
                   추가
@@ -76,7 +76,7 @@
           <div v-else>
             <div v-for="(product, index) in detail.products" :key="index" class="form-grid">
               <va-input v-model="product.name" label="상품명" placeholder="상품명을 입력하세요" />
-              <va-input v-model="product.price" label="가격" type="number" placeholder="가격을 입력하세요" />
+              <va-input v-model="product.price" label="가격" placeholder="가격을 입력하세요" />
               <div v-if="index === 0">
                 <va-button @click="addProduct" icon="add" style="margin-top: 25px;" preset="secondary">
                   추가
