@@ -22,7 +22,8 @@ const StoreDetail = () => import('@/views/stores/Detail.vue')
 const StoreRegist = () => import('@/views/stores/Regist.vue')
 
 // 회원 관리
-const Info = () => import('@/views/members/Info.vue')
+const MemberList = () => import('@/views/members/Member.vue')
+const MemberDetail = () => import('@/views/members/MemberDetail.vue')
 const Point = () => import('@/views/members/Point.vue')
 
 // 예약 관리
@@ -148,10 +149,16 @@ const routes = [
         path: 'members',
         children: [
           {
-            path: 'info',
-            name: 'Info',
-            component: Info,
+            path: 'list',
+            name: 'MemberList',
+            component: MemberList,
             meta: { title: '회원정보관리' }
+          },
+          {
+            path: 'detail/:memberId?',
+            name: 'MemberDetail',
+            component: MemberDetail,
+            meta: { title: '회원정보상세' }
           },
           {
             path: 'point',

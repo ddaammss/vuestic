@@ -20,10 +20,10 @@
           <i class="material-icons expand-icon" :class="{ expanded: openMenus.settings }">expand_more</i>
         </a>
         <div v-show="openMenus.settings" class="sub-menu">
-          <router-link to="/settings/terms" class="nav-link" exact-active-class="active">이용약관</router-link>
-          <router-link to="/settings/privacy" class="nav-link" exact-active-class="active">개인정보 취급방침</router-link>
-          <router-link to="/settings/refund" class="nav-link" exact-active-class="active">환불 설정</router-link>
-          <router-link to="/settings/coupon" class="nav-link" exact-active-class="active">쿠폰 설정</router-link>
+          <router-link to="/settings/terms" class="nav-link" exact-active-class="active">이용약관 관리</router-link>
+          <router-link to="/settings/privacy" class="nav-link" exact-active-class="active">개인정보 취급방침 관리</router-link>
+          <router-link to="/settings/refund" class="nav-link" exact-active-class="active">환불 정책 관리</router-link>
+          <router-link to="/settings/coupon" class="nav-link" exact-active-class="active">쿠폰 관리</router-link>
         </div>
       </div>
 
@@ -46,7 +46,7 @@
           <i class="material-icons expand-icon" :class="{ expanded: openMenus.members }">expand_more</i>
         </a>
         <div v-show="openMenus.members" class="sub-menu">
-          <router-link to="/members/info" class="nav-link" exact-active-class="active">회원 관리</router-link>
+          <router-link to="/members/list" class="nav-link" exact-active-class="active">회원 관리</router-link>
           <router-link to="/members/point" class="nav-link" exact-active-class="active">포인트 관리</router-link>
         </div>
       </div>

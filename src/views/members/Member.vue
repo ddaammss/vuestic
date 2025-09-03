@@ -6,40 +6,41 @@
         <div class="form-grid">
           <va-select v-model="search.type1" label="ID / 이름" :options="typeOptions" text-by="label" value-by="value" />
           <va-input v-model="search.name" label=" " :disabled="search.type1 === '전체'" @keydown.enter="searchList" />
-          <va-select v-model="search.type2" label="접수일자 / 예약일자 / 확정일자" :options="type2Options" text-by="label"
+          <va-select v-model="search.type2" label="가입일 / 접속일 / 생일" :options="type2Options" text-by="label"
             value-by="value" />
           <va-date-input v-model="search.startDate" label="시작일" placeholder="시작일 선택"
             :disabled="search.type2 === '전체'" />
-          <va-date-input v-model="search.endDate" label="종료일" placeholder="종료일 선택" :disabled="search.type2 === '전체'" />
+            <va-date-input v-model="search.endDate" label="종료일" placeholder="종료일 선택" :disabled="search.type2 === '전체'" />
         </div>
 
         <div class="filter-row">
           <div class="filter-section">
-            <label class="filter-label">분야</label>
-            <div class="checkbox-group">
-              <va-checkbox v-model="search.categoryType" array-value="0" label="신점" />
-              <va-checkbox v-model="search.categoryType" array-value="1" label="철학관" />
-              <va-checkbox v-model="search.categoryType" array-value="2" label="타로" />
-              <va-checkbox v-model="search.categoryType" array-value="3" label="굿당" />
-              <va-checkbox v-model="search.categoryType" array-value="4" label="기도터" />
-              <va-checkbox v-model="search.categoryType" array-value="5" label="사찰" />
+            <label class="filter-label">정렬방식</label>
+            <div class="radio-group">
+              <va-radio v-model="search.orderType" option="0" label="가입일" />
+              <va-radio v-model="search.orderType" option="1" label="접속일" />
+              <va-radio v-model="search.orderType" option="2" label="최다접속" />
+              <va-radio v-model="search.orderType" option="3" label="이름" />
+              <va-radio v-model="search.orderType" option="4" label="ID" />
+              <va-radio v-model="search.orderType" option="5" label="나이" />
+              <va-radio v-model="search.orderType" option="6" label="등급" />
             </div>
           </div>
           <div class="filter-section">
-            <label class="filter-label">예약 상태</label>
+            <label class="filter-label">회원등급</label>
             <div class="radio-group">
-              <va-radio v-model="search.reservationType" option="전체" label="전체" />
-              <va-radio v-model="search.reservationType" option="0" label="예약대기" />
-              <va-radio v-model="search.reservationType" option="1" label="예약확정" />
-              <va-radio v-model="search.reservationType" option="2" label="예약취소" />
+              <va-radio v-model="search.memberType" option="전체" label="전체" />
+              <va-radio v-model="search.memberType" option="0" label="일반회원" />
+              <va-radio v-model="search.memberType" option="1" label="탈퇴회원" />
             </div>
           </div>
 
           <div class="filter-section">
-            <label class="filter-label">결제 여부</label>
-            <div class="checkbox-group">
-              <va-checkbox v-model="search.resultType" array-value="0" label="미결제" />
-              <va-checkbox v-model="search.resultType" array-value="1" label="결제완료" />
+            <label class="filter-label">성별</label>
+            <div class="radio-group">
+              <va-radio v-model="search.gender" option="전체" label="전체" />
+              <va-radio v-model="search.gender" option="0" label="남성" />
+              <va-radio v-model="search.gender" option="1" label="여성" />
             </div>
           </div>
         </div>
@@ -66,10 +67,7 @@
         <template #cell(reservationTypeNm)="{ value }">
           <va-badge :text="value" :color="getStatusColor(value)" />
         </template>
-
-
       </va-data-table>
-
       <Pagination :current-page="currentPage" :total-page="totalPage" @page-change="handlePageChange"></Pagination>
 
     </div>
@@ -90,9 +88,9 @@ onMounted(() => {
     search.value.name = route.query.name
     search.value.startDate = route.query.startDate === null ? null : new Date(route.query.startDate)
     search.value.endDate = route.query.endDate === null ? null : new Date(route.query.endDate)
-    search.value.reservationType = route.query.reservationType === '' ? '전체' : route.query.reservationType
-    search.value.categoryType = route.query.categoryType
-    search.value.resultType = route.query.resultType
+    search.value.orderType = route.query.orderType === '' ? '0' : route.query.orderType
+    search.value.memberType = route.query.memberType === '' ? '전체' : route.query.memberType
+    search.value.gender = route.query.gender === '' ? '전체' : route.query.gender
     searchList()
   } else {
     fetList()
@@ -104,7 +102,7 @@ const fetList = async () => {
     loading.value = true
     const params = getSearchParams()
     //console.log('API 호출 파라미터:', params)
-    const response = await axios.post('/reservation/list', params)
+    const response = await axios.post('/member/list', params)
     list.value = response.data.data || []
     totalPage.value = response.data.totalPage
     totalCount.value = response.data.totalCount
@@ -123,9 +121,9 @@ const getSearchParams = () => {
     startDate: formatDateForAPI(search.value.startDate),
     endDate: formatDateForAPI(search.value.endDate),
     name: search.value.name,
-    categoryType: search.value.categoryType,
-    resultType: search.value.resultType,
-    reservationType: search.value.reservationType === '전체' ? '' : search.value.reservationType,
+    orderType: search.value.orderType === '0' ? '' : search.value.orderType,
+    memberType: search.value.memberType === '전체' ? '' : search.value.memberType,
+    gender: search.value.gender === '전체' ? '' : search.value.gender,
     page: currentPage.value,
     pageSize: pageSize.value,
   }
@@ -149,20 +147,19 @@ const searchList = () => {
 }
 
 const goDetail = (rowData) => {
-  const reservationCode = rowData.row.cells[0].value
-
+  const memberId = rowData.row.cells[0].value
   router.push({
-    name: 'ReservationDetail',
-    params: { reservationCode: reservationCode },
+    name: 'MemberDetail',
+    params: { memberId: memberId },
     query: {
       type1: search.value.type1,
       type2: search.value.type2,
       name: search.value.name,
       startDate: search.value.startDate,
       endDate: search.value.endDate,
-      reservationType: search.value.reservationType,
-      categoryType: search.value.categoryType,
-      resultType: search.value.resultType
+      orderType: search.value.orderType,
+      memberType: search.value.memberType,
+      gender: search.value.gender
     }
   })
 }
@@ -174,26 +171,25 @@ const resetSearch = () => {
     name: '',
     startDate: null,
     endDate: null,
-    categoryType: [],
-    resultType: [],
-    reservationType: '전체',
+    orderType: '0',
+    memberType: '전체',
+    gender: '전체',
   }
 }
 
 const deleteSelectedItem = async () => {
   selectedItems.value.forEach(item => {
-    deleteItems.value.push(item.reservationCode)
+    deleteItems.value.push(item.memberId)
   })
-
-
   if (!confirm(`${deleteItems.value.length}개 항목을 삭제하시겠습니까?`)) {
     return
   }
   try {
     const deleteData = {
-      reservationCodeList: deleteItems.value
+      memberIdList: deleteItems.value
     }
-    const response = await axios.post('/reservation/delete', deleteData)
+
+    const response = await axios.post('/member/delete', deleteData)
     if (response.data.code === 200) {
       alert('삭제되었습니다.')
       selectedItems.value.length = 0;
@@ -218,31 +214,26 @@ const totalCount = ref(0)
 const totalPage = ref(1)
 const pageSize = ref(10)
 
-const selectedPeriod = ref('today')
-
 const search = ref({
   type1: '전체',
   type2: '전체',
   name: '',
   startDate: null,
   endDate: null,
-  categoryType: [],
-  resultType: [],
-  reservationType: '전체',
+  orderType: '0',
+  memberType: '전체',
+  gender: '전체',
 })
 
 const columns = ref([
-  { key: 'reservationCode', label: '예약코드' },
-  { key: 'createdAt', label: '접수일자' },
-  { key: 'reservationDate', label: '예약일자' },
-  { key: 'confirmDate', label: '확정일자' },
-  { key: 'storeName', label: '입점사' },
-  { key: 'reserverName', label: '예약자' },
-  { key: 'reserverPhone', label: '연락처' },
-  { key: 'guestCount', label: '예약인원' },
-  { key: 'resultTypeNm', label: '결제여부' },
-  { key: 'paymentAmount', label: '결제금액' },
-  { key: 'reservationTypeNm', label: '예약상태' }
+  { key: 'memberId', label: '아이디' },
+  { key: 'memberName', label: '회원명' },
+  { key: 'memberTypeNm', label: '회원등급' },
+  { key: 'nickName', label: '닉네임' },
+  { key: 'genderNm', label: '성별' },
+  { key: 'age', label: '나이' },
+  { key: 'emoney', label: 'emoney' },
+  { key: 'point', label: 'point' },
 ])
 
 const typeOptions = ref([{ label: '전체', value: '전체' },
@@ -251,7 +242,7 @@ const typeOptions = ref([{ label: '전체', value: '전체' },
 const type2Options = ref([{ label: '전체', value: '전체' },
 { label: '가입일', value: '0' },
 { label: '접속일', value: '1' },
-{ label: '생일일', value: '2' }])
+{ label: '생일', value: '2' }])
 
 // 상태별 색상 반환
 const getStatusColor = (value) => {
@@ -271,7 +262,6 @@ const getResultTypeColor = (value) => {
     default: return ''
   }
 }
-
 
 // 페이지 변경 핸들러
 const handlePageChange = (page) => {
