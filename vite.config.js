@@ -57,8 +57,9 @@ export default defineConfig({
             './src/views/sales/SalesList.vue',
             './src/views/sales/SalesRegist.vue'
           ],
-
-          ads: ['./src/views/ads/Register.vue', './src/views/ads/Requests.vue'],
+          ads: ['./src/views/ads/RegistDetail.vue',
+            './src/views/ads/Regist.vue',
+            './src/views/ads/Request.vue'],
         }
       }
     }

@@ -185,7 +185,7 @@ const goBack = () => {
   }
 
   router.push({
-    path: '/settings/coupon',
+    path: '/settings/coupon/list',
     query: searchData
   })
 }

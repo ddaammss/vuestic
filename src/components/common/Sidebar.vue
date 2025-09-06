@@ -83,17 +83,17 @@
         </router-link>
       </div>
 
-      <!-- <div class="nav-item">
+      <div class="nav-item">
         <a class="nav-link" @click="toggleMenu('ads')">
           <i class="material-icons">campaign</i>
           <span>광고</span>
           <i class="material-icons expand-icon" :class="{ expanded: openMenus.ads }">expand_more</i>
         </a>
         <div v-show="openMenus.ads" class="sub-menu">
-          <router-link to="/ads/requests" class="nav-link" exact-active-class="active">광고 신청 현황</router-link>
-          <router-link to="/ads/register" class="nav-link" exact-active-class="active">광고 등록</router-link>
+          <router-link to="/ads/request" class="nav-link" exact-active-class="active">광고 신청 관리</router-link>
+          <router-link to="/ads/regist" class="nav-link" exact-active-class="active">광고 등록 관리</router-link>
         </div>
-      </div> -->
+      </div>
     </div>
   </nav>
 </template>

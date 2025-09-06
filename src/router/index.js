@@ -43,8 +43,9 @@ const SalesDetail = () => import('@/views/sales/SalesDetail.vue')
 const SalesRegist = () => import('@/views/sales/SalesRegist.vue')
 
 // 광고 관리
-const AdsRequests = () => import('@/views/ads/Requests.vue')
-const AdsRegister = () => import('@/views/ads/Register.vue')
+const AdRequest = () => import('@/views/ads/Request.vue')
+const AdRegistDetail = () => import('@/views/ads/RegistDetail.vue')
+const AdRegist = () => import('@/views/ads/Regist.vue')
 
 const routes = [
   // 인증 관련 페이지들 (BlankLayout)
@@ -251,10 +252,6 @@ const routes = [
             meta: { title: '매출등록' }
           },
         ]
-
-
-
-
       },
 
       // 광고 관리
@@ -262,17 +259,24 @@ const routes = [
         path: 'ads',
         children: [
           {
-            path: 'requests',
-            name: 'AdsRequests',
-            component: AdsRequests,
+            path: 'request',
+            name: 'AdRequest',
+            component: AdRequest,
             meta: { title: '광고 신청 현황' }
           },
           {
-            path: 'register',
-            name: 'AdsRegister',
-            component: AdsRegister,
+            path: 'regist',
+            name: 'AdRegist',
+            component: AdRegist,
             meta: { title: '광고 등록' }
+          },
+          {
+            path: 'detail/:seq?',
+            name: 'AdRegistDetail',
+            component: AdRegistDetail,
+            meta: { title: '광고 등록 상세' }
           }
+
         ]
       }
     ]

@@ -119,7 +119,7 @@ const save = async () => {
 
 const goBack = () => {
   router.push({
-    path: '/events/communication',
+    path: '/events/communication/list',
   })
 }
 </script>
