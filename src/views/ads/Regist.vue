@@ -78,8 +78,7 @@ const deleteSelectedItem = async () => {
     const deleteData = {
       seqList: deleteItems.value
     }
-
-    const response = await axios.post('/member/delete', deleteData)
+    const response = await axios.post('/ad/regist/delete', deleteData)
     if (response.data.code === 200) {
       alert('삭제되었습니다.')
       selectedItems.value.length = 0;

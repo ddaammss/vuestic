@@ -18,150 +18,37 @@
         </div>
         <div class="form-grid">
 
-          <va-input v-model="detail.storeName" label="입점사명" :rules="[value => !!value || '입점사명은 필수입니다.']" />
-          <va-input v-model="detail.ceoName" label="대표자명" />
-          <va-input v-model="detail.phone" label="연락처" />
-          <va-input v-model="detail.email" label="이메일" />
-          <va-input v-model="detail.address" label="주소" />
-          <va-input v-model="detail.addressDetail" label="상세주소" />
-        </div>
-        <div class="form-grid-single-row">
-          <va-input v-model="detail.description" style="width: 580px;" label="입점사 한 줄 설명" />
-          <va-select v-model="detail.startTime" label="영업 시간" :options="timeOptions" />
-          <va-select v-model="detail.endTime" :options="timeOptions" />
+          <va-input v-model="detail.storeName" label="입점사명" :disabled="true"/>
+            <va-date-input v-model="detail.startDate" label="등록기간(시작일)" />
+            <va-date-input v-model="detail.endDate" label="등록기간(종료일" />
         </div>
 
-        <div style="margin-bottom: 20px;">
-          <label style="display: block; margin-bottom: 10px; font-weight: bold;">분야</label>
-          <div class="checkbox-group">
-            <va-checkbox v-model="categoryFlags.type0" label="신점" />
-            <va-checkbox v-model="categoryFlags.type1" label="철학관" />
-            <va-checkbox v-model="categoryFlags.type2" label="타로" />
-            <va-checkbox v-model="categoryFlags.type3" label="굿당" />
-            <va-checkbox v-model="categoryFlags.type4" label="기도터" />
-            <va-checkbox v-model="categoryFlags.type5" label="사찰" />
-          </div>
-        </div>
+        <div class="checkbox-container">
+  <div class="checkbox-section">
+    <label class="section-label">분야</label>
+    <div class="checkbox-group">
+      <va-checkbox v-model="categoryFlags.type0" label="신점" />
+      <va-checkbox v-model="categoryFlags.type1" label="철학관" />
+      <va-checkbox v-model="categoryFlags.type2" label="타로" />
+      <va-checkbox v-model="categoryFlags.type3" label="굿당" />
+      <va-checkbox v-model="categoryFlags.type4" label="기도터" />
+      <va-checkbox v-model="categoryFlags.type5" label="사찰" />
+    </div>
+  </div>
 
-        <label for="quill1" class="form-label">입점사 설명</label>
-        <div class="form-group">
-          <div ref="quillEditor" style="height: 100px;"></div>
-        </div>
+  <div class="checkbox-section">
+    <label class="section-label">노출순위</label>
+    <div class="checkbox-group">
+      <va-checkbox v-model="rankingFlags.type1" label="1위" />
+      <va-checkbox v-model="rankingFlags.type2" label="2위" />
+      <va-checkbox v-model="rankingFlags.type3" label="3위" />
+      <va-checkbox v-model="rankingFlags.type4" label="4위" />
+      <va-checkbox v-model="rankingFlags.type5" label="5위" />
+    </div>
+  </div>
+</div>
+
       </div>
-
-
-      <div class="detail-section">
-        <div class="section-header">
-          <h3>상품 관리</h3>
-        </div>
-        <div>
-          <div v-if="detail.products?.length > 0">
-            <div v-for="(product, index) in detail.products" :key="product.productCode || index" class="form-grid">
-              <va-input v-model="product.name" label="상품명" placeholder="상품명을 입력하세요" />
-              <va-input v-model="product.price" label="가격" placeholder="가격을 입력하세요" />
-              <div v-if="index === 0">
-                <va-button @click="addProduct" icon="add" style="margin-top: 25px;" preset="secondary">
-                  추가
-                </va-button>
-              </div>
-              <div v-else>
-                <va-button @click="removeProduct(index)" preset="secondary" icon="delete"
-                  style="margin-top: 25px; margin-right: 8px;">
-                  삭제
-                </va-button>
-              </div>
-            </div>
-          </div>
-          <div v-else>
-            <div v-for="(product, index) in detail.products" :key="index" class="form-grid">
-              <va-input v-model="product.name" label="상품명" placeholder="상품명을 입력하세요" />
-              <va-input v-model="product.price" label="가격" placeholder="가격을 입력하세요" />
-              <div v-if="index === 0">
-                <va-button @click="addProduct" icon="add" style="margin-top: 25px;" preset="secondary">
-                  추가
-                </va-button>
-              </div>
-              <div v-else>
-                <va-button @click="removeProduct(index)" preset="secondary" icon="delete"
-                  style="margin-top: 25px; margin-right: 8px;">
-                  삭제
-                </va-button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="detail-section">
-        <div class="section-header">
-          <h3>이미지 관리</h3>
-        </div>
-        <va-input ref="fileInput" type="file" multiple accept="image/*" style="display: none" @change="handleFileSelect"/>
-
-        <va-button
-        icon="upload"
-        @click="$refs.fileInput.$el.querySelector('input').click()"
-        :loading="isUploading"
-        preset="secondary"
-      >
-        이미지 선택
-      </va-button>
-
-      <!-- <va-alert
-        v-if="selectedImages.length > 0"
-        color="info"
-        icon="info"
-        class="mt-3"
-      >
-        선택된 파일: {{ selectedImages.length }}개
-      </va-alert> -->
-
-      <div v-if="selectedImages.length > 0" class="preview-grid mt-4">
-        <va-card
-          v-for="(image, index) in selectedImages"
-          :key="index"
-          class="image-preview-card"
-        >
-          <div class="image-container">
-            <img :src="image.url" :alt="image.name" class="preview-image" />
-            <va-button
-              icon="close"
-              size="small"
-              color="danger"
-              class="remove-button"
-              @click="removeImage(index)"
-            />
-          </div>
-          <va-card-content>
-            <div class="text-sm">{{ image.name }}</div>
-          </va-card-content>
-        </va-card>
-      </div>
-
-      <!-- 업로드 버튼 -->
-      <div v-if="selectedImages.length > 0" class="mt-4">
-        <va-button
-          icon="upload"
-          @click="uploadImages"
-          :loading="isUploading"
-        >
-          업로드
-        </va-button>
-
-        <va-button
-          icon="delete"
-          preset="secondary"
-          color="danger"
-          @click="clearAll"
-          class="ml-2"
-        >
-          전체 삭제
-        </va-button>
-      </div>
-      </div>
-
-
-
 
 
 
@@ -190,103 +77,32 @@ import { ref, onMounted, reactive, computed, readonly, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { formatDateForAPI } from '@/utils/formatters'
 import axios from 'axios'
-import { useToast } from 'vuestic-ui'
 
 const route = useRoute()
 const router = useRouter()
 const loading = ref(false)
-const rowData = route.params.storeCode
-const quillEditor = ref(null)
-let quill = null
-
-const { init: initToast } = useToast()
-const selectedImages = ref([])
-const isUploading = ref(false)
-const fileInput = ref(null)
+const rowData = route.params.seq
 
 onMounted(async () => {
-  if (rowData) {
     await fetchDetail(rowData)
-  }
-  quilljsCall()
 })
-
-const quilljsCall = async () => {
-  const link = document.createElement('link')
-  link.href = 'https://cdn.quilljs.com/1.3.6/quill.snow.css'
-  link.rel = 'stylesheet'
-  document.head.appendChild(link)
-
-  // JS 로드
-  const script = document.createElement('script')
-  script.src = 'https://cdn.quilljs.com/1.3.6/quill.min.js'
-  script.onload = () => {
-    quill = new window.Quill(quillEditor.value, {
-      theme: 'snow',
-      modules: {
-        toolbar: [
-          [{ 'header': [1, 2, 3, false] }],
-          ['bold', 'italic', 'underline'],
-          [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-          ['link', 'image'],
-          ['link'],
-          ['clean']
-        ]
-      }
-    })
-
-    // 🔥 핵심: 내용 변경 감지 이벤트 추가
-    quill.on('text-change', () => {
-      detail.memo = quill.root.innerHTML
-    })
-
-    // 이미지 핸들러 커스터마이징
-    quill.getModule('toolbar').addHandler('image', () => {
-      const input = document.createElement('input')
-      input.setAttribute('type', 'file')
-      input.setAttribute('accept', 'image/*')
-      input.click()
-
-      input.onchange = () => {
-        const file = input.files[0]
-        if (file) {
-          const reader = new FileReader()
-          reader.onload = (e) => {
-            const range = quill.getSelection()
-            quill.insertEmbed(range.index, 'image', e.target.result)
-            // 🔥 이미지 삽입 후 content 업데이트
-            detail.memo = quill.root.innerHTML
-          }
-          reader.readAsDataURL(file)
-        }
-      }
-    })
-
-    // 기존 내용이 있다면 로드
-    if (detail.memo) {
-      quill.root.innerHTML = detail.memo
-    }
-  }
-  document.head.appendChild(script)
-}
-
 
 const fetchDetail = async (data) => {
   loading.value = true
   try {
-    const response = await axios.post('/store/detail', {
-      storeCode: data
+    const response = await axios.post('/ad/regist/detail', {
+      seq: data
     })
+    detail.value = response.data.data;
+    //console.log(detail.value)
 
-    Object.assign(detail, response.data.data)
-    console.log(detail)
-    detail.categoryType = detail.categoryType.split(',').map(item => parseInt(item.trim()))
-    if(detail.products.length === 0){
-      detail.products.push({ name: '', price: '' })
+    detail.value.categoryType = detail.value.categoryType.split(',').map(item => parseInt(item.trim()))
+    if(detail.value.ranking != null ){
+      detail.value.ranking = detail.value.ranking.split(',').map(item => parseInt(item.trim()))
     }
-
-
     setInitialFlags()
+
+
   } catch (error) {
     console.error('상세 조회 에러:', error)
   } finally {
@@ -295,14 +111,19 @@ const fetchDetail = async (data) => {
 }
 
 const setInitialFlags = () => {
-  if (Array.isArray(detail.categoryType)) {
-    detail.categoryType.forEach(value => {
-      categoryFlags[`type${value}`] = true
+  if (Array.isArray(detail.value.categoryType)) {
+    detail.value.categoryType.forEach(value => {
+      categoryFlags.value[`type${value}`] = true
+    })
+  }
+  if (Array.isArray(detail.value.ranking)) {
+    detail.value.ranking.forEach(value => {
+      rankingFlags.value[`type${value}`] = true
     })
   }
 }
 
-const categoryFlags = reactive({
+const categoryFlags = ref({
   type0: false,
   type1: false,
   type2: false,
@@ -311,139 +132,39 @@ const categoryFlags = reactive({
   type5: false
 })
 
-const detail = reactive({
-  storeCode: '',
-  storeName: '',
-  ceoName: '',
-  zipCode: '',
-  address: '',
-  addressDetail: '',
-  categoryType: [],
-  status: 0,
-  phone: '',
-  email: '',
-  description: '',
-  memo: '',
-  startTime: '',
-  endTime: '',
-  products : [
-  { name: '', price: '' }
-  ]
+const rankingFlags = ref({
+  type0: false,
+  type1: false,
+  type2: false,
+  type3: false,
+  type4: false,
+  type5: false
 })
 
+
+const detail = ref({})
+
 const statusOptions = ref([
-  { label: '활성', value: 0 },
-  { label: '비활성', value: 1 },
+  { label: '신청', value: 0 },
+  { label: '승인', value: 1 },
+  { label: '거부', value: 2 },
+  { label: '종료', value: 3 },
 ])
-
-const timeOptions = ref([
-  '00:00', '01:00', '02:00', '03:00', '04:00', '05:00',
-  '06:00', '07:00', '08:00', '09:00', '10:00', '11:00',
-  '12:00', '13:00', '14:00', '15:00', '16:00', '17:00',
-  '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '24:00'
-])
-
-const addProduct = () => {
-  detail.products.push({ name: '', price: '' })
-}
-
-const removeProduct = (index) => {
-  if (detail.products.length > 1) {
-    detail.products.splice(index, 1)
-  }
-}
-//------------------------------------------------------------------------------------------------- 이미지 처리 함수
-const handleFileSelect = (event) => {
-  const files = Array.from(event.target.files)
-
-  files.forEach(file => {
-    if (file.type.startsWith('image/')) {
-      const reader = new FileReader()
-      reader.onload = (e) => {
-        selectedImages.value.push({
-          file: file,
-          name: file.name,
-          url: e.target.result
-        })
-      }
-      reader.readAsDataURL(file)
-    }
-  })
-}
-
-// 이미지 제거
-const removeImage = (index) => {
-  selectedImages.value.splice(index, 1)
-}
-
-// 전체 삭제
-const clearAll = () => {
-  selectedImages.value = []
-  if (fileInput.value) {
-    fileInput.value.$el.querySelector('input').value = ''
-  }
-}
-
-// 업로드 처리
-const uploadImages = async () => {
-  isUploading.value = true
-
-  try {
-    const formData = new FormData()
-    selectedImages.value.forEach((image, index) => {
-      formData.append(`images[${index}]`, image.file)
-    })
-
-    // 실제 업로드 API 호출
-    // const response = await fetch('/api/upload', {
-    //   method: 'POST',
-    //   body: formData
-    // })
-
-    // 시뮬레이션
-    await new Promise(resolve => setTimeout(resolve, 1000))
-
-    initToast({
-      message: '업로드 완료!',
-      color: 'success'
-    })
-
-    clearAll()
-
-  } catch (error) {
-    initToast({
-      message: '업로드 실패',
-      color: 'danger'
-    })
-  } finally {
-    isUploading.value = false
-  }
-}
 
 const save = async () => {
   try {
-    if (!detail.storeName) {
-      alert('입점사를 입력해주세요.')
-      return;
-    }
-
-    const validProducts = detail.products.filter(product =>
-      product.name.trim() !== '' && product.price !== ''
-    )
-
-    if (validProducts.length === 0) {
-      alert('상품은 1개 이상 등록해야합니다.')
-      return
-    }
-
     const saveData = {
-      ...detail,
-      categoryType: detail.categoryType.join(','),
-      products: validProducts
+      categoryType: selectedCategories.value,
+      ranking: selectedRankings.value,
+      startDate: formatDateForAPI(new Date(detail.value.startDate)),
+      endDate: formatDateForAPI(new Date(detail.value.endDate)),
+      seq : detail.value.seq,
+      status : detail.value.status
+
     }
     //console.log('저장할 데이터:', saveData)
     loading.value = true
-    const response = await axios.post('/store/upsert', saveData)
+    const response = await axios.post('/ad/regist/update', saveData)
     if (response.data.code === 200) {
       alert('저장되었습니다.')
       goBack()
@@ -468,19 +189,31 @@ const goBack = () => {
   }
 
   router.push({
-    path: '/stores/list',
+    path: '/ads/regist',
     query: searchData
   })
 }
 
-watch(categoryFlags, () => {
-  detail.categoryType = []
-  Object.keys(categoryFlags).forEach((key, index) => {
-    if (categoryFlags[key]) {
-      detail.categoryType.push(index)
-    }
+  // 계산된 속성
+  const selectedCategories = computed(() => {
+    const selected = []
+    Object.keys(categoryFlags.value).forEach(key => {
+      if (categoryFlags.value[key]) {
+        selected.push(key.replace('type', ''))
+      }
+    })
+    return selected.join(',')
   })
-}, { deep: true })
+
+  const selectedRankings = computed(() => {
+    const selected = []
+    Object.keys(rankingFlags.value).forEach(key => {
+      if (rankingFlags.value[key]) {
+        selected.push(key.replace('type', ''))
+      }
+    })
+    return selected.join(',')
+  })
 
 </script>
 
@@ -540,16 +273,6 @@ watch(categoryFlags, () => {
   font-weight: 600;
 }
 
-.info-badge {
-  background: var(--va-primary);
-  color: white;
-  padding: 8px 16px;
-  border-radius: 8px;
-  font-family: Arial, Helvetica, sans-serif;
-  font-weight: bold;
-  font-size: 14px;
-}
-
 /* 폼 그리드 */
 .form-grid {
   display: grid;
@@ -571,35 +294,28 @@ watch(categoryFlags, () => {
   flex-wrap: wrap;
 }
 
-.form-label {
+.checkbox-container {
+  display: flex;
+  gap: 40px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.checkbox-section {
+  flex: 1;
+  min-width: 250px;
+}
+
+.section-label {
   display: block;
+  margin-bottom: 10px;
   font-weight: bold;
-  font-size: 12px;
-  color: #154EC1;
-  margin-bottom: 8px;
 }
 
-.preview-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 1rem;
+.checkbox-group {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
 }
 
-.image-container {
-  position: relative;
-  height: 150px;
-}
-
-
-.preview-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.remove-button {
-  position: absolute;
-  top: 5px;
-  right: 5px;
-}
 </style>

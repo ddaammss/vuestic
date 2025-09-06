@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="table-container">
-      <div class="table-header">1:1 문의 관리</div>
+      <div class="table-header">QNA 관리</div>
       <va-data-table :items="list" :columns="columns" :loading="loading" no-data-html="🔍 검색 결과가 없습니다." hoverable striped sticky-header @row:click="goDetail" clickable>
         <template #cell(statusNm)="{ value }">
           <va-badge :text="value" :color="getStatusColor(value)" />
