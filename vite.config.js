@@ -32,9 +32,9 @@ export default defineConfig({
             './src/views/settings/Terms.vue'
           ],
           stores: [
-            './src/views/stores/Detail.vue',
-            './src/views/stores/List.vue',
-            './src/views/stores/Regist.vue'
+            './src/views/stores/StoreDetail.vue',
+            './src/views/stores/StoreList.vue',
+            './src/views/stores/StoreRegist.vue'
           ],
           members: [
             './src/views/members/MemberDetail.vue',
@@ -43,17 +43,22 @@ export default defineConfig({
           ],
           reservations: [
             './src/views/reservations/Cancellation.vue',
-            './src/views/reservations/Reservation.vue',
-            './src/views/reservations/ReservationDetail.vue'
+            './src/views/reservations/ReservationDetail.vue',
+            './src/views/reservations/ReservationList.vue'
           ],
-          sales: ['./src/views/Sales.vue'],
           login: ['./src/views/Login.vue'],
-          ads: ['./src/views/ads/Register.vue', './src/views/ads/Requests.vue'],
           events: [
             './src/views/events/Banner.vue',
-            './src/views/events/Communication.vue',
+            './src/views/events/CommunicationDetail.vue',
+            './src/views/events/CommunicationList.vue',
             './src/views/events/Event.vue'
-          ]
+          ],
+          sales: ['./src/views/sales/SalesDetail.vue',
+            './src/views/sales/SalesList.vue',
+            './src/views/sales/SalesRegist.vue'
+          ],
+
+          ads: ['./src/views/ads/Register.vue', './src/views/ads/Requests.vue'],
         }
       }
     }

@@ -17,9 +17,9 @@ const CouponDetail = () => import('@/views/settings/CouponDetail.vue')
 const CouponRegist = () => import('@/views/settings/CouponRegist.vue')
 
 // 입점사 관리
-const StoreList = () => import('@/views/stores/List.vue')
-const StoreDetail = () => import('@/views/stores/Detail.vue')
-const StoreRegist = () => import('@/views/stores/Regist.vue')
+const StoreList = () => import('@/views/stores/StoreList.vue')
+const StoreDetail = () => import('@/views/stores/StoreDetail.vue')
+const StoreRegist = () => import('@/views/stores/StoreRegist.vue')
 
 // 회원 관리
 const MemberList = () => import('@/views/members/MemberList.vue')
@@ -27,18 +27,20 @@ const MemberDetail = () => import('@/views/members/MemberDetail.vue')
 const Point = () => import('@/views/members/Point.vue')
 
 // 예약 관리
-const ReservationList = () => import('@/views/reservations/Reservation.vue')
+const ReservationList = () => import('@/views/reservations/ReservationList.vue')
 const ReservationDetail = () => import('@/views/reservations/ReservationDetail.vue')
 const ReservationsCancellation = () => import('@/views/reservations/Cancellation.vue')
 
 // 이벤트 관리
-const Communication = () => import('@/views/events/Communication.vue')
+const CommunicationList = () => import('@/views/events/CommunicationList.vue')
 const CommunicationDetail = () => import('@/views/events/CommunicationDetail.vue')
 const EventsBanner = () => import('@/views/events/Banner.vue')
 const EventsEvent = () => import('@/views/events/Event.vue')
 
 // 매출 관리
-const Sales = () => import('@/views/Sales.vue')
+const SalesList = () => import('@/views/sales/SalesList.vue')
+const SalesDetail = () => import('@/views/sales/SalesDetail.vue')
+const SalesRegist = () => import('@/views/sales/SalesRegist.vue')
 
 // 광고 관리
 const AdsRequests = () => import('@/views/ads/Requests.vue')
@@ -100,10 +102,10 @@ const routes = [
             meta: { title: '환불 설정' }
           },
           {
-            path: 'coupon',
+            path: 'coupon/list',
             name: 'CouponList',
             component: CouponList,
-            meta: { title: '쿠폰 설정' }
+            meta: { title: '쿠폰 관리' }
           },
           {
             path: 'coupon/detail/:couponCode?', // 파라미터 추가
@@ -153,13 +155,13 @@ const routes = [
             path: 'list',
             name: 'MemberList',
             component: MemberList,
-            meta: { title: '회원정보관리' }
+            meta: { title: '회원관리' }
           },
           {
             path: 'detail/:memberId?',
             name: 'MemberDetail',
             component: MemberDetail,
-            meta: { title: '회원정보상세' }
+            meta: { title: '회원상세' }
           },
           {
             path: 'point',
@@ -178,13 +180,13 @@ const routes = [
             path: 'list',
             name: 'ReservationList',
             component: ReservationList,
-            meta: { title: '예약현황' }
+            meta: { title: '예약관리' }
           },
           {
             path: 'detail/:reservationCode?',
             name: 'ReservationDetail',
             component: ReservationDetail,
-            meta: { title: '예약 상세' }
+            meta: { title: '예약상세' }
           },
           {
             path: 'cancellation',
@@ -200,13 +202,13 @@ const routes = [
         path: 'events',
         children: [
           {
-            path: 'communication',
-            name: 'Communication',
-            component: Communication,
+            path: 'communication/list',
+            name: 'CommunicationList',
+            component: CommunicationList,
             meta: { title: '소통방' }
           },
           {
-            path: 'detail/:seq?',
+            path: 'communication/detail/:seq?',
             name: 'CommunicationDetail',
             component: CommunicationDetail,
             meta: { title: '소통방 상세' }
@@ -229,9 +231,30 @@ const routes = [
       // 매출 관리
       {
         path: 'sales',
-        name: 'Sales',
-        component: Sales,
-        meta: { title: '매출 관리' }
+        children: [
+          {
+            path: 'list',
+            name: 'Sales',
+            component: SalesList,
+            meta: { title: '매출관리' }
+          },
+          {
+            path: 'detail/:seq?',
+            name: 'SalesDetail',
+            component: SalesDetail,
+            meta: { title: '매출상세' }
+          },
+          {
+            path: 'regist',
+            name: 'SalesRegist',
+            component: SalesRegist,
+            meta: { title: '매출등록' }
+          },
+        ]
+
+
+
+
       },
 
       // 광고 관리

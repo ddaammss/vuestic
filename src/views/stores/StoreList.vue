@@ -15,8 +15,8 @@
           </div>
         </div>
         <div class="filter-row">
-          <div class="filter-section">
-            <label class="filter-label">분야</label>
+          <div class="filter-section" style="flex: 1;">
+            <label class="filter-label" style="font-weight: bold;">분야</label>
             <div class="checkbox-group">
               <va-checkbox v-model="search.categoryType" array-value="0" label="신점" />
               <va-checkbox v-model="search.categoryType" array-value="1" label="철학관" />
@@ -255,18 +255,11 @@ const handlePageChange = (page) => {
 
 
 </script>
+
 <style scoped>
 .filter-row {
   display: flex;
   gap: 20px;
   align-items: flex-start;
-}
-
-.filter-section {
-  flex: 1;
-}
-
-.filter-label {
-  font-weight: bold;
 }
 </style>

@@ -48,7 +48,7 @@ const getSearchParams = () => {
 }
 
 const goDetail = (rowData) => {
-  const seq = rowData.row.cells[0].value
+  const seq = rowData.row.rowData.seq
   router.push({
     name: 'CommunicationDetail',
     params: { seq: seq },
@@ -65,7 +65,6 @@ const totalPage = ref(1)
 const pageSize = ref(10)
 
 const columns = ref([
-  { key: 'seq', label: '고유번호' },
   { key: 'createdAt', label: '등록일' },
   { key: 'categoryTypeNm', label: '질문 유형' },
   { key: 'title', label: '제목' },

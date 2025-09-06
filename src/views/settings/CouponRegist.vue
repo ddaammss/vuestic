@@ -53,7 +53,7 @@
       <!-- 액션 버튼 -->
       <div class="action-section">
         <div class="btn-group">
-          <va-button @click="saveCoupon" icon="save">저장</va-button>
+          <va-button @click="save" icon="save">저장</va-button>
           <va-button preset="secondary" @click="goBack"> 목록으로 </va-button>
         </div>
       </div>
@@ -111,7 +111,7 @@ const discountTypeOptions = ref([
   { label: '정액 할인 (원)', value: 1 }
 ])
 
-const saveCoupon = async () => {
+const save = async () => {
   try {
     // 유효성 검사
     if (!detail.value.couponName) {

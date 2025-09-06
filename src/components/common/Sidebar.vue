@@ -23,7 +23,7 @@
           <router-link to="/settings/terms" class="nav-link" exact-active-class="active">이용약관 관리</router-link>
           <router-link to="/settings/privacy" class="nav-link" exact-active-class="active">개인정보 취급방침 관리</router-link>
           <router-link to="/settings/refund" class="nav-link" exact-active-class="active">환불 정책 관리</router-link>
-          <router-link to="/settings/coupon" class="nav-link" exact-active-class="active">쿠폰 관리</router-link>
+          <router-link to="/settings/coupon/list" class="nav-link" exact-active-class="active">쿠폰 관리</router-link>
         </div>
       </div>
 
@@ -70,18 +70,18 @@
           <i class="material-icons expand-icon" :class="{ expanded: openMenus.events }">expand_more</i>
         </a>
         <div v-show="openMenus.events" class="sub-menu">
-          <router-link to="/events/communication" class="nav-link" exact-active-class="active">소통방</router-link>
+          <router-link to="/events/communication/list" class="nav-link" exact-active-class="active">소통방</router-link>
           <router-link to="/events/banner" class="nav-link" exact-active-class="active">배너 관리</router-link>
           <router-link to="/events/event" class="nav-link" exact-active-class="active">이벤트 관리</router-link>
         </div>
       </div>
 
-      <!-- <div class="nav-item">
-        <router-link to="/sales" class="nav-link" exact-active-class="active">
+      <div class="nav-item">
+        <router-link to="/sales/list" class="nav-link" exact-active-class="active">
           <i class="material-icons">analytics</i>
           <span>매출</span>
         </router-link>
-      </div> -->
+      </div>
 
       <!-- <div class="nav-item">
         <a class="nav-link" @click="toggleMenu('ads')">
