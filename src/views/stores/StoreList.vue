@@ -96,10 +96,10 @@ const fetList = async () => {
 }
 const getSearchParams = () => {
   return {
-    startDate: formatDateForAPI(search.value.startDate),
-    endDate: formatDateForAPI(search.value.endDate),
     name: search.value.name,
     address: search.value.address,
+    startDate: formatDateForAPI(search.value.startDate),
+    endDate: formatDateForAPI(search.value.endDate),
     categoryType: search.value.categoryType,
     page: currentPage.value,
     pageSize: pageSize.value,
@@ -124,13 +124,13 @@ const searchList = () => {
 }
 
 const goDetail = (rowData) => {
-  const storeCode = rowData.row.cells[0].value
+  const storeCode = rowData.row.rowData.storeCode
   router.push({
     name: 'StoreDetail',
     params: { storeCode: storeCode },
     query: {
       name: search.value.name,
-      address: '',
+      address: search.value.address,
       startDate: search.value.startDate,
       endDate: search.value.endDate,
       categoryType: search.value.categoryType
@@ -154,7 +154,7 @@ const goRegist = () => {
 
 const deleteSelectedItem = async () => {
   selectedItems.value.forEach(item => {
-    deleteItems.value.push(item.storeCode)
+    deleteItems.value.push(item.seq)
   })
 
   if (!confirm(`${deleteItems.value.length}개 항목을 삭제하시겠습니까?`)) {
@@ -162,7 +162,7 @@ const deleteSelectedItem = async () => {
   }
   try {
     const deleteData = {
-      storeCodeList: deleteItems.value
+      storeSeqList: deleteItems.value
     }
     const response = await axios.post('/store/delete', deleteData)
     if (response.data.code === 200) {
@@ -229,7 +229,6 @@ const search = ref({
 })
 
 const columns = ref([
-  { key: 'storeCode', label: '입점사코드' },
   { key: 'storeName', label: '입점사명' },
   { key: 'address', label: '주소' },
   { key: 'categoryName', label: '분야' },
@@ -252,14 +251,12 @@ const handlePageChange = (page) => {
   currentPage.value = page
   fetList()
 }
-
-
 </script>
 
 <style scoped>
-.filter-row {
+/* .filter-row {
   display: flex;
   gap: 20px;
   align-items: flex-start;
-}
+} */
 </style>

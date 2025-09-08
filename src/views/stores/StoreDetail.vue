@@ -15,7 +15,7 @@
       <div class="detail-section">
         <div class="section-header">
           <h3>기본 정보</h3>
-          <div class="info-badge">{{ detail.storeCode }}</div>
+          <!-- <div class="info-badge">{{ detail.storeCode }}</div> -->
         </div>
         <div class="form-grid">
 
@@ -61,15 +61,10 @@
               <va-input v-model="product.name" label="상품명" placeholder="상품명을 입력하세요" />
               <va-input v-model="product.price" label="가격" placeholder="가격을 입력하세요" />
               <div v-if="index === 0">
-                <va-button @click="addProduct" icon="add" style="margin-top: 25px;" preset="secondary">
-                  추가
-                </va-button>
+                <va-button @click="addProduct" icon="add" style="margin-top: 25px;" preset="secondary"> 추가 </va-button>
               </div>
               <div v-else>
-                <va-button @click="removeProduct(index)" preset="secondary" icon="delete"
-                  style="margin-top: 25px; margin-right: 8px;">
-                  삭제
-                </va-button>
+                <va-button @click="removeProduct(index)" preset="secondary" icon="delete" style="margin-top: 25px; margin-right: 8px;"> 삭제 </va-button>
               </div>
             </div>
           </div>
@@ -78,15 +73,10 @@
               <va-input v-model="product.name" label="상품명" placeholder="상품명을 입력하세요" />
               <va-input v-model="product.price" label="가격" placeholder="가격을 입력하세요" />
               <div v-if="index === 0">
-                <va-button @click="addProduct" icon="add" style="margin-top: 25px;" preset="secondary">
-                  추가
-                </va-button>
+                <va-button @click="addProduct" icon="add" style="margin-top: 25px;" preset="secondary">추가</va-button>
               </div>
               <div v-else>
-                <va-button @click="removeProduct(index)" preset="secondary" icon="delete"
-                  style="margin-top: 25px; margin-right: 8px;">
-                  삭제
-                </va-button>
+                <va-button @click="removeProduct(index)" preset="secondary" icon="delete" style="margin-top: 25px; margin-right: 8px;"> 삭제 </va-button>
               </div>
             </div>
           </div>
@@ -98,40 +88,13 @@
           <h3>이미지 관리</h3>
         </div>
         <va-input ref="fileInput" type="file" multiple accept="image/*" style="display: none" @change="handleFileSelect"/>
-
-        <va-button
-        icon="upload"
-        @click="$refs.fileInput.$el.querySelector('input').click()"
-        :loading="isUploading"
-        preset="secondary"
-      >
-        이미지 선택
-      </va-button>
-
-      <!-- <va-alert
-        v-if="selectedImages.length > 0"
-        color="info"
-        icon="info"
-        class="mt-3"
-      >
-        선택된 파일: {{ selectedImages.length }}개
-      </va-alert> -->
+        <va-button icon="upload" @click="$refs.fileInput.$el.querySelector('input').click()" :loading="isUploading" preset="secondary"> 이미지 선택 </va-button>
 
       <div v-if="selectedImages.length > 0" class="preview-grid mt-4">
-        <va-card
-          v-for="(image, index) in selectedImages"
-          :key="index"
-          class="image-preview-card"
-        >
+        <va-card v-for="(image, index) in selectedImages" :key="index" class="image-preview-card">
           <div class="image-container">
             <img :src="image.url" :alt="image.name" class="preview-image" />
-            <va-button
-              icon="close"
-              size="small"
-              color="danger"
-              class="remove-button"
-              @click="removeImage(index)"
-            />
+            <va-button icon="close" size="small" color="danger" class="remove-button" @click="removeImage(index)"/>
           </div>
           <va-card-content>
             <div class="text-sm">{{ image.name }}</div>
@@ -140,25 +103,12 @@
       </div>
 
       <!-- 업로드 버튼 -->
-      <div v-if="selectedImages.length > 0" class="mt-4">
-        <va-button
-          icon="upload"
-          @click="uploadImages"
-          :loading="isUploading"
-        >
-          업로드
-        </va-button>
+      <!-- <div v-if="selectedImages.length > 0" class="mt-4">
+        <va-button icon="upload" @click="uploadImages" :loading="isUploading"> 업로드 </va-button>
 
-        <va-button
-          icon="delete"
-          preset="secondary"
-          color="danger"
-          @click="clearAll"
-          class="ml-2"
-        >
-          전체 삭제
-        </va-button>
-      </div>
+        <va-button icon="delete" preset="secondary" color="danger" @click="clearAll" class="ml-2"> 전체 삭제 </va-button>
+      </div> -->
+
       </div>
 
 
@@ -276,17 +226,15 @@ const fetchDetail = async (data) => {
   loading.value = true
   try {
     const response = await axios.post('/store/detail', {
-      storeCode: data
+      storeCode: data,
     })
 
     Object.assign(detail, response.data.data)
-    console.log(detail)
+    //console.log(detail)
     detail.categoryType = detail.categoryType.split(',').map(item => parseInt(item.trim()))
     if(detail.products.length === 0){
       detail.products.push({ name: '', price: '' })
     }
-
-
     setInitialFlags()
   } catch (error) {
     console.error('상세 조회 에러:', error)
@@ -313,23 +261,23 @@ const categoryFlags = reactive({
 })
 
 const detail = reactive({
-  storeCode: '',
-  storeName: '',
-  ceoName: '',
-  zipCode: '',
-  address: '',
-  addressDetail: '',
-  categoryType: [],
-  status: 0,
-  phone: '',
-  email: '',
-  description: '',
-  memo: '',
-  startTime: '',
-  endTime: '',
-  products : [
-  { name: '', price: '' }
-  ]
+  // storeCode: '',
+  // storeName: '',
+  // ceoName: '',
+  // zipCode: '',
+  // address: '',
+  // addressDetail: '',
+  // categoryType: [],
+  // status: 0,
+  // phone: '',
+  // email: '',
+  // description: '',
+  // memo: '',
+  // startTime: '',
+  // endTime: '',
+  // products : [
+  // { name: '', price: '' }
+  // ]
 })
 
 const statusOptions = ref([
@@ -384,7 +332,6 @@ const clearAll = () => {
     fileInput.value.$el.querySelector('input').value = ''
   }
 }
-
 // 업로드 처리
 const uploadImages = async () => {
   isUploading.value = true
@@ -402,14 +349,13 @@ const uploadImages = async () => {
     // })
 
     // 시뮬레이션
-    await new Promise(resolve => setTimeout(resolve, 1000))
+    // await new Promise(resolve => setTimeout(resolve, 1000))
+    // initToast({
+    //   message: '업로드 완료!',
+    //   color: 'success'
+    // })
 
-    initToast({
-      message: '업로드 완료!',
-      color: 'success'
-    })
-
-    clearAll()
+    // clearAll()
 
   } catch (error) {
     initToast({
@@ -428,22 +374,65 @@ const save = async () => {
       return;
     }
 
-    const validProducts = detail.products.filter(product =>
+    const products = detail.products.filter(product =>
       product.name.trim() !== '' && product.price !== ''
     )
 
-    if (validProducts.length === 0) {
+    if (products.length === 0) {
       alert('상품은 1개 이상 등록해야합니다.')
       return
     }
 
+  let imageArray = [];
+  const imageFormData = new FormData();
+  if (selectedImages.value && selectedImages.value.length > 0) {
+    console.log('=== selectedImages 구조 확인 ===');
+
+
+
+    selectedImages.value.forEach((item, index) => {
+      console.log(`아이템 ${index}:`, item);
+
+      const actualFile = item.file || item; // item.file이 있으면 사용, 없으면 item 자체 사용
+
+      console.log('실제 파일:', actualFile);
+      console.log('파일 타입 확인:', actualFile instanceof File);
+
+      if (actualFile instanceof File) {
+        imageFormData.append('images', actualFile);
+      }
+    });
+
+    console.log('=== FormData 내용 ===');
+    for (let [key, value] of imageFormData.entries()) {
+      console.log(`${key}:`, value instanceof File ? `${value.name} (${value.size}bytes)` : value);
+    }
+
+
+    // 서버로 전송
+    try {
+      const uploadResponse = await axios.post('/store/upload/images', imageFormData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+      imageArray = uploadResponse.data.imagePaths; // 서버에서 반환한 경로들
+      console.log('업로드 성공:', uploadResponse.data);
+    } catch (error) {
+      console.error('업로드 실패:', error.response?.data);
+    }
+  }
+
     const saveData = {
       ...detail,
       categoryType: detail.categoryType.join(','),
-      products: validProducts
+      storeCode : detail.storeCode,
+      //images: imageArray,
+      products: products,
+
     }
-    //console.log('저장할 데이터:', saveData)
+
+    console.log('저장할 데이터:', saveData)
     loading.value = true
+
     const response = await axios.post('/store/upsert', saveData)
     if (response.data.code === 200) {
       alert('저장되었습니다.')
@@ -590,7 +579,6 @@ watch(categoryFlags, () => {
   position: relative;
   height: 150px;
 }
-
 
 .preview-image {
   width: 100%;
