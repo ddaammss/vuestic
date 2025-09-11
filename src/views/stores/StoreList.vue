@@ -124,10 +124,10 @@ const searchList = () => {
 }
 
 const goDetail = (rowData) => {
-  const storeCode = rowData.row.rowData.storeCode
+  const seq = rowData.row.rowData.seq
   router.push({
     name: 'StoreDetail',
-    params: { storeCode: storeCode },
+    params: { seq: seq },
     query: {
       name: search.value.name,
       address: search.value.address,

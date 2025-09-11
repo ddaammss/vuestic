@@ -9,6 +9,15 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url))
     }
   },
+  server: {
+    proxy: {
+      // /uploads로 시작하는 요청을 8080으로 프록시
+      '/uploads': {
+        target: 'http://localhost:8080',
+        changeOrigin: true
+      }
+    }
+  },
   build: {
     outDir: 'dist',
     assetsDir: 'assets',

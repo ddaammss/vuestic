@@ -134,7 +134,7 @@ const routes = [
             meta: { title: '입점사 관리' }
           },
           {
-            path: 'detail/:storeCode?',
+            path: 'detail/:seq?',
             name: 'StoreDetail',
             component: StoreDetail,
             meta: { title: '입점사 상세' }
