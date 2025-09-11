@@ -13,7 +13,8 @@ export default defineConfig({
     proxy: {
       // /uploads로 시작하는 요청을 8080으로 프록시
       '/uploads': {
-        target: 'http://localhost:8080',
+        //target: 'http://localhost:8080',
+        target: 'https://amita86tg.duckdns.org',
         changeOrigin: true
       }
     }
