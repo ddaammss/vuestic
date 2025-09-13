@@ -90,7 +90,7 @@
         <div v-if="selectedImages.length > 0" class="preview-grid mt-4">
           <va-card v-for="(image, index) in selectedImages" :key="index" class="image-preview-card">
             <div class="image-container">
-              <img :src="image.url || image" :alt="image.name || image" class="preview-image" />
+              <img :src="getImageUrl(image.url || image) " :alt="image.name || image" class="preview-image" />
               <va-button icon="close" size="small" color="danger" class="remove-button" @click="removeImage(index)"/>
             </div>
             <va-card-content>
@@ -123,6 +123,7 @@
 import { ref, onMounted, reactive, computed, readonly, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { formatDateForAPI } from '@/utils/formatters'
+import { getImageUrl } from '@/utils/imageHelper';
 import axios from 'axios'
 
 const route = useRoute()
@@ -137,6 +138,9 @@ const isUploading = ref(false)
 const fileInput = ref(null)
 
 onMounted(async () => {
+  console.log('모든 환경변수:', import.meta.env)
+    console.log('API 서버:', import.meta.url)
+    console.log('현재 모드:', import.meta.env.MODE)
   if (rowData) {
     await fetchDetail(rowData)
   }
