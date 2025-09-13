@@ -200,7 +200,7 @@ const mainSave = async () => {
     alert('저장 중 오류가 발생했습니다.')
   } finally{
     loading.value = false;
-    //mainBanner();
+    mainBanner();
   }
 }
 </script>
