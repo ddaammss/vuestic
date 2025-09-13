@@ -4,49 +4,13 @@
       <div class="table-header">이벤트 관리</div>
       <div class="search-form">
         <div class="form-grid">
-          <va-input v-model="event.name" label="이벤트명" />
+          <va-input v-model="event.eventName" label="이벤트명" />
           <va-date-input v-model="event.startDate" label="시작일" placeholder="시작일 선택" />
           <va-date-input v-model="event.endDate" label="종료일" placeholder="종료일 선택" />
-
         </div>
-
-        <!-- <div class="filter-row">
-          <div class="filter-section">
-            <label class="filter-label">분야</label>
-            <div class="checkbox-group">
-              <va-checkbox v-model="search.categoryType" array-value="0" label="신점" />
-              <va-checkbox v-model="search.categoryType" array-value="1" label="철학관" />
-              <va-checkbox v-model="search.categoryType" array-value="2" label="타로" />
-              <va-checkbox v-model="search.categoryType" array-value="3" label="굿당" />
-              <va-checkbox v-model="search.categoryType" array-value="4" label="기도터" />
-              <va-checkbox v-model="search.categoryType" array-value="5" label="사찰" />
-            </div>
-          </div>
-          <div class="filter-section">
-            <label class="filter-label">예약 상태</label>
-            <div class="radio-group">
-              <va-radio v-model="search.reservationType" option="전체" label="전체" />
-              <va-radio v-model="search.reservationType" option="0" label="예약대기" />
-              <va-radio v-model="search.reservationType" option="1" label="예약확정" />
-              <va-radio v-model="search.reservationType" option="2" label="예약취소" />
-            </div>
-          </div>
-
-          <div class="filter-section">
-            <label class="filter-label">결제 여부</label>
-            <div class="checkbox-group">
-              <va-checkbox v-model="search.resultType" array-value="0" label="미결제" />
-              <va-checkbox v-model="search.resultType" array-value="1" label="결제완료" />
-            </div>
-          </div>
-        </div>
-        <div class="btn-group" style="margin-top: 20px; display: flex; justify-content: flex-end;">
-          <va-button @click="searchList" icon="search">검색</va-button>
-          <va-button @click="resetSearch" icon="">초기화</va-button>
-        </div> -->
         <div class="detail-section">
           <div class="form-group">
-            <div ref="quillEditor" style="height: 100px;"></div>
+            <div ref="quillEditor" style="height: 250px;"></div>
           </div>
         </div>
 
@@ -58,7 +22,7 @@
           <div v-if="selectedImages.length > 0" class="preview-grid mt-4">
             <va-card v-for="(image, index) in selectedImages" :key="index" class="image-preview-card">
               <div class="image-container">
-                <img :src="image.url" :alt="image.name" class="preview-image" />
+                <img :src="getImageUrl(image.url || image)" :alt="image.name" class="preview-image" />
                 <va-button icon="close" size="small" color="danger" class="remove-button" @click="removeImage(index)" />
               </div>
               <va-card-content>
@@ -69,7 +33,7 @@
         </div>
 
         <div class="btn-group" style="margin-top: 20px; display: flex; justify-content: flex-end;">
-          <va-button @click="searchList" icon="search">저장</va-button>
+          <va-button @click="save" icon="search">저장</va-button>
         </div>
       </div>
 
@@ -92,8 +56,9 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, onMounted } from 'vue'
+import { ref, computed, watch, onMounted, reactive } from 'vue'
 import { formatDateForAPI } from '@/utils/formatters'
+import { getImageUrl } from '@/utils/imageHelper';
 import Pagination from '@/components/common/Pagination.vue'
 import { useRouter, useRoute } from 'vue-router'
 import axios from 'axios'
@@ -167,7 +132,7 @@ const fetList = async () => {
     loading.value = true
     const params = getSearchParams()
     //console.log('API 호출 파라미터:', params)
-    const response = await axios.post('/reservation/list', params)
+    const response = await axios.post('/event/list', params)
     list.value = response.data.data || []
     totalPage.value = response.data.totalPage
     totalCount.value = response.data.totalCount
@@ -186,41 +151,19 @@ const getSearchParams = () => {
   }
 }
 
-const searchList = () => {
-  if (search.value.startDate && search.value.endDate) {
-    const startDate = new Date(search.value.startDate)
-    const endDate = new Date(search.value.endDate)
-    if (search.value.type2 != '전체') {
-      if (startDate > endDate) {
-        alert('시작일이 종료일보다 늦을 수 없습니다.')
-        return
-      }
-    }
-  }
-
-  currentPage.value = 1
-  selectedItems.value = []
-  fetList()
-}
-
 const goDetail = (rowData) => {
-  const reservationCode = rowData.row.cells[0].value
+  const seq = rowData.row.rowData.seq
 
   router.push({
-    name: 'ReservationDetail',
-    params: { reservationCode: reservationCode },
-    query: {
-      name: search.value.name,
-      startDate: search.value.startDate,
-      endDate: search.value.endDate,
+    name: 'EventDetail',
+    params: { seq: seq },
 
-    }
   })
 }
 
 const deleteSelectedItem = async () => {
   selectedItems.value.forEach(item => {
-    deleteItems.value.push(item.reservationCode)
+    deleteItems.value.push(item.seq)
   })
 
   if (!confirm(`${deleteItems.value.length}개 항목을 삭제하시겠습니까?`)) {
@@ -228,9 +171,9 @@ const deleteSelectedItem = async () => {
   }
   try {
     const deleteData = {
-      reservationCodeList: deleteItems.value
+      seqList: deleteItems.value
     }
-    const response = await axios.post('/reservation/delete', deleteData)
+    const response = await axios.post('/event/delete', deleteData)
     if (response.data.code === 200) {
       alert('삭제되었습니다.')
       selectedItems.value.length = 0;
@@ -260,11 +203,11 @@ const isUploading = ref(false)
 const quillEditor = ref(null)
 let quill = null
 
-const event = ref({
-  name: '',
+const event = reactive({
+  eventName: '',
   startDate: null,
   endDate: null,
-  selectedImages: '',
+  selectedImages: [],
   content: ''
 })
 
@@ -295,6 +238,70 @@ const handleFileSelect = (event) => {
 // 이미지 제거
 const removeImage = (index) => {
   selectedImages.value.splice(index, 1)
+}
+
+const save = async () => {
+
+  try {
+    if (!event.eventName) {
+      alert('이벤트명 입력해주세요.')
+      return;
+    }
+
+    if(selectedImages.value.length === 0){
+      alert('이미지는 1개 이상 등록해야합니다.')
+      return
+    }
+
+    let imageArray = [];
+    const formData = new FormData();
+    const saveData = {
+      ...event,
+      startDate: formatDateForAPI(new Date(event.startDate)),
+      endDate: formatDateForAPI(new Date(event.endDate)),
+    }
+    //console.log('저장할 데이터:', saveData)
+    loading.value = true
+    const response = await axios.post('/event/insert', saveData)
+    if (response.data.code === 200) {
+
+      if (selectedImages.value.length > 0) {
+        selectedImages.value.forEach((item, index) => {
+          const actualFile = item.file || item;
+          if (actualFile instanceof File) {
+            formData.append('images', actualFile);
+          }else{
+            formData.append('dbImages', actualFile);
+          }
+        });
+        formData.append('type', 'event');
+        formData.append('parentSeq', response.data.data);
+        // 서버로 전송
+        try {
+          const uploadResponse = await axios.post('/common/upload/images', formData, {
+            headers: { 'Content-Type': 'multipart/form-data' }
+          });
+          imageArray = uploadResponse.data.imagePaths; // 서버에서 반환한 경로들
+        } catch (error) {
+          console.error('업로드 실패:', error.response?.data);
+        }
+      }
+      alert('저장되었습니다.')
+    } else {
+      alert(response.data.message);
+    }
+  } catch (error) {
+    console.error('저장 에러:', error)
+    alert('저장 중 오류가 발생했습니다.')
+  } finally{
+    loading.value = false;
+    fetList();
+    event.eventName = '',
+    event.startDate =  null,
+    event.endDate = null,
+    selectedImages.value.splice(0, selectedImages.value.length),
+    quill.root.innerHTML = ''
+  }
 }
 
 // 페이지 변경 핸들러

@@ -18,66 +18,14 @@
         </div>
         <div class="form-grid">
 
-          <va-input v-model="detail.storeName" label="입점사명" :rules="[value => !!value || '입점사명은 필수입니다.']" />
-          <va-input v-model="detail.ceoName" label="대표자명" />
-          <va-input v-model="detail.phone" label="연락처" />
-          <va-input v-model="detail.email" label="이메일" />
-          <va-input v-model="detail.address" label="주소" />
-          <va-input v-model="detail.addressDetail" label="상세주소" />
-        </div>
-        <div class="form-grid-single-row">
-          <va-input v-model="detail.description" style="width: 580px;" label="입점사 한 줄 설명" />
-          <va-select v-model="detail.startTime" label="영업 시간" :options="timeOptions" />
-          <va-select v-model="detail.endTime" :options="timeOptions" />
+          <va-input v-model="detail.eventName" label="입점사명" :rules="[value => !!value || '이벤트명은 필수입니다.']" />
+          <va-date-input v-model="detail.startDate" label="이벤트 시작일" />
+          <va-date-input v-model="detail.endDate" label="이벤트 종료일" />
         </div>
 
-        <div style="margin-bottom: 20px;">
-          <label style="display: block; margin-bottom: 10px; font-weight: bold;">분야</label>
-          <div class="checkbox-group">
-            <va-checkbox v-model="categoryFlags.type0" label="신점" />
-            <va-checkbox v-model="categoryFlags.type1" label="철학관" />
-            <va-checkbox v-model="categoryFlags.type2" label="타로" />
-            <va-checkbox v-model="categoryFlags.type3" label="굿당" />
-            <va-checkbox v-model="categoryFlags.type4" label="기도터" />
-            <va-checkbox v-model="categoryFlags.type5" label="사찰" />
-          </div>
-        </div>
-
-        <label for="quill1" class="form-label">입점사 설명</label>
+        <label for="quill1" class="form-label">이벤트 설명</label>
         <div class="form-group">
-          <div ref="quillEditor" style="height: 100px;"></div>
-        </div>
-      </div>
-
-      <div class="detail-section">
-        <div class="section-header">
-          <h3>상품 관리</h3>
-        </div>
-        <div>
-          <div v-if="detail.products?.length > 0">
-            <div v-for="(product, index) in detail.products" :key="product.productCode || index" class="form-grid">
-              <va-input v-model="product.name" label="상품명" placeholder="상품명을 입력하세요" />
-              <va-input v-model="product.price" label="가격" placeholder="가격을 입력하세요" />
-              <div v-if="index === 0">
-                <va-button @click="addProduct" icon="add" style="margin-top: 25px;" preset="secondary"> 추가 </va-button>
-              </div>
-              <div v-else>
-                <va-button @click="removeProduct(index)" preset="secondary" icon="delete" style="margin-top: 25px; margin-right: 8px;"> 삭제 </va-button>
-              </div>
-            </div>
-          </div>
-          <div v-else>
-            <div v-for="(product, index) in detail.products" :key="index" class="form-grid">
-              <va-input v-model="product.name" label="상품명" placeholder="상품명을 입력하세요" />
-              <va-input v-model="product.price" label="가격" placeholder="가격을 입력하세요" />
-              <div v-if="index === 0">
-                <va-button @click="addProduct" icon="add" style="margin-top: 25px;" preset="secondary">추가</va-button>
-              </div>
-              <div v-else>
-                <va-button @click="removeProduct(index)" preset="secondary" icon="delete" style="margin-top: 25px; margin-right: 8px;"> 삭제 </va-button>
-              </div>
-            </div>
-          </div>
+          <div ref="quillEditor" style="height: 200px;"></div>
         </div>
       </div>
 
@@ -100,15 +48,6 @@
         </div>
       </div>
 
-      <div class="detail-section">
-        <div class="section-header">
-          <h3>상태 관리</h3>
-        </div>
-        <div class="form-grid-single-row">
-          <va-select v-model="detail.status" label="활성화여부" :options="statusOptions" text-by="label" value-by="value" />
-        </div>
-      </div>
-
       <div class="action-section">
         <div class="btn-group">
           <va-button @click="save" icon="save">저장</va-button>
@@ -122,6 +61,7 @@
 <script setup>
 import { ref, onMounted, reactive, computed, readonly, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { formatDateForAPI } from '@/utils/formatters'
 import { getImageUrl } from '@/utils/imageHelper';
 import axios from 'axios'
 
@@ -137,10 +77,8 @@ const isUploading = ref(false)
 const fileInput = ref(null)
 
 onMounted(async () => {
-  if (rowData) {
     await fetchDetail(rowData)
-  }
-  quilljsCall()
+    quilljsCall()
 })
 
 const quilljsCall = async () => {
@@ -169,7 +107,7 @@ const quilljsCall = async () => {
 
     // 🔥 핵심: 내용 변경 감지 이벤트 추가
     quill.on('text-change', () => {
-      detail.memo = quill.root.innerHTML
+      detail.content = quill.root.innerHTML
     })
 
     // 이미지 핸들러 커스터마이징
@@ -187,7 +125,7 @@ const quilljsCall = async () => {
             const range = quill.getSelection()
             quill.insertEmbed(range.index, 'image', e.target.result)
             // 🔥 이미지 삽입 후 content 업데이트
-            detail.memo = quill.root.innerHTML
+            detail.content = quill.root.innerHTML
           }
           reader.readAsDataURL(file)
         }
@@ -195,8 +133,8 @@ const quilljsCall = async () => {
     })
 
     // 기존 내용이 있다면 로드
-    if (detail.memo) {
-      quill.root.innerHTML = detail.memo
+    if (detail.content) {
+      quill.root.innerHTML = detail.content
     }
   }
   document.head.appendChild(script)
@@ -206,19 +144,13 @@ const quilljsCall = async () => {
 const fetchDetail = async (data) => {
   loading.value = true
   try {
-    const response = await axios.post('/store/detail', {
-      parentSeq: data,
+    const response = await axios.post('/event/detail', {
+      seq: data,
     })
-
     Object.assign(detail, response.data.data)
-    //console.log(detail)
-    detail.categoryType = detail.categoryType.split(',').map(item => parseInt(item.trim()))
     selectedImages.value = detail.images;
-    console.log(detail.seq)
-    if(detail.products.length === 0){
-      detail.products.push({ name: '', price: '' })
-    }
-    setInitialFlags()
+    //console.log(detail)
+
   } catch (error) {
     console.error('상세 조회 에러:', error)
   } finally {
@@ -226,46 +158,8 @@ const fetchDetail = async (data) => {
   }
 }
 
-const setInitialFlags = () => {
-  if (Array.isArray(detail.categoryType)) {
-    detail.categoryType.forEach(value => {
-      categoryFlags[`type${value}`] = true
-    })
-  }
-}
-
-const categoryFlags = reactive({
-  type0: false,
-  type1: false,
-  type2: false,
-  type3: false,
-  type4: false,
-  type5: false
-})
-
 const detail = reactive({})
 
-const statusOptions = ref([
-  { label: '활성', value: 0 },
-  { label: '비활성', value: 1 },
-])
-
-const timeOptions = ref([
-  '00:00', '01:00', '02:00', '03:00', '04:00', '05:00',
-  '06:00', '07:00', '08:00', '09:00', '10:00', '11:00',
-  '12:00', '13:00', '14:00', '15:00', '16:00', '17:00',
-  '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '24:00'
-])
-
-const addProduct = () => {
-  detail.products.push({ name: '', price: '' })
-}
-
-const removeProduct = (index) => {
-  if (detail.products.length > 1) {
-    detail.products.splice(index, 1)
-  }
-}
 //------------------------------------------------------------------------------------------------- 이미지 처리 함수
 const handleFileSelect = (event) => {
   const files = Array.from(event.target.files)
@@ -293,19 +187,11 @@ const removeImage = (index) => {
 const save = async () => {
 
   try {
-    if (!detail.storeName) {
-      alert('입점사를 입력해주세요.')
+    if (!detail.eventName) {
+      alert('이벤트 명을 입력해주세요.')
       return;
     }
 
-    const products = detail.products.filter(product =>
-      product.name.trim() !== '' && product.price !== ''
-    )
-
-    if (products.length === 0) {
-      alert('상품은 1개 이상 등록해야합니다.')
-      return
-    }
     if(selectedImages.value.length === 0){
       alert('이미지는 1개 이상 등록해야합니다.')
       return
@@ -322,7 +208,7 @@ const save = async () => {
           formData.append('dbImages', actualFile);
         }
       });
-      formData.append('type', 'store');
+      formData.append('type', 'event');
       formData.append('parentSeq', detail.seq);
 
       // 서버로 전송
@@ -337,16 +223,15 @@ const save = async () => {
     }
     const saveData = {
       ...detail,
-      categoryType: detail.categoryType.join(','),
       seq: detail.seq,
-      storeCode : detail.storeCode,
+      startDate: formatDateForAPI(new Date(detail.startDate)),
+      endDate: formatDateForAPI(new Date(detail.endDate)),
       images: imageArray,
-      products: products,
     }
 
     //console.log('저장할 데이터:', saveData)
     loading.value = true
-    const response = await axios.post('/store/upsert', saveData)
+    const response = await axios.post('/event/update', saveData)
     if (response.data.code === 200) {
       alert('저장되었습니다.')
       goBack()
@@ -362,29 +247,10 @@ const save = async () => {
 }
 
 const goBack = () => {
-  const searchData = {
-    name: route.query.name,
-    address: route.query.address,
-    startDate: route.query.startDate,
-    endDate: route.query.endDate,
-    categoryType: route.query.categoryType
-  }
-
   router.push({
-    path: '/stores/list',
-    query: searchData
+    path: '/events/event/list',
   })
 }
-
-watch(categoryFlags, () => {
-  detail.categoryType = []
-  Object.keys(categoryFlags).forEach((key, index) => {
-    if (categoryFlags[key]) {
-      detail.categoryType.push(index)
-    }
-  })
-}, { deep: true })
-
 </script>
 
 <style scoped>

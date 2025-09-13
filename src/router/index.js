@@ -35,7 +35,8 @@ const ReservationsCancellation = () => import('@/views/reservations/Cancellation
 const CommunicationList = () => import('@/views/events/CommunicationList.vue')
 const CommunicationDetail = () => import('@/views/events/CommunicationDetail.vue')
 const EventsBanner = () => import('@/views/events/Banner.vue')
-const EventsEvent = () => import('@/views/events/Event.vue')
+const EventList = () => import('@/views/events/Event.vue')
+const EventDetail = () => import('@/views/events/EventDetail.vue')
 
 // 매출 관리
 const SalesList = () => import('@/views/sales/SalesList.vue')
@@ -221,10 +222,16 @@ const routes = [
             meta: { title: '배너 관리' }
           },
           {
-            path: 'event',
-            name: 'EventsEvent',
-            component: EventsEvent,
+            path: 'event/list',
+            name: 'EventList',
+            component: EventList,
             meta: { title: '이벤트 관리' }
+          },
+          {
+            path: 'event/detail/:seq?',
+            name: 'EventDetail',
+            component: EventDetail,
+            meta: { title: '이벤트 상세' }
           }
         ]
       },
