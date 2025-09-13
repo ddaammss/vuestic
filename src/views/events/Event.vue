@@ -39,7 +39,7 @@
 
       <div class="no-selection">
         <va-alert v-if="selectedItems.length <= 0" color="info">
-          총 {{ totalCount }}개
+          총 {{ totalCount }} 개입니다
         </va-alert>
         <va-alert v-else color="danger">
           <va-icon :size="15" name="delete" style="cursor: pointer;" @click="deleteSelectedItem"></va-icon>
