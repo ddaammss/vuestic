@@ -211,7 +211,7 @@ const fetchDetail = async (data) => {
     })
 
     Object.assign(detail, response.data.data)
-    console.log(detail)
+    //console.log(detail)
     detail.categoryType = detail.categoryType.split(',').map(item => parseInt(item.trim()))
     selectedImages.value = detail.images;
     if(detail.products.length === 0){
