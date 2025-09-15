@@ -18,7 +18,7 @@
         </div>
         <div class="form-grid">
 
-          <va-input v-model="detail.eventName" label="입점사명" :rules="[value => !!value || '이벤트명은 필수입니다.']" />
+          <va-input v-model="detail.eventName" label="이벤트명" :rules="[value => !!value || '이벤트명은 필수입니다.']" />
           <va-date-input v-model="detail.startDate" label="이벤트 시작일" />
           <va-date-input v-model="detail.endDate" label="이벤트 종료일" />
         </div>
@@ -33,13 +33,15 @@
         <div class="section-header">
           <h3>이미지 관리</h3>
         </div>
-        <va-input ref="fileInput" type="file" multiple accept="image/*" style="display: none" @change="handleFileSelect"/>
-        <va-button icon="upload" @click="$refs.fileInput.$el.querySelector('input').click()" :loading="isUploading" preset="secondary"> 이미지 선택 </va-button>
+        <va-input ref="fileInput" type="file" multiple accept="image/*" style="display: none"
+          @change="handleFileSelect" />
+        <va-button icon="upload" @click="$refs.fileInput.$el.querySelector('input').click()" :loading="isUploading"
+          preset="secondary"> 이미지 선택 </va-button>
         <div v-if="selectedImages.length > 0" class="preview-grid mt-4">
           <va-card v-for="(image, index) in selectedImages" :key="index" class="image-preview-card">
             <div class="image-container">
-              <img :src="getImageUrl(image.url || image) " :alt="image.name || image" class="preview-image" />
-              <va-button icon="close" size="small" color="danger" class="remove-button" @click="removeImage(index)"/>
+              <img :src="getImageUrl(image.url || image)" :alt="image.name || image" class="preview-image" />
+              <va-button icon="close" size="small" color="danger" class="remove-button" @click="removeImage(index)" />
             </div>
             <va-card-content>
               <div class="text-sm">{{ image.name || image }}</div>
@@ -77,8 +79,8 @@ const isUploading = ref(false)
 const fileInput = ref(null)
 
 onMounted(async () => {
-    await fetchDetail(rowData)
-    quilljsCall()
+  await fetchDetail(rowData)
+  quilljsCall()
 })
 
 const quilljsCall = async () => {
@@ -192,7 +194,7 @@ const save = async () => {
       return;
     }
 
-    if(selectedImages.value.length === 0){
+    if (selectedImages.value.length === 0) {
       alert('이미지는 1개 이상 등록해야합니다.')
       return
     }
@@ -204,7 +206,7 @@ const save = async () => {
         const actualFile = item.file || item;
         if (actualFile instanceof File) {
           formData.append('images', actualFile);
-        }else{
+        } else {
           formData.append('dbImages', actualFile);
         }
       });
@@ -241,7 +243,7 @@ const save = async () => {
   } catch (error) {
     console.error('저장 에러:', error)
     alert('저장 중 오류가 발생했습니다.')
-  } finally{
+  } finally {
     loading.value = false;
   }
 }

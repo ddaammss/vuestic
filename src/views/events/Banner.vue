@@ -4,7 +4,7 @@
       <div class="table-header">메인배너 관리</div>
       <div class="search-form">
         <div class="form-grid">
-          <va-input v-model="banner.mainName" label="이벤트명" />
+          <va-input v-model="banner.mainName" label="메인배너명" />
         </div>
         <div class="detail-section">
           <div class="form-group">
@@ -13,7 +13,8 @@
         </div>
 
         <div style="margin: 20px 0;">
-          <va-input ref="fileInput" type="file" multiple accept="image/*" style="display: none" @change="mainHandleFileSelect" />
+          <va-input ref="fileInput" type="file" multiple accept="image/*" style="display: none"
+            @change="mainHandleFileSelect" />
           <va-button icon="upload" @click="$refs.fileInput.$el.querySelector('input').click()" :loading="isUploading"
             preset="secondary"> 이미지 선택 </va-button>
 
@@ -21,7 +22,8 @@
             <va-card v-for="(image, index) in mainSelectedImages" :key="index" class="image-preview-card">
               <div class="image-container">
                 <img :src="getImageUrl(image.url || image)" :alt="image.name || image" class="preview-image" />
-                <va-button icon="close" size="small" color="danger" class="remove-button" @click="mainRemoveImage(index)" />
+                <va-button icon="close" size="small" color="danger" class="remove-button"
+                  @click="mainRemoveImage(index)" />
               </div>
               <va-card-content>
                 <div class="text-sm">{{ image.name || image }}</div>
@@ -36,6 +38,44 @@
     </div>
   </div>
 
+  <div>
+    <div class="table-container">
+      <div class="table-header">서브배너 관리</div>
+      <div class="search-form">
+        <div class="form-grid">
+          <va-input v-model="banner.subName" label="서브배너명" />
+        </div>
+        <div class="detail-section">
+          <div class="form-group">
+            <div ref="quillEditor2" style="height: 250px;"></div>
+          </div>
+        </div>
+
+        <div style="margin: 20px 0;">
+          <va-input ref="fileInput2" type="file" multiple accept="image/*" style="display: none"
+            @change="subHandleFileSelect" />
+          <va-button icon="upload" @click="$refs.fileInput2.$el.querySelector('input').click()" :loading="isUploading"
+            preset="secondary"> 이미지 선택 </va-button>
+
+          <div v-if="subSelectedImages.length > 0" class="preview-grid mt-4">
+            <va-card v-for="(image, index) in subSelectedImages" :key="index" class="image-preview-card">
+              <div class="image-container">
+                <img :src="getImageUrl(image.url || image)" :alt="image.name || image" class="preview-image" />
+                <va-button icon="close" size="small" color="danger" class="remove-button"
+                  @click="subRemoveImage(index)" />
+              </div>
+              <va-card-content>
+                <div class="text-sm">{{ image.name || image }}</div>
+              </va-card-content>
+            </va-card>
+          </div>
+        </div>
+        <div class="btn-group" style="margin-top: 20px; display: flex; justify-content: flex-end;">
+          <va-button @click="subSave" icon="search">저장</va-button>
+        </div>
+      </div>
+    </div>
+  </div>
 
 </template>
 
@@ -47,6 +87,7 @@ import axios from 'axios'
 onMounted(async () => {
   await mainBanner()
   await quilljsCall()
+  await quilljsCall2()
 })
 
 const quilljsCall = async () => {
@@ -85,6 +126,42 @@ const quilljsCall = async () => {
   document.head.appendChild(script)
 }
 
+const quilljsCall2 = async () => {
+  const link = document.createElement('link')
+  link.href = 'https://cdn.quilljs.com/1.3.6/quill.snow.css'
+  link.rel = 'stylesheet'
+  document.head.appendChild(link)
+
+  // JS 로드
+  const script2 = document.createElement('script')
+  script2.src = 'https://cdn.quilljs.com/1.3.6/quill.min.js'
+  script2.onload = () => {
+    quill2 = new window.Quill(quillEditor2.value, {
+      theme: 'snow',
+      modules: {
+        toolbar: [
+          [{ 'header': [1, 2, 3, false] }],
+          ['bold', 'italic', 'underline'],
+          [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+          ['link'],
+          ['clean']
+        ]
+      }
+    })
+
+    // 🔥 핵심: 내용 변경 감지 이벤트 추가
+    quill2.on('text-change', () => {
+      banner.subContent = quill2.root.innerHTML
+    })
+
+    // 기존 내용이 있다면 로드
+    if (banner.subContent) {
+      quill2.root.innerHTML = banner.subContent
+    }
+  }
+  document.head.appendChild(script2)
+}
+
 const mainBanner = async () => {
   try {
     loading.value = true
@@ -93,7 +170,8 @@ const mainBanner = async () => {
     const response = await axios.post('/banner/main', params)
 
     Object.assign(banner, response.data.data)
-    mainSelectedImages.value = banner.images;
+    mainSelectedImages.value = banner.mainImages;
+    subSelectedImages.value = banner.subImages;
   } catch (error) {
     console.error('API 에러:', error)
   } finally {
@@ -107,20 +185,24 @@ const getSearchParams = () => {
   }
 }
 
+
 const loading = ref(false)
 const mainSelectedImages = ref([])
+const subSelectedImages = ref([])
 const isUploading = ref(false)
 const quillEditor = ref(null)
+const quillEditor2 = ref(null)
 let quill = null
+let quill2 = null
 
 const banner = reactive({
   mainName: '',
-  subName:'',
+  subName: '',
   mainSelectedImages: [],
   subSelectedImages: [],
   mainContent: '',
   subContent: '',
-  type : ''
+  type: ''
 })
 
 const mainHandleFileSelect = (event) => {
@@ -153,7 +235,7 @@ const mainSave = async () => {
       return;
     }
 
-    if(mainSelectedImages.value.length === 0){
+    if (mainSelectedImages.value.length === 0) {
       alert('이미지는 1개 이상 등록해야합니다.')
       return
     }
@@ -161,34 +243,36 @@ const mainSave = async () => {
     let imageArray = [];
     const formData = new FormData();
     if (mainSelectedImages.value.length > 0) {
-        mainSelectedImages.value.forEach((item, index) => {
-          const actualFile = item.file || item;
-          if (actualFile instanceof File) {
-            formData.append('images', actualFile);
-          }else{
-            formData.append('dbImages', actualFile);
-          }
-        });
-        formData.append('type', 'mainBanner');
-        formData.append('parentSeq', banner.seq);
-        // 서버로 전송
-        try {
-          const uploadResponse = await axios.post('/common/upload/images', formData, {
-            headers: { 'Content-Type': 'multipart/form-data' }
-          });
-          imageArray = uploadResponse.data.imagePaths; // 서버에서 반환한 경로들
-        } catch (error) {
-          console.error('업로드 실패:', error.response?.data);
+      mainSelectedImages.value.forEach((item, index) => {
+        const actualFile = item.file || item;
+        if (actualFile instanceof File) {
+          formData.append('images', actualFile);
+        } else {
+          formData.append('dbImages', actualFile);
         }
+      });
+      formData.append('type', 'mainBanner');
+      formData.append('parentSeq', banner.seq);
+      // 서버로 전송
+      try {
+        const uploadResponse = await axios.post('/common/upload/images', formData, {
+          headers: { 'Content-Type': 'multipart/form-data' }
+        });
+        imageArray = uploadResponse.data.imagePaths; // 서버에서 반환한 경로들
+      } catch (error) {
+        console.error('업로드 실패:', error.response?.data);
       }
+    }
 
     const saveData = {
       ...banner,
-      type : 0,
+      name: banner.mainName,
+      content: banner.mainContent,
+      type: 0,
     }
-    console.log('저장할 데이터:', saveData)
+    //console.log('저장할 데이터:', saveData)
     loading.value = true
-    const response = await axios.post('/banner/mainUpdate', saveData)
+    const response = await axios.post('/banner/update', saveData)
 
     if (response.data.code === 200) {
       alert('저장되었습니다.')
@@ -198,11 +282,96 @@ const mainSave = async () => {
   } catch (error) {
     console.error('저장 에러:', error)
     alert('저장 중 오류가 발생했습니다.')
-  } finally{
+  } finally {
     loading.value = false;
     mainBanner();
   }
 }
+
+const subHandleFileSelect = (event) => {
+  const files = Array.from(event.target.files)
+
+  files.forEach(file => {
+    if (file.type.startsWith('image/')) {
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        subSelectedImages.value.push({
+          file: file,
+          name: file.name,
+          url: e.target.result
+        })
+      }
+      reader.readAsDataURL(file)
+    }
+  })
+}
+
+// 이미지 제거
+const subRemoveImage = (index) => {
+  subSelectedImages.value.splice(index, 1)
+}
+
+const subSave = async () => {
+  try {
+    if (!banner.subName) {
+      alert('서브배너명을 입력해주세요.')
+      return;
+    }
+
+    if (subSelectedImages.value.length === 0) {
+      alert('이미지는 1개 이상 등록해야합니다.')
+      return
+    }
+
+    let imageArray = [];
+    const formData = new FormData();
+    if (subSelectedImages.value.length > 0) {
+      subSelectedImages.value.forEach((item, index) => {
+        const actualFile = item.file || item;
+        if (actualFile instanceof File) {
+          formData.append('images', actualFile);
+        } else {
+          formData.append('dbImages', actualFile);
+        }
+      });
+      formData.append('type', 'subBanner');
+      formData.append('parentSeq', banner.subSeq);
+      // 서버로 전송
+      try {
+        const uploadResponse = await axios.post('/common/upload/images', formData, {
+          headers: { 'Content-Type': 'multipart/form-data' }
+        });
+        imageArray = uploadResponse.data.imagePaths; // 서버에서 반환한 경로들
+      } catch (error) {
+        console.error('업로드 실패:', error.response?.data);
+      }
+    }
+
+    const saveData = {
+      ...banner,
+      seq: banner.subSeq,
+      name: banner.subName,
+      content: banner.subContent,
+      type: 1,
+    }
+    console.log('저장할 데이터:', saveData)
+    loading.value = true
+    const response = await axios.post('/banner/update', saveData)
+
+    if (response.data.code === 200) {
+      alert('저장되었습니다.')
+    } else {
+      alert(response.data.message);
+    }
+  } catch (error) {
+    console.error('저장 에러:', error)
+    alert('저장 중 오류가 발생했습니다.')
+  } finally {
+    loading.value = false;
+    mainBanner();
+  }
+}
+
 </script>
 
 <style scope>
