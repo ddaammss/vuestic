@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 
 // 레이아웃 컴포넌트
 const AdminLayout = () => import('@/layouts/AdminLayout.vue')
-const BlankLayout = () => import('@/layouts/BlankLayout.vue')
+//const BlankLayout = () => import('@/layouts/BlankLayout.vue')
 
 // 페이지 컴포넌트들
 const Dashboard = () => import('@/views/Dashboard.vue')
@@ -49,10 +49,13 @@ const AdRegistDetail = () => import('@/views/ads/RegistDetail.vue')
 const AdRegist = () => import('@/views/ads/Regist.vue')
 
 const routes = [
-  // 인증 관련 페이지들 (BlankLayout)
+  {
+    path: '/',
+    redirect: '/dashboard'
+  },
   {
     path: '/auth',
-    component: BlankLayout,
+    //component: BlankLayout,
     children: [
       {
         path: 'login',
@@ -73,7 +76,7 @@ const routes = [
     meta: { requiresAuth: true },
     children: [
       {
-        path: '/dashboard',
+        path: 'dashboard',
         name: 'Dashboard',
         component: Dashboard,
         meta: {
@@ -288,12 +291,6 @@ const routes = [
       }
     ]
   },
-
-  // 레거시 로그인 경로 리다이렉트
-  {
-    path: '/login',
-    redirect: '/auth/login'
-  }
 ]
 
 const router = createRouter({
@@ -303,15 +300,15 @@ const router = createRouter({
 
 // 라우터 가드 (인증 체크)
 router.beforeEach((to, from, next) => {
-  const isAuthenticated = true // 실제로는 인증 상태를 체크
-
-  if (to.meta?.requiresAuth && !isAuthenticated) {
-    next('/auth/login')
-  } else if (to.path === '/auth/login' && isAuthenticated) {
-    next('/')
-  } else {
-    next()
-  }
+  // const isAuthenticated = localStorage.getItem('authToken') !== null
+  // if (to.meta?.requiresAuth && !isAuthenticated) {
+  //   next('/auth/login')
+  // } else if (to.path === '/auth/login' && isAuthenticated) {
+  //   next('/')
+  // } else {
+  //   next()
+  // }
+   next()
 })
 
 export default router

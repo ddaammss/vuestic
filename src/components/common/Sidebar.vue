@@ -71,7 +71,7 @@
         </a>
         <div v-show="openMenus.events" class="sub-menu">
           <!-- <router-link to="/events/communication/list" class="nav-link" exact-active-class="active">QNA</router-link> -->
-          <router-link to="/events/communication/list" class="nav-link" exact-active-class="active">QNA</router-link>
+          <router-link to="/events/communication/list" class="nav-link" exact-active-class="active">Q&A</router-link>
           <router-link to="/events/banner" class="nav-link" exact-active-class="active">배너 관리</router-link>
           <router-link to="/events/event/list" class="nav-link" exact-active-class="active">이벤트 관리</router-link>
         </div>
