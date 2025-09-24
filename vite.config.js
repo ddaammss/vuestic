@@ -61,15 +61,19 @@ export default defineConfig({
             './src/views/events/Banner.vue',
             './src/views/events/CommunicationDetail.vue',
             './src/views/events/CommunicationList.vue',
-            './src/views/events/Event.vue'
+            './src/views/events/Event.vue',
+            './src/views/events/EventDetail.vue'
           ],
-          sales: ['./src/views/sales/SalesDetail.vue',
+          sales: [
+            './src/views/sales/SalesDetail.vue',
             './src/views/sales/SalesList.vue',
             './src/views/sales/SalesRegist.vue'
           ],
-          ads: ['./src/views/ads/RegistDetail.vue',
+          ads: [
+            './src/views/ads/RegistDetail.vue',
             './src/views/ads/Regist.vue',
-            './src/views/ads/Request.vue'],
+            './src/views/ads/Request.vue'
+          ]
         }
       }
     }
