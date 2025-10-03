@@ -46,7 +46,7 @@
         </div>
 
         <div class="form-grid">
-          <va-select v-model="detail.resultType" label="결제여부" :options="resultTypeOptions" text-by="label" value-by="value" />
+          <!-- <va-select v-model="detail.resultType" label="결제여부" :options="resultTypeOptions" text-by="label" value-by="value" /> -->
           <va-select v-model="detail.reservationType" label="예약상태" :options="reservationTypeOptions" text-by="label" value-by="value" />
         </div>
       </div>

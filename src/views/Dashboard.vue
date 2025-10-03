@@ -199,7 +199,6 @@ const getStatusColor = (status) => {
   text-align: center;
   padding: 15px;
   background: #f8f9fa;
-  border-radius: 8px;
   border-left: 4px solid #007bff;
 }
 

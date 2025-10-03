@@ -270,7 +270,7 @@ const columns = ref([
   { key: 'reserverName', label: '예약자' },
   { key: 'reserverPhone', label: '연락처' },
   { key: 'guestCount', label: '예약인원' },
-  { key: 'resultTypeNm', label: '결제여부' },
+  // { key: 'resultTypeNm', label: '결제여부' },
   { key: 'paymentAmount', label: '결제금액' },
   { key: 'reservationTypeNm', label: '예약상태' }
 ])

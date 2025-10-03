@@ -6,7 +6,7 @@ export const getImageUrl = (path) => {
     return path;
   }
 
-  const baseUrl =  'https://amita86tg.duckdns.org' ;
-  //const baseUrl =  'http://localhost:8080';
+  //const baseUrl =  'https://amita86tg.duckdns.org' ;
+  const baseUrl =  'http://localhost:8080';
   return `${baseUrl}${path.startsWith('/') ? path : '/' + path}`;
 };
