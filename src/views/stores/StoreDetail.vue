@@ -90,7 +90,7 @@
         <div v-if="selectedImages.length > 0" class="preview-grid mt-4">
           <va-card v-for="(image, index) in selectedImages" :key="index" class="image-preview-card">
             <div class="image-container">
-              <img :src="getImageUrl(image.url || image) " :alt="image.name || image" class="preview-image" />{{image.url }}
+              <img :src="getImageUrl(image.url || image) " :alt="image.name || image" class="preview-image" />
               <va-button icon="close" size="small" color="danger" class="remove-button" @click="removeImage(index)"/>
             </div>
             <!-- <va-card-content>
