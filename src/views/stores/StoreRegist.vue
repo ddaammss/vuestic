@@ -16,14 +16,42 @@
           <h3>기본 정보</h3>
         </div>
         <div class="form-grid">
-
           <va-input v-model="storeName" label="입점사명" :rules="[value => !!value || '입점사명은 필수입니다.']" />
           <va-input v-model="ceoName" label="대표자명" />
           <va-input v-model="phone" label="연락처" />
           <va-input v-model="email" label="이메일" />
-          <va-input v-model="address" label="주소" />
-          <va-input v-model="addressDetail" label="상세주소" />
         </div>
+
+        <!-- 주소 입력 영역 -->
+        <div class="address-section">
+          <div class="address-row">
+            <va-input
+              v-model="zipCode"
+              label="우편번호"
+              readonly
+              class="postcode-input"
+            />
+            <va-button
+              @click="execDaumPostcode"
+              icon="search"
+              class="address-search-btn"
+            >
+              우편번호 찾기
+            </va-button>
+            <va-input
+              v-model="address"
+              label="주소"
+              style="width: 50%;"
+              readonly
+            />
+            <va-input
+              v-model="addressDetail"
+              label="상세주소"
+              placeholder="상세주소를 입력하세요"
+            />
+          </div>
+        </div>
+
         <div class="form-grid-single-row">
           <va-input v-model="description" style="width: 580px;" label="입점사 한 줄 설명" />
           <va-select v-model="startTime" label="영업 시간" :options="timeOptions" />
@@ -58,7 +86,7 @@
               <va-input v-model="product.name" label="상품명" placeholder="상품명을 입력하세요" />
               <va-input v-model="product.price" label="가격" placeholder="가격을 입력하세요" />
               <div v-if="index === 0">
-                <va-button @click="addProduct" icon="add" style="margin-top: 25px;" preset="secondary">추가{{ index }}</va-button>
+                <va-button @click="addProduct" icon="add" style="margin-top: 25px;" preset="secondary">추가</va-button>
               </div>
               <div v-else>
                 <va-button @click="removeProduct(index)" preset="secondary" icon="delete" style="margin-top: 25px; margin-right: 8px;"> 삭제 </va-button>
@@ -77,7 +105,6 @@
         <div v-if="selectedImages.length > 0" class="preview-grid mt-4">
           <va-card v-for="(image, index) in selectedImages" :key="index" class="image-preview-card">
             <div class="image-container">
-              <!-- <img :src="getImageUrl(image.url || image) " :alt="image.name || image" class="preview-image" /> -->
               <va-button icon="close" size="small" color="danger" class="remove-button" @click="removeImage(index)"/>
             </div>
             <va-card-content>
@@ -86,7 +113,6 @@
           </va-card>
         </div>
       </div>
-
 
       <div class="action-section">
         <div class="btn-group">
@@ -99,9 +125,8 @@
 </template>
 
 <script setup>
-import { ref, onMounted, reactive, computed, readonly, watch } from 'vue'
+import { ref, onMounted, reactive, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { getImageUrl } from '@/utils/imageHelper';
 import axios from 'axios'
 
 const route = useRoute()
@@ -117,20 +142,80 @@ const storeName = ref()
 const ceoName = ref()
 const phone = ref()
 const email = ref()
+const zipCode = ref('')
 const address = ref()
 const addressDetail = ref()
 const description = ref()
 const startTime = ref()
 const endTime = ref()
 const memo = ref()
-//const categoryType = ref([])
 let categoryType = []
 const products = ref([
-  { name: '', price: '' } // 초기 상품 1개
+  { name: '', price: '' }
 ])
+
 onMounted(async () => {
   quilljsCall()
+  loadDaumPostcodeScript()
 })
+
+// Daum 우편번호 스크립트 로드
+const loadDaumPostcodeScript = () => {
+  return new Promise((resolve, reject) => {
+    if (window.daum && window.daum.Postcode) {
+      resolve()
+      return
+    }
+
+    const script = document.createElement('script')
+    script.src = '//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js'
+    script.onload = () => resolve()
+    script.onerror = () => reject(new Error('Daum Postcode script load failed'))
+    document.head.appendChild(script)
+  })
+}
+
+// 우편번호 찾기 실행
+const execDaumPostcode = async () => {
+  try {
+    await loadDaumPostcodeScript()
+
+    new window.daum.Postcode({
+      oncomplete: function(data) {
+        let roadAddr = data.roadAddress
+        let extraRoadAddr = ''
+
+        // 법정동명이 있을 경우 추가
+        if (data.bname !== '' && /[동|로|가]$/g.test(data.bname)) {
+          extraRoadAddr += data.bname
+        }
+
+        // 건물명이 있고, 공동주택일 경우 추가
+        if (data.buildingName !== '' && data.apartment === 'Y') {
+          extraRoadAddr += (extraRoadAddr !== '' ? ', ' + data.buildingName : data.buildingName)
+        }
+
+        // 표시할 참고항목이 있을 경우, 괄호까지 추가
+        if (extraRoadAddr !== '') {
+          extraRoadAddr = ' (' + extraRoadAddr + ')'
+        }
+
+        // 우편번호와 주소 정보 할당
+        zipCode.value = data.zonecode
+        address.value = roadAddr + extraRoadAddr
+
+        // 상세주소 입력 필드에 포커스
+        setTimeout(() => {
+          const detailInput = document.querySelector('input[placeholder="상세주소를 입력하세요"]')
+          if (detailInput) detailInput.focus()
+        }, 100)
+      }
+    }).open()
+  } catch (error) {
+    console.error('우편번호 API 로드 실패:', error)
+    alert('우편번호 서비스를 불러오는데 실패했습니다.')
+  }
+}
 
 const quilljsCall = async () => {
   const link = document.createElement('link')
@@ -138,7 +223,6 @@ const quilljsCall = async () => {
   link.rel = 'stylesheet'
   document.head.appendChild(link)
 
-  // JS 로드
   const script = document.createElement('script')
   script.src = 'https://cdn.quilljs.com/1.3.6/quill.min.js'
   script.onload = () => {
@@ -149,19 +233,16 @@ const quilljsCall = async () => {
           [{ 'header': [1, 2, 3, false] }],
           ['bold', 'italic', 'underline'],
           [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-          //['link', 'image'],
           ['link'],
           ['clean']
         ]
       }
     })
 
-    // 🔥 핵심: 내용 변경 감지 이벤트 추가
     quill.on('text-change', () => {
       memo.value = quill.root.innerHTML
     })
 
-    // 이미지 핸들러 커스터마이징
     quill.getModule('toolbar').addHandler('image', () => {
       const input = document.createElement('input')
       input.setAttribute('type', 'file')
@@ -175,7 +256,6 @@ const quilljsCall = async () => {
           reader.onload = (e) => {
             const range = quill.getSelection()
             quill.insertEmbed(range.index, 'image', e.target.result)
-            // 🔥 이미지 삽입 후 content 업데이트
             memo.value = quill.root.innerHTML
           }
           reader.readAsDataURL(file)
@@ -185,7 +265,6 @@ const quilljsCall = async () => {
   }
   document.head.appendChild(script)
 }
-
 
 const categoryFlags = reactive({
   type0: false,
@@ -212,7 +291,7 @@ const removeProduct = (index) => {
     products.value.splice(index, 1)
   }
 }
-//------------------------------------------------------------------------------------------------- 이미지 처리 함수
+
 const handleFileSelect = (event) => {
   const files = Array.from(event.target.files)
 
@@ -231,24 +310,20 @@ const handleFileSelect = (event) => {
   })
 }
 
-// 이미지 제거
 const removeImage = (index) => {
   selectedImages.value.splice(index, 1)
 }
 
 const save = async () => {
-console.log(storeName.value)
-
-console.log(categoryType.length)
   try {
     if (storeName.value == undefined) {
       alert('입점사를 입력해주세요.')
-      return;
+      return
     }
 
     if (categoryType.length == 0) {
       alert('분야를 선택해주세요.')
-      return;
+      return
     }
 
     let prd = products.value.filter(product =>
@@ -263,11 +338,13 @@ console.log(categoryType.length)
       alert('이미지는 1개 이상 등록해야합니다.')
       return
     }
+
     const saveData = {
       storeName: storeName.value,
       ceoName : ceoName.value,
       phone : phone.value,
       email : email.value,
+      zipCode: zipCode.value,
       address : address.value,
       addressDetail : addressDetail.value,
       description : description.value,
@@ -278,45 +355,42 @@ console.log(categoryType.length)
       products: prd,
     }
 
-    //console.log('저장할 데이터:', saveData)
     loading.value = true
     const response = await axios.post('/store/upsert', saveData)
     if (response.data.code === 200) {
-
-      let imageArray = [];
-      const formData = new FormData();
+      let imageArray = []
+      const formData = new FormData()
       if (selectedImages.value.length > 0) {
         selectedImages.value.forEach((item, index) => {
-        const actualFile = item.file || item;
-        if (actualFile instanceof File) {
-          formData.append('images', actualFile);
-        }else{
-          formData.append('dbImages', actualFile);
-        }
-        });
-        formData.append('type', 'store');
-        formData.append('parentSeq', response.data.data);
+          const actualFile = item.file || item
+          if (actualFile instanceof File) {
+            formData.append('images', actualFile)
+          } else {
+            formData.append('dbImages', actualFile)
+          }
+        })
+        formData.append('type', 'store')
+        formData.append('parentSeq', response.data.data)
 
-        // 서버로 전송
         try {
-        const uploadResponse = await axios.post('/common/upload/images', formData, {
-          headers: { 'Content-Type': 'multipart/form-data' }
-        });
-        imageArray = uploadResponse.data.imagePaths; // 서버에서 반환한 경로들
+          const uploadResponse = await axios.post('/common/upload/images', formData, {
+            headers: { 'Content-Type': 'multipart/form-data' }
+          })
+          imageArray = uploadResponse.data.imagePaths
         } catch (error) {
-          console.error('업로드 실패:', error.response?.data);
+          console.error('업로드 실패:', error.response?.data)
         }
       }
       alert('저장되었습니다.')
       goBack()
     } else {
-      alert(response.data.message);
+      alert(response.data.message)
     }
   } catch (error) {
     console.error('저장 에러:', error)
     alert('저장 중 오류가 발생했습니다.')
-  } finally{
-    loading.value = false;
+  } finally {
+    loading.value = false
   }
 }
 
@@ -343,7 +417,6 @@ watch(categoryFlags, () => {
     }
   })
 }, { deep: true })
-
 </script>
 
 <style scoped>
@@ -373,12 +446,6 @@ watch(categoryFlags, () => {
   color: #ffffff;
 }
 
-.header-right {
-  display: flex;
-  align-items: center;
-}
-
-/* 섹션 스타일 */
 .detail-section {
   margin-bottom: 22px;
   padding: 20px;
@@ -402,12 +469,37 @@ watch(categoryFlags, () => {
   font-weight: 600;
 }
 
-/* 폼 그리드 */
 .form-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 20px;
   margin-bottom: 20px;
+}
+
+/* 주소 입력 영역 스타일 */
+.address-section {
+  margin-bottom: 20px;
+}
+
+.address-row {
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+  margin-bottom: 16px;
+}
+
+.address-full-row {
+  margin-bottom: 16px;
+  width: 100%;
+}
+
+.postcode-input {
+  max-width: 200px;
+}
+
+.address-search-btn {
+  margin-bottom: 2px;
+  white-space: nowrap;
 }
 
 .action-section {

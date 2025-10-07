@@ -17,14 +17,42 @@
           <h3>기본 정보</h3>
         </div>
         <div class="form-grid">
-
           <va-input v-model="detail.storeName" label="입점사명" :rules="[value => !!value || '입점사명은 필수입니다.']" />
           <va-input v-model="detail.ceoName" label="대표자명" />
           <va-input v-model="detail.phone" label="연락처" />
           <va-input v-model="detail.email" label="이메일" />
-          <va-input v-model="detail.address" label="주소" />
-          <va-input v-model="detail.addressDetail" label="상세주소" />
         </div>
+
+        <!-- 주소 입력 영역 -->
+        <div class="address-section">
+          <div class="address-row">
+            <va-input
+              v-model="detail.zipCode"
+              label="우편번호"
+              readonly
+              class="postcode-input"
+            />
+            <va-button
+              @click="execDaumPostcode"
+              icon="search"
+              class="address-search-btn"
+            >
+              우편번호 찾기
+            </va-button>
+            <va-input
+              v-model="detail.address"
+              label="주소"
+              style="width: 50%;"
+              readonly
+            />
+            <va-input
+              v-model="detail.addressDetail"
+              label="상세주소"
+              placeholder="상세주소를 입력하세요"
+            />
+          </div>
+        </div>
+
         <div class="form-grid-single-row">
           <va-input v-model="detail.description" style="width: 580px;" label="입점사 한 줄 설명" />
           <va-select v-model="detail.startTime" label="영업 시간" :options="timeOptions" />
@@ -93,9 +121,6 @@
               <img :src="getImageUrl(image.url || image) " :alt="image.name || image" class="preview-image" />
               <va-button icon="close" size="small" color="danger" class="remove-button" @click="removeImage(index)"/>
             </div>
-            <!-- <va-card-content>
-              <div class="text-sm">{{ image.name || image }}</div>
-            </va-card-content> -->
           </va-card>
         </div>
       </div>
@@ -120,7 +145,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, reactive, computed, readonly, watch } from 'vue'
+import { ref, onMounted, reactive, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { getImageUrl } from '@/utils/imageHelper';
 import axios from 'axios'
@@ -141,7 +166,66 @@ onMounted(async () => {
     await fetchDetail(rowData)
   }
   quilljsCall()
+  loadDaumPostcodeScript()
 })
+
+// Daum 우편번호 스크립트 로드
+const loadDaumPostcodeScript = () => {
+  return new Promise((resolve, reject) => {
+    if (window.daum && window.daum.Postcode) {
+      resolve()
+      return
+    }
+
+    const script = document.createElement('script')
+    script.src = '//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js'
+    script.onload = () => resolve()
+    script.onerror = () => reject(new Error('Daum Postcode script load failed'))
+    document.head.appendChild(script)
+  })
+}
+
+// 우편번호 찾기 실행
+const execDaumPostcode = async () => {
+  try {
+    await loadDaumPostcodeScript()
+
+    new window.daum.Postcode({
+      oncomplete: function(data) {
+        let roadAddr = data.roadAddress
+        let extraRoadAddr = ''
+
+        // 법정동명이 있을 경우 추가
+        if (data.bname !== '' && /[동|로|가]$/g.test(data.bname)) {
+          extraRoadAddr += data.bname
+        }
+
+        // 건물명이 있고, 공동주택일 경우 추가
+        if (data.buildingName !== '' && data.apartment === 'Y') {
+          extraRoadAddr += (extraRoadAddr !== '' ? ', ' + data.buildingName : data.buildingName)
+        }
+
+        // 표시할 참고항목이 있을 경우, 괄호까지 추가
+        if (extraRoadAddr !== '') {
+          extraRoadAddr = ' (' + extraRoadAddr + ')'
+        }
+
+        // 우편번호와 주소 정보 할당
+        detail.zipCode = data.zonecode
+        detail.address = roadAddr + extraRoadAddr
+
+        // 상세주소 입력 필드에 포커스
+        setTimeout(() => {
+          const detailInput = document.querySelector('input[placeholder="상세주소를 입력하세요"]')
+          if (detailInput) detailInput.focus()
+        }, 100)
+      }
+    }).open()
+  } catch (error) {
+    console.error('우편번호 API 로드 실패:', error)
+    alert('우편번호 서비스를 불러오는데 실패했습니다.')
+  }
+}
 
 const quilljsCall = async () => {
   const link = document.createElement('link')
@@ -149,7 +233,6 @@ const quilljsCall = async () => {
   link.rel = 'stylesheet'
   document.head.appendChild(link)
 
-  // JS 로드
   const script = document.createElement('script')
   script.src = 'https://cdn.quilljs.com/1.3.6/quill.min.js'
   script.onload = () => {
@@ -160,19 +243,16 @@ const quilljsCall = async () => {
           [{ 'header': [1, 2, 3, false] }],
           ['bold', 'italic', 'underline'],
           [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-          //['link', 'image'],
           ['link'],
           ['clean']
         ]
       }
     })
 
-    // 🔥 핵심: 내용 변경 감지 이벤트 추가
     quill.on('text-change', () => {
       detail.memo = quill.root.innerHTML
     })
 
-    // 이미지 핸들러 커스터마이징
     quill.getModule('toolbar').addHandler('image', () => {
       const input = document.createElement('input')
       input.setAttribute('type', 'file')
@@ -186,7 +266,6 @@ const quilljsCall = async () => {
           reader.onload = (e) => {
             const range = quill.getSelection()
             quill.insertEmbed(range.index, 'image', e.target.result)
-            // 🔥 이미지 삽입 후 content 업데이트
             detail.memo = quill.root.innerHTML
           }
           reader.readAsDataURL(file)
@@ -202,7 +281,6 @@ const quilljsCall = async () => {
   document.head.appendChild(script)
 }
 
-
 const fetchDetail = async (data) => {
   loading.value = true
   try {
@@ -211,7 +289,6 @@ const fetchDetail = async (data) => {
     })
 
     Object.assign(detail, response.data.data)
-    //console.log(detail)
     detail.categoryType = detail.categoryType.split(',').map(item => parseInt(item.trim()))
     selectedImages.value = detail.images;
     if(detail.products.length === 0){
@@ -265,7 +342,7 @@ const removeProduct = (index) => {
     detail.products.splice(index, 1)
   }
 }
-//------------------------------------------------------------------------------------------------- 이미지 처리 함수
+
 const handleFileSelect = (event) => {
   const files = Array.from(event.target.files)
 
@@ -284,13 +361,11 @@ const handleFileSelect = (event) => {
   })
 }
 
-// 이미지 제거
 const removeImage = (index) => {
   selectedImages.value.splice(index, 1)
 }
 
 const save = async () => {
-
   try {
     if (!detail.storeName) {
       alert('입점사를 입력해주세요.')
@@ -324,12 +399,11 @@ const save = async () => {
       formData.append('type', 'store');
       formData.append('parentSeq', detail.seq);
 
-      // 서버로 전송
       try {
         const uploadResponse = await axios.post('/common/upload/images', formData, {
           headers: { 'Content-Type': 'multipart/form-data' }
         });
-        imageArray = uploadResponse.data.imagePaths; // 서버에서 반환한 경로들
+        imageArray = uploadResponse.data.imagePaths;
       } catch (error) {
         console.error('업로드 실패:', error.response?.data);
       }
@@ -343,7 +417,6 @@ const save = async () => {
       products: products,
     }
 
-    //console.log('저장할 데이터:', saveData)
     loading.value = true
     const response = await axios.post('/store/upsert', saveData)
     if (response.data.code === 200) {
@@ -383,7 +456,6 @@ watch(categoryFlags, () => {
     }
   })
 }, { deep: true })
-
 </script>
 
 <style scoped>
@@ -413,12 +485,6 @@ watch(categoryFlags, () => {
   color: #ffffff;
 }
 
-.header-right {
-  display: flex;
-  align-items: center;
-}
-
-/* 섹션 스타일 */
 .detail-section {
   margin-bottom: 22px;
   padding: 20px;
@@ -442,22 +508,32 @@ watch(categoryFlags, () => {
   font-weight: 600;
 }
 
-.info-badge {
-  background: var(--va-primary);
-  color: white;
-  padding: 8px 16px;
-  border-radius: 8px;
-  font-family: Arial, Helvetica, sans-serif;
-  font-weight: bold;
-  font-size: 14px;
-}
-
-/* 폼 그리드 */
 .form-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 20px;
   margin-bottom: 20px;
+}
+
+/* 주소 입력 영역 스타일 */
+.address-section {
+  margin-bottom: 20px;
+}
+
+.address-row {
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+  margin-bottom: 16px;
+}
+
+.postcode-input {
+  max-width: 200px;
+}
+
+.address-search-btn {
+  margin-bottom: 2px;
+  white-space: nowrap;
 }
 
 .action-section {
