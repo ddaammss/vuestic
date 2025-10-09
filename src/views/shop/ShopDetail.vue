@@ -30,7 +30,7 @@
         <va-input ref="fileInput" type="file" multiple accept="image/*" style="display: none"
           @change="handleFileSelect" />
         <va-button icon="upload" @click="$refs.fileInput.$el.querySelector('input').click()" :loading="isUploading"
-          preset="secondary"> 이미지 선택 </va-button>
+          preset="secondary" v-if="selectedImages <= 1"> 이미지 선택 </va-button>
         <div v-if="selectedImages.length > 0" class="preview-grid mt-4">
           <va-card v-for="(image, index) in selectedImages" :key="index" class="image-preview-card">
             <div class="image-container">
