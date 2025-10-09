@@ -95,6 +95,18 @@
           <router-link to="/ads/regist" class="nav-link" exact-active-class="active">광고 등록 관리</router-link>
         </div>
       </div>
+
+      <div class="nav-item">
+        <a class="nav-link" @click="toggleMenu('shop')">
+          <i class="material-icons">shop</i>
+          <span>쇼핑몰</span>
+          <i class="material-icons expand-icon" :class="{ expanded: openMenus.shop }">expand_more</i>
+        </a>
+        <div v-show="openMenus.shop" class="sub-menu">
+          <router-link to="/shop/list" class="nav-link" exact-active-class="active">쇼핑몰 상품 관리</router-link>
+        </div>
+      </div>
+
     </div>
   </nav>
 </template>
@@ -111,7 +123,8 @@ const openMenus = ref({
   members: false,
   reservations: false,
   events: false,
-  ads: false
+  ads: false,
+  shop: false
 })
 
 const toggleMenu = (menu) => {

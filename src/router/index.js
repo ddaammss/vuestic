@@ -48,6 +48,10 @@ const AdRequest = () => import('@/views/ads/Request.vue')
 const AdRegistDetail = () => import('@/views/ads/RegistDetail.vue')
 const AdRegist = () => import('@/views/ads/Regist.vue')
 
+// 쇼핑몰 상품 관리
+const ShopList = () => import('@/views/shop/ShopList.vue')
+const ShopDetail = () => import('@/views/shop/ShopDetail.vue')
+
 const routes = [
   {
     path: '/',
@@ -288,7 +292,25 @@ const routes = [
           }
 
         ]
-      }
+      },
+      // 쇼핑몰 상품 관리
+      {
+        path: 'shop',
+        children: [
+          {
+            path: 'list',
+            name: 'ShopList',
+            component: ShopList,
+            meta: { title: '쇼핑몰 상품 관리' }
+          },
+          {
+            path: 'detail/:seq?',
+            name: 'ShopDetail',
+            component: ShopDetail,
+            meta: { title: '쇼핑몰 상품 상세' }
+          }
+        ]
+      },
     ]
   },
 ]
