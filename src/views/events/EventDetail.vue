@@ -43,9 +43,6 @@
               <img :src="getImageUrl(image.url || image)" :alt="image.name || image" class="preview-image" />
               <va-button icon="close" size="small" color="danger" class="remove-button" @click="removeImage(index)" />
             </div>
-            <va-card-content>
-              <div class="text-sm">{{ image.name || image }}</div>
-            </va-card-content>
           </va-card>
         </div>
       </div>
