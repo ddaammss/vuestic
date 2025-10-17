@@ -22,7 +22,7 @@
         <div v-show="openMenus.settings" class="sub-menu">
           <router-link to="/settings/terms" class="nav-link" exact-active-class="active">이용약관 관리</router-link>
           <router-link to="/settings/privacy" class="nav-link" exact-active-class="active">개인정보 취급방침 관리</router-link>
-          <router-link to="/settings/refund" class="nav-link" exact-active-class="active">환불 정책 관리</router-link>
+          <!-- <router-link to="/settings/refund" class="nav-link" exact-active-class="active">환불 정책 관리</router-link> -->
           <router-link to="/settings/coupon/list" class="nav-link" exact-active-class="active">쿠폰 관리</router-link>
         </div>
       </div>
